@@ -241,7 +241,7 @@
 <div class="modal-overlay hidden" id="formOverlay">
   <div class="form-modal">
     <div class="form-header"><div class="form-title" id="formTitle">New Recipe</div><button class="detail-close" id="closeFormBtn">✕</button></div>
-    <div class="form-body">
+   <div class="form-body">
       <input type="hidden" id="editingId">
       <div class="form-group"><label>Recipe Name *</label><input type="text" id="fName" placeholder="e.g. Chocolate Lava Cake"></div>
       <div class="form-group"><label>Description</label><textarea id="fDesc" rows="2" placeholder="A short, appetizing description…"></textarea></div>
@@ -267,23 +267,24 @@
       </div>
       <div class="form-group"><label>Ingredients</label><div class="dynamic-list" id="ingredientsList"></div><button class="btn-add-row" id="addIngBtn">+ Add ingredient</button></div>
       <div class="form-group">
-  <label>Paste Steps (rapid, în loc de "+ Add step" de fiecare dată)</label>
-  <textarea id="fStepsPaste" rows="4" placeholder="Lipește toți pașii aici, unul pe linie, apoi apasă butonul de mai jos"></textarea>
-  <button type="button" id="addPastedStepsBtn" class="btn-add-row" style="margin-top:6px">Adaugă pașii lipiți</button>
-</div>
-      <div class="form-group"><label>Steps</label><div class="dynamic-list" id="stepsList"></div><button class="btn-add-row" id="addStepBtn">+ Add step</button></div>
+        <label>Steps</label>
+        <textarea id="fStepsPaste" rows="2" placeholder="Paste all steps here (one per line)"></textarea>
+        <button type="button" id="addPastedStepsBtn" class="btn-add-row" style="margin-top:6px">Add pasted steps</button>
+        <div class="dynamic-list" id="stepsList" style="margin-top:14px"></div>
+        <button class="btn-add-row" id="addStepBtn">+ Add step</button>
+      </div>
       <div class="form-group"><label>Tags (press Enter)</label><div class="tags-input-wrap" id="tagsWrap"><input type="text" id="tagInput" placeholder="e.g. chocolate, summer…"></div></div>
       <div class="form-group">
-  <label>Source / URL</label>
-  <div style="display:flex;gap:8px">
-    <input type="text" id="fSource" placeholder="https://…" style="flex:1">
-    <button type="button" id="importBtn" class="btn-add-row">Import</button>
-  </div>
-  <div id="importStatus" style="font-size:12px;color:var(--text-mid);margin-top:4px"></div>
-</div>
+        <label>Source / URL</label>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="fSource" placeholder="https://…" style="flex:1">
+          <button type="button" id="importBtn" class="btn-add-row">Import</button>
+        </div>
+        <div id="importStatus" style="font-size:12px;color:var(--text-mid);margin-top:4px"></div>
+      </div>
       <div class="form-group"><label>My Notes</label><textarea id="fNotes" rows="3" placeholder="Personal tips, substitutions…"></textarea></div>
     </div>
-    <div class="form-footer"><button class="btn-cancel" id="cancelFormBtn">Cancel</button><button class="btn-save" id="saveRecipeBtn">Save Recipe ✨</button></div>
+        <div class="form-footer"><button class="btn-cancel" id="cancelFormBtn">Cancel</button><button class="btn-save" id="saveRecipeBtn">Save Recipe ✨</button></div>
   </div>
 </div>
 
