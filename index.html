@@ -94,7 +94,7 @@
   .ingredient-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;font-size:14px;color:var(--text-dark);transition:background 0.15s;}
   .ingredient-item:hover{background:var(--teal-pale);}
   .ingredient-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0;}
-  .ingredient-qty{font-weight:700;color:var(--magenta);min-width:28px;}
+  .ingredient-qty{font-weight:700;color:var(--magenta);min-width:28px;}.ingredient-badge{display:inline-flex;align-items:center;justify-content:center;min-width:56px;height:26px;padding:0 10px;border-radius:14px;background:linear-gradient(135deg,var(--magenta),var(--teal));color:white;font-size:12px;font-weight:700;flex-shrink:0;}
   .steps-list{display:flex;flex-direction:column;gap:12px;margin-bottom:32px;}
   .step-item{display:flex;gap:14px;align-items:flex-start;padding:14px 18px;background:var(--card-soft);border-radius:14px;border:1px solid var(--border);}
   .step-item:hover{background:var(--magenta-pale);}
@@ -505,7 +505,7 @@ function openDetail(id) {
   document.getElementById('deleteDetailBtn').addEventListener('click', () => confirmDelete(id));
 
   const ingCols=(r.ingredients||[]).reduce((acc,ing,i)=>{
-    const t=`<div class="ingredient-item"><span class="ingredient-dot"></span><span class="ingredient-qty">${ing.qty||''}</span><span style="color:var(--text-light);font-size:12px;margin-right:4px">${ing.unit||''}</span><span>${ing.name}</span></div>`;
+    const t=`<div class="ingredient-item"><span class="ingredient-badge">${ing.qty||''}${ing.unit?' '+ing.unit:''}</span><span>${ing.name}</span></div>`;
     acc[i%2===0?'left':'right'].push(t); return acc;
   },{left:[],right:[]});
   const stepsHTML=(r.steps||[]).map((s,i)=>`<div class="step-item"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></div>`).join('');
