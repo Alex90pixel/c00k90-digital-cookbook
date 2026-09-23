@@ -44,7 +44,9 @@
   .filter-label{font-size:12px;color:var(--text-light);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;margin-right:4px;}
   .filter-chip{padding:6px 16px;border-radius:50px;border:1.5px solid var(--border);background:var(--card);color:var(--text-mid);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.18s;}
   .filter-chip:hover{background:var(--teal-pale);border-color:var(--teal-light);color:var(--teal-deep);}
-  .filter-chip.active{background:linear-gradient(135deg,var(--magenta),var(--teal));border-color:transparent;color:white;}
+  .filter-chip.active{background:linear-gradient(135deg,var(--magenta),var(--teal));border-color:transparent;color:white;}.diff-btn{padding:8px 16px;border:1.5px solid var(--border);border-radius:50px;background:transparent;color:var(--text-mid);font-family:'Lato',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.18s;}
+.diff-btn:hover{background:var(--teal-pale);border-color:var(--teal-light);}
+.diff-btn.active{background:linear-gradient(135deg,var(--magenta),var(--teal));border-color:transparent;color:white;}
   .sort-row{max-width:1200px;margin:14px auto 0;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
   .recipe-count{font-size:13px;color:var(--text-light);}
   .sort-row select{padding:6px 12px;border:1.5px solid var(--border);border-radius:50px;background:var(--card);font-family:'Lato',sans-serif;font-size:13px;color:var(--text-mid);cursor:pointer;outline:none;}
@@ -238,19 +240,11 @@
 <div class="modal-overlay hidden" id="formOverlay">
   <div class="form-modal">
     <div class="form-header"><div class="form-title" id="formTitle">New Recipe</div><button class="detail-close" id="closeFormBtn">✕</button></div>
-   <div class="form-body">
+  <div class="form-body">
       <input type="hidden" id="editingId">
       <div class="form-group"><label>Recipe Name *</label><input type="text" id="fName" placeholder="e.g. Chocolate Lava Cake"></div>
       <div class="form-group"><label>Description</label><textarea id="fDesc" rows="2" placeholder="A short, appetizing description…"></textarea></div>
-      <div class="form-row">
-        <div class="form-group"><label>Category *</label><select id="fCategory"><option value="">Select category</option><option>Breakfast</option><option>Mains</option><option>Soups</option><option>Salads</option><option>Baking</option><option>Desserts</option><option>Drinks</option><option>Other</option></select></div>
-        <div class="form-group"><label>Difficulty</label><select id="fDiff"><option value="Easy">Easy</option><option value="Medium">Medium</option><option value="Hard">Hard</option></select></div>
-      </div>
-      <div class="form-row-3">
-        <div class="form-group"><label>Prep time (min)</label><input type="number" id="fPrep" placeholder="30"></div>
-        <div class="form-group"><label>Cook time (min)</label><input type="number" id="fCook" placeholder="45"></div>
-        <div class="form-group"><label>Servings</label><input type="number" id="fServ" placeholder="8"></div>
-      </div>
+      <div class="form-group"><label>Category *</label><select id="fCategory"><option value="">Select category</option><option>Breakfast</option><option>Mains</option><option>Soups</option><option>Salads</option><option>Baking</option><option>Desserts</option><option>Drinks</option><option>Other</option></select></div>
       <div class="form-group">
         <label>Recipe Photo</label>
         <div class="image-upload-area" id="imageUploadArea" style="position:relative">
@@ -263,16 +257,30 @@
         <input type="hidden" id="fImageData">
       </div>
       <div class="form-group">
-  <label>Ingredients</label>
-  <textarea id="fIngredientsPaste" rows="2" placeholder="Paste all ingredients here (one per line, e.g. 200g flour)"></textarea>
-  <button type="button" id="addPastedIngredientsBtn" class="btn-add-row" style="margin-top:6px">Add pasted ingredients</button>
-  <div class="dynamic-list" id="ingredientsList" style="margin-top:14px"></div>
-</div>
+        <label>Ingredients</label>
+        <textarea id="fIngredientsPaste" rows="2" placeholder="Paste all ingredients here (one per line, e.g. 200g flour)"></textarea>
+        <button type="button" id="addPastedIngredientsBtn" class="btn-add-row" style="margin-top:6px">Add pasted ingredients</button>
+        <div class="dynamic-list" id="ingredientsList" style="margin-top:14px"></div>
+      </div>
       <div class="form-group">
         <label>Steps</label>
         <textarea id="fStepsPaste" rows="2" placeholder="Paste all steps here (one per line)"></textarea>
         <button type="button" id="addPastedStepsBtn" class="btn-add-row" style="margin-top:6px">Add pasted steps</button>
         <div class="dynamic-list" id="stepsList" style="margin-top:14px"></div>
+      </div>
+      <div class="form-group">
+        <label>Difficulty</label>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="diff-btn" data-diff="Easy">🟢 Easy</button>
+          <button type="button" class="diff-btn" data-diff="Medium">🟡 Medium</button>
+          <button type="button" class="diff-btn" data-diff="Hard">🔴 Hard</button>
+        </div>
+        <input type="hidden" id="fDiff" value="Easy">
+      </div>
+      <div class="form-row-3">
+        <div class="form-group"><label>Prep time (min)</label><input type="number" id="fPrep" placeholder="30"></div>
+        <div class="form-group"><label>Cook time (min)</label><input type="number" id="fCook" placeholder="45"></div>
+        <div class="form-group"><label>Servings</label><input type="number" id="fServ" placeholder="8"></div>
       </div>
       <div class="form-group"><label>Tags (press Enter)</label><div class="tags-input-wrap" id="tagsWrap"><input type="text" id="tagInput" placeholder="e.g. chocolate, summer…"></div></div>
       <div class="form-group">
@@ -285,7 +293,7 @@
       </div>
       <div class="form-group"><label>My Notes</label><textarea id="fNotes" rows="3" placeholder="Personal tips, substitutions…"></textarea></div>
     </div>
-        <div class="form-footer"><button class="btn-cancel" id="cancelFormBtn">Cancel</button><button class="btn-save" id="saveRecipeBtn">Save Recipe ✨</button></div>
+    <div class="form-footer"><button class="btn-cancel" id="cancelFormBtn">Cancel</button><button class="btn-save" id="saveRecipeBtn">Save Recipe ✨</button></div>
   </div>
 </div>
 
@@ -577,7 +585,7 @@ function openEditRecipe(id) {
   document.getElementById('fName').value=r.name||'';
   document.getElementById('fDesc').value=r.description||'';
   document.getElementById('fCategory').value=r.category||'';
-  document.getElementById('fDiff').value=r.difficulty||'Easy';
+  document.getElementById('fDiff').value=r.difficulty||'Easy';document.getElementById('fDiff').value=r.difficulty||'Easy'; setDiffButton(r.difficulty||'Easy');
   document.getElementById('fPrep').value=r.prepTime||'';
   document.getElementById('fCook').value=r.cookTime||'';
   document.getElementById('fServ').value=r.servings||'';
@@ -597,7 +605,7 @@ function openEditRecipe(id) {
 }
 function clearForm() {
   ['fName','fDesc','fSource','fNotes','fPrep','fCook','fServ'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('fCategory').value=''; document.getElementById('fDiff').value='Easy';
+  document.getElementById('fCategory').value=''; document.getElementById('fDiff').value='Easy';document.getElementById('fCategory').value=''; document.getElementById('fDiff').value='Easy'; setDiffButton('Easy');
   document.getElementById('fImageData').value=''; document.getElementById('fImagePreview').src='';
   document.getElementById('fImagePreview').classList.add('hidden');
   document.getElementById('ingredientsList').innerHTML=''; document.getElementById('stepsList').innerHTML='';
@@ -898,6 +906,17 @@ function estimateNutrition(recipe) {
     fat: Math.round(totals.fat / servings),
     unmatched: unmatched,
   };
+}document.querySelectorAll('.diff-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('fDiff').value = btn.dataset.diff;
+  });
+});
+function setDiffButton(value) {
+  document.querySelectorAll('.diff-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.diff === value);
+  });
 }
 </script>
 </html>
