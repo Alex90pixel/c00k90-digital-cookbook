@@ -265,7 +265,13 @@
         <input type="file" id="fImageFile" accept="image/*" class="hidden">
         <input type="hidden" id="fImageData">
       </div>
-      <div class="form-group"><label>Ingredients</label><div class="dynamic-list" id="ingredientsList"></div><button class="btn-add-row" id="addIngBtn">+ Add ingredient</button></div>
+      <div class="form-group">
+  <label>Ingredients</label>
+  <textarea id="fIngredientsPaste" rows="2" placeholder="Paste all ingredients here (one per line, e.g. 200g flour)"></textarea>
+  <button type="button" id="addPastedIngredientsBtn" class="btn-add-row" style="margin-top:6px">Add pasted ingredients</button>
+  <div class="dynamic-list" id="ingredientsList" style="margin-top:14px"></div>
+  <button class="btn-add-row" id="addIngBtn">+ Add ingredient</button>
+</div>
       <div class="form-group">
         <label>Steps</label>
         <textarea id="fStepsPaste" rows="2" placeholder="Paste all steps here (one per line)"></textarea>
@@ -735,6 +741,34 @@ document.getElementById("addPastedStepsBtn").addEventListener("click", () => {
 
   lines.forEach(step => addStep(step));
   document.getElementById("fStepsPaste").value = "";
+}); lines.forEach(step => addStep(step));
+  document.getElementById("fStepsPaste").value = "";
+});
+
+document.getElementById("addPastedIngredientsBtn").addEventListener("click", () => {
+  const raw = document.getElementById("fIngredientsPaste").value;
+  const lines = raw.split("\n").map(l => l.trim()).filter(Boolean);
+  if (!lines.length) return;
+
+  const units = ["g","kg","ml","l","tsp","tbsp","cup","cups","oz","lb","pinch","clove","cloves","slice","slices","can","cans","bunch","stick","sticks"];
+
+  lines.forEach(line => {
+    const match = line.match(/^([\d.\/]+)\s*([a-zA-Z]*)\s*(.*)$/);
+    let qty = "", unit = "", name = line;
+    if (match && match[1]) {
+      qty = match[1];
+      unit = match[2] || "";
+      name = match[3] || "";
+      if (unit && !units.includes(unit.toLowerCase())) {
+        name = (unit + " " + name).trim();
+        unit = "";
+      }
+      if (!name) name = unit;
+    }
+    addIngredient(qty, unit, name.trim());
+  });
+
+  document.getElementById("fIngredientsPaste").value = "";
 });
 </script>
 </html>
