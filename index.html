@@ -270,14 +270,12 @@
   <textarea id="fIngredientsPaste" rows="2" placeholder="Paste all ingredients here (one per line, e.g. 200g flour)"></textarea>
   <button type="button" id="addPastedIngredientsBtn" class="btn-add-row" style="margin-top:6px">Add pasted ingredients</button>
   <div class="dynamic-list" id="ingredientsList" style="margin-top:14px"></div>
-  <button class="btn-add-row" id="addIngBtn">+ Add ingredient</button>
 </div>
       <div class="form-group">
         <label>Steps</label>
         <textarea id="fStepsPaste" rows="2" placeholder="Paste all steps here (one per line)"></textarea>
         <button type="button" id="addPastedStepsBtn" class="btn-add-row" style="margin-top:6px">Add pasted steps</button>
         <div class="dynamic-list" id="stepsList" style="margin-top:14px"></div>
-        <button class="btn-add-row" id="addStepBtn">+ Add step</button>
       </div>
       <div class="form-group"><label>Tags (press Enter)</label><div class="tags-input-wrap" id="tagsWrap"><input type="text" id="tagInput" placeholder="e.g. chocolate, summer…"></div></div>
       <div class="form-group">
@@ -540,8 +538,6 @@ document.getElementById('newRecipeBtn').addEventListener('click', () => openNewR
 document.getElementById('closeFormBtn').addEventListener('click', closeForm);
 document.getElementById('cancelFormBtn').addEventListener('click', closeForm);
 document.getElementById('saveRecipeBtn').addEventListener('click', saveRecipe);
-document.getElementById('addIngBtn').addEventListener('click', () => addIngredient());
-document.getElementById('addStepBtn').addEventListener('click', () => addStep());
 document.getElementById('imageUploadArea').addEventListener('click', () => document.getElementById('fImageFile').click());
 document.getElementById('fImageFile').addEventListener('change', e => {
   const file=e.target.files[0]; if(!file) return;
@@ -740,8 +736,6 @@ document.getElementById("addPastedStepsBtn").addEventListener("click", () => {
   if (!lines.length) return;
 
   lines.forEach(step => addStep(step));
-  document.getElementById("fStepsPaste").value = "";
-}); lines.forEach(step => addStep(step));
   document.getElementById("fStepsPaste").value = "";
 });
 
