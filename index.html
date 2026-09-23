@@ -208,15 +208,12 @@
 <div class="filter-bar">
   <span class="filter-label">Category</span>
   <button class="filter-chip active" data-cat="all">All</button>
-  <button class="filter-chip" data-cat="Cakes">🎂 Cakes</button>
-  <button class="filter-chip" data-cat="Cupcakes">🧁 Cupcakes</button>
-  <button class="filter-chip" data-cat="Cookies">🍪 Cookies</button>
-  <button class="filter-chip" data-cat="Bread">🍞 Bread</button>
   <button class="filter-chip" data-cat="Breakfast">🍳 Breakfast</button>
-  <button class="filter-chip" data-cat="Desserts">🍮 Desserts</button>
-  <button class="filter-chip" data-cat="Main dishes">🍽 Mains</button>
-  <button class="filter-chip" data-cat="Pasta">🍝 Pasta</button>
+  <button class="filter-chip" data-cat="Mains">🍽 Mains</button>
+  <button class="filter-chip" data-cat="Soups">🍲 Soups</button>
   <button class="filter-chip" data-cat="Salads">🥗 Salads</button>
+  <button class="filter-chip" data-cat="Baking">🍞 Baking</button>
+  <button class="filter-chip" data-cat="Desserts">🍮 Desserts</button>
   <button class="filter-chip" data-cat="Drinks">🥤 Drinks</button>
   <button class="filter-chip" data-cat="Other">✨ Other</button>
 </div>
@@ -246,7 +243,7 @@
       <div class="form-group"><label>Recipe Name *</label><input type="text" id="fName" placeholder="e.g. Chocolate Lava Cake"></div>
       <div class="form-group"><label>Description</label><textarea id="fDesc" rows="2" placeholder="A short, appetizing description…"></textarea></div>
       <div class="form-row">
-        <div class="form-group"><label>Category *</label><select id="fCategory"><option value="">Select category</option><option>Cakes</option><option>Cupcakes</option><option>Cookies</option><option>Bread</option><option>Breakfast</option><option>Desserts</option><option>Main dishes</option><option>Pasta</option><option>Soups</option><option>Salads</option><option>Drinks</option><option>Other</option></select></div>
+        <div class="form-group"><label>Category *</label><select id="fCategory"><option value="">Select category</option><option>Breakfast</option><option>Mains</option><option>Soups</option><option>Salads</option><option>Baking</option><option>Desserts</option><option>Drinks</option><option>Other</option></select></div>
         <div class="form-group"><label>Difficulty</label><select id="fDiff"><option value="Easy">Easy</option><option value="Medium">Medium</option><option value="Hard">Hard</option></select></div>
       </div>
       <div class="form-row-3">
@@ -335,7 +332,7 @@ function showToast(msg) {
 }
 
 function diffIcon(d) { return d==='Easy'?'🟢':d==='Medium'?'🟡':'🔴'; }
-function getCatEmoji(c) { return {'Cakes':'🎂','Cupcakes':'🧁','Cookies':'🍪','Bread':'🍞','Breakfast':'🍳','Desserts':'🍮','Main dishes':'🍽️','Pasta':'🍝','Soups':'🍲','Salads':'🥗','Drinks':'🥤','Other':'✨'}[c]||'🍽️'; }
+function getCatEmoji(c) { return {'Breakfast':'🍳','Mains':'🍽️','Soups':'🍲','Salads':'🥗','Baking':'🍞','Desserts':'🍮','Drinks':'🥤','Other':'✨'}[c]||'🍽️'; }
 
 // AUTH
 document.getElementById('googleSignInBtn').addEventListener('click', () => {
