@@ -478,6 +478,51 @@ async function toggleFav(id) {
 }
 
 // DETAIL
+function scaleIngredientsHTML(r, displayServings) {
+  const origServings = parseInt(r.servings) || 1;
+  const factor = displayServings / origServings;
+  const scaled = (r.ingredients||[]).map(ing => {
+    const q = parseFloat(ing.qty);
+    let newQty = ing.qty;
+    if (!isNaN(q)) {
+      let scaledVal = Math.round(q * factor * 100) / 100;
+      newQty = Number.isInteger(scaledVal) ? scaledVal.toString() : scaledVal.toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
+    }
+    return {...ing, qty: newQty};
+  });
+  const cols = scaled.reduce((acc,ing,i)=>{
+    const t=`<div class="ingredient-item"><span class="ingredient-badge">${ing.qty||''}${ing.unit?' '+ing.unit:''}</span><span>${ing.name}</span></div>`;
+    acc[i%2===0?'left':'right'].push(t); return acc;
+  },{left:[],right:[]});
+  return {
+    html: `<div class="ingredients-grid"><div>${cols.left.join('')}</div><div>${cols.right.join('')}</div></div>`,
+    scaled
+  };
+}
+
+function renderNutritionHTML(recipeLike) {
+  const nutrition = estimateNutrition(recipeLike);
+  if (!nutrition) return '';
+  return `
+    <div class="section-heading">Nutrition (estimated, per serving)</div>
+    <div class="detail-meta-row" style="margin-bottom:8px">
+      <span class="detail-meta-item">🔥 ${nutrition.calories} kcal</span>
+      <span class="detail-meta-item">🥩 ${nutrition.protein}g protein</span>
+      <span class="detail-meta-item">🌾 ${nutrition.carbs}g carbs</span>
+      <span class="detail-meta-item">🧈 ${nutrition.fat}g fat</span>
+    </div>
+    ${nutrition.unmatched.length ? `<p style="font-size:12px;color:var(--text-light);margin-bottom:10px">Couldn't estimate: ${nutrition.unmatched.join(', ')}</p>` : ''}
+    <p style="font-size:12px;color:var(--text-light);font-style:italic;margin-bottom:24px">Estimate only, not medical or nutritional advice.</p>
+  `;
+}
+
+function updateServingsDisplay(r, newServings) {
+  document.getElementById('servValueDisplay').textContent = newServings;
+  const result = scaleIngredientsHTML(r, newServings);
+  document.getElementById('ingredientsGridWrap').innerHTML = result.html;
+  document.getElementById('nutritionWrap').innerHTML = renderNutritionHTML({ingredients: result.scaled, servings: newServings});
+}
+
 function openDetail(id) {
   const r = allRecipes.find(x=>x.id===id); if(!r) return;
   const total=(r.prepTime||0)+(r.cookTime||0);
@@ -490,7 +535,7 @@ function openDetail(id) {
         ${r.cookTime?`<span class="detail-meta-item">🔥 Cook: ${r.cookTime} min</span>`:''}
         ${total?`<span class="detail-meta-item">⏱ Total: ${total} min</span>`:''}
         <span class="detail-meta-item">${diffIcon(r.difficulty)} ${r.difficulty||'Easy'}</span>
-        ${r.servings?`<span class="detail-meta-item">🍽 Serves ${r.servings}</span>`:''}
+        ${r.servings?`<span class="detail-meta-item">🍽 <button id="servMinusBtn" style="border:none;background:transparent;color:inherit;cursor:pointer;font-weight:700;padding:0 6px;font-size:14px">−</button><span id="servValueDisplay">${r.servings}</span> servings<button id="servPlusBtn" style="border:none;background:transparent;color:inherit;cursor:pointer;font-weight:700;padding:0 6px;font-size:14px">+</button></span>`:''}
       </div>
       ${r.description?`<div class="detail-desc">${r.description}</div>`:''}
       <div class="detail-actions">
@@ -512,42 +557,41 @@ function openDetail(id) {
   document.getElementById('editDetailBtn').addEventListener('click', () => { closeDetail(); openEditRecipe(id); });
   document.getElementById('deleteDetailBtn').addEventListener('click', () => confirmDelete(id));
 
-  const ingCols=(r.ingredients||[]).reduce((acc,ing,i)=>{
-    const t=`<div class="ingredient-item"><span class="ingredient-badge">${ing.qty||''}${ing.unit?' '+ing.unit:''}</span><span>${ing.name}</span></div>`;
-    acc[i%2===0?'left':'right'].push(t); return acc;
-  },{left:[],right:[]});
   const stepsHTML=(r.steps||[]).map((s,i)=>`<div class="step-item"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></div>`).join('');
   const tagsHTML=r.tags&&r.tags.length?`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px">${r.tags.map(t=>`<span class="tag-chip">#${t}</span>`).join('')}</div>`:'';
-  const nutrition = estimateNutrition(r);
-  const nutritionHTML = nutrition ? `
-    <div class="section-heading">Nutrition (estimated, per serving)</div>
-    <div class="detail-meta-row" style="margin-bottom:8px">
-      <span class="detail-meta-item">🔥 ${nutrition.calories} kcal</span>
-      <span class="detail-meta-item">🥩 ${nutrition.protein}g protein</span>
-      <span class="detail-meta-item">🌾 ${nutrition.carbs}g carbs</span>
-      <span class="detail-meta-item">🧈 ${nutrition.fat}g fat</span>
-    </div>
-    ${nutrition.unmatched.length ? `<p style="font-size:12px;color:var(--text-light);margin-bottom:10px">Couldn't estimate: ${nutrition.unmatched.join(', ')}</p>` : ''}
-    <p style="font-size:12px;color:var(--text-light);font-style:italic;margin-bottom:24px">Estimate only, not medical or nutritional advice.</p>
-  ` : '';
+  const initialServings = parseInt(r.servings) || 1;
+  const initialIngredients = scaleIngredientsHTML(r, initialServings);
+  const initialNutrition = renderNutritionHTML(r);
 
   document.getElementById('detailBody').innerHTML=`
     <div class="section-heading">Ingredients</div>
-    <div class="ingredients-grid"><div>${ingCols.left.join('')}</div><div>${ingCols.right.join('')}</div></div>
+    <div id="ingredientsGridWrap">${initialIngredients.html}</div>
     <div class="section-heading">Steps</div>
     <div class="steps-list">${stepsHTML}</div>
     ${tagsHTML}
-    ${nutritionHTML}
+    <div id="nutritionWrap">${initialNutrition}</div>
     <div class="section-heading">My Notes</div>
     <div class="notes-box">
       <div class="notes-title">✍️ My Notes </div>
       ${r.notes?`<div class="notes-text">${r.notes}</div>`:`<div class="notes-empty">No notes yet!</div>`}
     </div>
     ${r.source?`<a href="${r.source}" target="_blank" rel="noopener" class="source-link">🔗 ${r.source}</a>`:''}`;
+
+  if (document.getElementById('servMinusBtn')) {
+    let detailServings = initialServings;
+    document.getElementById('servMinusBtn').addEventListener('click', () => {
+      detailServings = Math.max(1, detailServings - 1);
+      updateServingsDisplay(r, detailServings);
+    });
+    document.getElementById('servPlusBtn').addEventListener('click', () => {
+      detailServings = detailServings + 1;
+      updateServingsDisplay(r, detailServings);
+    });
+  }
+
   document.getElementById('detailOverlay').classList.remove('hidden');
   document.body.style.overflow='hidden';
 }
-
 function closeDetail() { document.getElementById('detailOverlay').classList.add('hidden'); document.body.style.overflow=''; }
 document.getElementById('closeDetailBtn').addEventListener('click', closeDetail);
 document.getElementById('detailOverlay').addEventListener('click', e => { if(e.target===document.getElementById('detailOverlay')) closeDetail(); });
