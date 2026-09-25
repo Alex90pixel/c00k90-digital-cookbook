@@ -203,6 +203,7 @@
       <button class="btn-new" id="newRecipeBtn">+ New Recipe</button>
       <img id="userAvatar" class="user-avatar hidden" src="" alt="user">
       <button class="btn-signout hidden" id="signOutBtn">Sign out</button>
+<button class="btn-signout hidden" id="deleteAccountBtn" style="margin-left:6px">Delete account</button>
     </div>
   </div>
 </header>
@@ -305,6 +306,13 @@
     <p>Are you sure you want to delete this recipe? This cannot be undone.</p>
     <div class="confirm-btns"><button class="btn-confirm-cancel" id="cancelDeleteBtn">Keep it</button><button class="btn-confirm-delete" id="confirmDeleteBtn">Delete</button></div>
   </div>
+</div><div class="modal-overlay hidden" id="deleteAccountOverlay">
+  <div class="confirm-dialog">
+    <div class="confirm-icon">⚠️</div>
+    <h3>Delete your account?</h3>
+    <p>This will permanently delete your account and all your recipes. This cannot be undone.</p>
+    <div class="confirm-btns"><button class="btn-confirm-cancel" id="cancelDeleteAccountBtn">Keep my account</button><button class="btn-confirm-delete" id="confirmDeleteAccountBtn">Delete everything</button></div>
+  </div>
 </div>
 
 <div class="toast hidden" id="toast"></div>
@@ -360,14 +368,16 @@ auth.onAuthStateChanged(async user => {
       document.getElementById('userAvatar').classList.remove('hidden');
     }
     document.getElementById('signOutBtn').classList.remove('hidden');
+document.getElementById('deleteAccountBtn').classList.remove('hidden');
     await loadRecipes();
-  } else {
-    currentUser = null;
-    allRecipes = [];
-    document.getElementById('authScreen').classList.remove('hidden');
-    document.getElementById('userAvatar').classList.add('hidden');
-    document.getElementById('signOutBtn').classList.add('hidden');
-  }
+} else {
+  currentUser = null;
+  allRecipes = [];
+  document.getElementById('authScreen').classList.remove('hidden');
+  document.getElementById('userAvatar').classList.add('hidden');
+  document.getElementById('signOutBtn').classList.add('hidden');
+  document.getElementById('deleteAccountBtn').classList.add('hidden');
+}
 });
 
 // FIRESTORE
@@ -726,7 +736,35 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', async () =
     closeDetail(); renderGrid();
     showToast('🗑️ Recipe deleted');
   } catch(e){showToast('⚠️ Error deleting recipe');}
+});document.getElementById('deleteAccountBtn').addEventListener('click', () => {
+  document.getElementById('deleteAccountOverlay').classList.remove('hidden');
 });
+document.getElementById('cancelDeleteAccountBtn').addEventListener('click', () => {
+  document.getElementById('deleteAccountOverlay').classList.add('hidden');
+});
+document.getElementById('confirmDeleteAccountBtn').addEventListener('click', async () => {
+  try {
+    const snap = await db.collection('recipes').where('userId','==',currentUser.uid).get();
+    const batch = db.batch();
+    snap.docs.forEach(doc => batch.delete(doc.ref));
+    await batch.commit();
+ 
+    const user = currentUser;
+    await user.delete();
+ 
+    document.getElementById('deleteAccountOverlay').classList.add('hidden');
+    showToast('Account deleted');
+  } catch (e) {
+    console.error('Error deleting account:', e);
+    if (e.code === 'auth/requires-recent-login') {
+      showToast('⚠️ Please sign out and sign in again, then retry deleting your account');
+    } else {
+      showToast('⚠️ Error deleting account: ' + e.message);
+    }
+    document.getElementById('deleteAccountOverlay').classList.add('hidden');
+  }
+});
+ 
 </script>
 </body>
 <script>
