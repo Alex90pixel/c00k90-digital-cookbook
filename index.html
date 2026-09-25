@@ -315,8 +315,38 @@
     <div class="confirm-btns"><button class="btn-confirm-cancel" id="cancelDeleteAccountBtn">Keep my account</button><button class="btn-confirm-delete" id="confirmDeleteAccountBtn">Delete everything</button></div>
   </div>
 </div>
+<div class="modal-overlay hidden" id="legalOverlay">
+  <div class="form-modal" style="max-width:600px">
+    <div class="form-header"><div class="form-title">Privacy &amp; Terms</div><button class="detail-close" id="closeLegalBtn">✕</button></div>
+    <div class="form-body" style="font-size:14px;line-height:1.7;color:var(--text-mid)">
+
+      <h3 style="color:var(--magenta-deep);margin-bottom:10px">Privacy Policy</h3>
+      <p style="margin-bottom:14px"><strong>What we collect:</strong> when you sign in with Google, we receive your display name, email address, and profile picture (if any). We also store what you enter directly in the app: recipes, ingredients, notes, photos you upload, categories, and tags.</p>
+      <p style="margin-bottom:14px"><strong>What we don't collect:</strong> we never request or access your Google Drive, Contacts, Calendar, or anything beyond the above.</p>
+      <p style="margin-bottom:14px"><strong>How we use your data:</strong> to display and sync your recipes across your devices. We never sell or rent your data, and we don't use it for advertising.</p>
+      <p style="margin-bottom:14px"><strong>Where it's stored:</strong> on Firebase (Google Cloud), which acts as our data processor under its own security measures.</p>
+      <p style="margin-bottom:14px"><strong>Imported recipes:</strong> if you import a recipe from a link (YouTube, TikTok, etc.), we only save the link, title, category, and your own note — never the creator's full content. The source stays visible and credited.</p>
+      <p style="margin-bottom:14px"><strong>Your rights:</strong> you can permanently delete your account and all your data anytime using the "Delete account" button in the app header. You can also revoke the app's access from your Google account settings.</p>
+      <p style="margin-bottom:14px"><strong>Minimum age:</strong> this app is intended for users 18 and older.</p>
+
+      <h3 style="color:var(--magenta-deep);margin:24px 0 10px">Terms of Use</h3>
+      <p style="margin-bottom:14px">C00K90 — Digital Cook Book is a personal project, offered free of charge, with no guarantee of continuous availability, accuracy, or error-free operation. It may be changed, interrupted, or discontinued at any time.</p>
+      <p style="margin-bottom:14px">You're solely responsible for the recipes, notes, and photos you upload. Don't post content that infringes on someone else's copyright.</p>
+      <p style="margin-bottom:14px">To the fullest extent permitted by law, the developer isn't responsible for errors in recipes or nutrition values, allergic reactions or health issues from preparing or consuming a recipe, or account security issues arising from a compromised Google account.</p>
+
+      <h3 style="color:var(--magenta-deep);margin:24px 0 10px">Nutrition Disclaimer</h3>
+      <p style="margin-bottom:4px">Nutrition values (calories, protein, etc.) are <strong>automatic estimates</strong> and may contain errors. They are not medical or professional nutritional advice. If you have allergies or medical conditions, always double-check the original ingredients.</p>
+
+    </div>
+  </div>
+</div>
+
+<footer style="max-width:1200px;margin:40px auto 24px;padding:0 24px;text-align:center">
+  <button id="openLegalBtn" style="background:none;border:none;color:var(--text-light);font-size:12px;cursor:pointer;text-decoration:underline">Privacy Policy &amp; Terms</button>
+</footer>
 
 <div class="toast hidden" id="toast"></div>
+
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -342,6 +372,12 @@ let currentCategory = 'all';
 let currentTags = [];
 let editingRecipeId = null;
 let deleteTargetId = null;
+document.getElementById('openLegalBtn').addEventListener('click', () => {
+  document.getElementById('legalOverlay').classList.remove('hidden');
+});
+document.getElementById('closeLegalBtn').addEventListener('click', () => {
+  document.getElementById('legalOverlay').classList.add('hidden');
+});
 
 function showToast(msg) {
   const t = document.getElementById('toast');
