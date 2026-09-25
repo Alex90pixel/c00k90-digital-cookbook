@@ -406,7 +406,7 @@ auth.onAuthStateChanged(async user => {
       document.getElementById('userAvatar').classList.remove('hidden');
     }
     document.getElementById('signOutBtn').classList.remove('hidden');
-document.getElementById('deleteAccountBtn').classList.remove('hidden');
+document.getElementById('deleteAccountBtn').classList.remove('hidden');document.getElementById('exportDataBtn').classList.remove('hidden');
     await loadRecipes();
 } else {
   currentUser = null;
@@ -414,7 +414,7 @@ document.getElementById('deleteAccountBtn').classList.remove('hidden');
   document.getElementById('authScreen').classList.remove('hidden');
   document.getElementById('userAvatar').classList.add('hidden');
   document.getElementById('signOutBtn').classList.add('hidden');
-  document.getElementById('deleteAccountBtn').classList.add('hidden');
+  document.getElementById('deleteAccountBtn').classList.add('hidden');document.getElementById('exportDataBtn').classList.add('hidden');
 }
 });
 
