@@ -666,7 +666,9 @@ function openDetail(id) {
       <div class="notes-title">✍️ My Notes </div>
       ${r.notes?`<div class="notes-text">${r.notes}</div>`:`<div class="notes-empty">No notes yet!</div>`}
     </div>
-    ${r.source?`<a href="${r.source}" target="_blank" rel="noopener" class="source-link">🔗 ${r.source}</a>`:''}`;
+     ${r.source ? (/^https?:\/\//i.test(r.source)
+      ? `<a href="${escHtml(r.source)}" target="_blank" rel="noopener" class="source-link">🔗 ${escHtml(r.source)}</a>`
+      : `<div class="source-link">📖 Source: ${escHtml(r.source)}</div>`) : ''}`;
 
   if (document.getElementById('servMinusBtn')) {
     let detailServings = initialServings;
@@ -1198,6 +1200,9 @@ document.getElementById('newRecipeBtn').addEventListener('click', () => {
 });
 
 updateImportBtn();
+function escHtml(str) {
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
 </script>
 </body>
 </html>
