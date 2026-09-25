@@ -205,6 +205,7 @@
       <img id="userAvatar" class="user-avatar hidden" src="" alt="user">
       <button class="btn-signout hidden" id="signOutBtn">Sign out</button>
 <button class="btn-signout hidden" id="deleteAccountBtn" style="margin-left:6px">Delete account</button>
+<button class="btn-signout hidden" id="exportDataBtn" style="margin-left:6px">Export my data</button>
     </div>
   </div>
 </header>
@@ -789,6 +790,32 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', async () =
     closeDetail(); renderGrid();
     showToast('🗑️ Recipe deleted');
   } catch(e){showToast('⚠️ Error deleting recipe');}
+});document.getElementById('exportDataBtn').addEventListener('click', async () => {
+  try {
+    const snap = await db.collection('recipes').where('userId','==',currentUser.uid).get();
+    const recipes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+ 
+    const exportData = {
+      exportedAt: new Date().toISOString(),
+      user: { name: currentUser.displayName, email: currentUser.email },
+      recipes: recipes
+    };
+ 
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'c00k90-my-data.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+ 
+    showToast('📦 Data exported successfully!');
+  } catch (e) {
+    console.error('Export error:', e);
+    showToast('⚠️ Error exporting data');
+  }
 });document.getElementById('deleteAccountBtn').addEventListener('click', () => {
   document.getElementById('deleteAccountOverlay').classList.remove('hidden');
 });
