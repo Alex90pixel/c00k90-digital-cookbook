@@ -462,7 +462,7 @@ function getFiltered() {
   const q = document.getElementById('searchInput').value.toLowerCase().trim();
   if (currentView === 'favorites') r = r.filter(x => x.favorite);
   if (currentCategory !== 'all') r = r.filter(x => x.category === currentCategory);
-  if (q) r = r.filter(x => {
+  if (q) r = r.filter(x => {z
     const ing = (x.ingredients||[]).map(i=>i.name+' '+i.qty+' '+i.unit).join(' ').toLowerCase();
     const tags = (x.tags||[]).join(' ').toLowerCase();
     return x.name.toLowerCase().includes(q)||(x.description||'').toLowerCase().includes(q)||ing.includes(q)||tags.includes(q)||x.category.toLowerCase().includes(q);
@@ -486,18 +486,18 @@ function renderGrid() {
 grid.innerHTML = recipes.map(r => {
     const total = (r.prepTime||0)+(r.cookTime||0);
     const showHeart = currentView !== 'inspired';
-    return `<div class="recipe-card" data-id="${r.id}">
+    return `<div class="recipe-card" data-id="${escHtml(r.id)}">
       <div class="relative">
-        ${r.imageData?`<img src="${r.imageData}" alt="${r.name}" style="width:100%;height:190px;object-fit:cover;">`:`<div class="card-image-placeholder">${r.imageEmoji||'🍽️'}</div>`}
-        ${showHeart?`<button class="heart-btn ${r.favorite?'fav':''}" data-fav="${r.id}">${r.favorite?'❤️':'🤍'}</button>`:''}
+        ${r.imageData?`<img src="${escHtml(r.imageData)}" alt="${escHtml(r.name)}" style="width:100%;height:190px;object-fit:cover;">`:`<div class="card-image-placeholder">${escHtml(r.imageEmoji||'🍽️')}</div>`}
+        ${showHeart?`<button class="heart-btn ${r.favorite?'fav':''}" data-fav="${escHtml(r.id)}">${r.favorite?'❤️':'🤍'}</button>`:''}
       </div>
       <div class="card-body">
-        <div class="card-category">${r.category}</div>
-        <div class="card-title">${r.name}</div>
-        <div class="card-desc">${r.description||'A delicious recipe waiting to be explored.'}</div>
+        <div class="card-category">${escHtml(r.category)}</div>
+        <div class="card-title">${escHtml(r.name)}</div>
+        <div class="card-desc">${escHtml(r.description||'A delicious recipe waiting to be explored.')}</div>
         <div class="card-meta">
-          ${total?`<span class="meta-pill">⏱ ${total} min</span>`:''}
-          <span class="meta-pill">${diffIcon(r.difficulty)} ${r.difficulty||'Easy'}</span>
+          ${total?`<span class="meta-pill">⏱ ${escHtml(total)} min</span>`:''}
+          <span class="meta-pill">${diffIcon(r.difficulty)} ${escHtml(r.difficulty||'Easy')}</span>
         </div>
       </div>
     </div>`;
