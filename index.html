@@ -178,6 +178,26 @@
     .nav-btn{padding:6px 12px;font-size:12px;}
     .btn-new{padding:8px 14px;font-size:12px;}
   }
+.account-menu { position: relative; }
+#userAvatar { cursor: pointer; }
+.account-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  min-width: 180px;
+  background: #0f1f1a;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  z-index: 100;
+}
+.account-dropdown.open { display: flex; }
+.account-dropdown button { width: 100%; text-align: left; }
+.dropdown-divider { border: none; border-top: 1px solid rgba(255,255,255,0.12); margin: 4px 0; }
+#deleteAccountBtn { color: #e57373; border-color: rgba(229,115,115,0.4); }
 </style>
 </head>
 <body>
@@ -202,10 +222,15 @@
       <button class="nav-btn" id="navFav">♡ Favorites</button>
       <button class="nav-btn" id="navInspired">✨ Get Inspired</button>
       <button class="btn-new" id="newRecipeBtn">+ New Recipe</button>
-      <img id="userAvatar" class="user-avatar hidden" src="" alt="user">
-      <button class="btn-signout hidden" id="signOutBtn">Sign out</button>
-<button class="btn-signout hidden" id="deleteAccountBtn" style="margin-left:6px">Delete account</button>
-<button class="btn-signout hidden" id="exportDataBtn" style="margin-left:6px">Export my data</button>
+      <div class="account-menu">
+        <img id="userAvatar" class="user-avatar hidden" src="" alt="user">
+        <div class="account-dropdown" id="accountDropdown">
+          <button class="btn-signout hidden" id="exportDataBtn">Export my data</button>
+          <button class="btn-signout hidden" id="signOutBtn">Sign out</button>
+          <hr class="dropdown-divider">
+          <button class="btn-signout hidden" id="deleteAccountBtn">Delete account</button>
+        </div>
+      </div>
     </div>
   </div>
 </header>
@@ -1141,6 +1166,13 @@ async function loadInspiredRecipes() {
     inspiredRecipes.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
   } catch(e) { showToast('⚠️ Error loading inspired recipes'); }
 }
+document.getElementById('userAvatar').addEventListener('click', (e) => {
+  e.stopPropagation();
+  document.getElementById('accountDropdown').classList.toggle('open');
+});
+document.addEventListener('click', () => {
+  document.getElementById('accountDropdown').classList.remove('open');
+});
 </script>
 </html>
 
