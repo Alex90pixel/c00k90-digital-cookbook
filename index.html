@@ -567,7 +567,7 @@ function scaleIngredientsHTML(r, displayServings) {
     return {...ing, qty: newQty};
   });
   const cols = scaled.reduce((acc,ing,i)=>{
-    const t=`<div class="ingredient-item"><span class="ingredient-badge">${ing.qty||''}${ing.unit?' '+ing.unit:''}</span><span>${ing.name}</span></div>`;
+    const t=`<div class="ingredient-item"><span class="ingredient-badge">${escHtml(ing.qty||'')}${ing.unit?' '+escHtml(ing.unit):''}</span><span>${escHtml(ing.name)}</span></div>`;
     acc[i%2===0?'left':'right'].push(t); return acc;
   },{left:[],right:[]});
   return {
@@ -587,7 +587,7 @@ function renderNutritionHTML(recipeLike) {
       <span class="detail-meta-item">🌾 ${nutrition.carbs}g carbs</span>
       <span class="detail-meta-item">🧈 ${nutrition.fat}g fat</span>
     </div>
-    ${nutrition.unmatched.length ? `<p style="font-size:12px;color:var(--text-light);margin-bottom:10px">Couldn't estimate: ${nutrition.unmatched.join(', ')}</p>` : ''}
+     ${nutrition.unmatched.length ? `<p style="font-size:12px;color:var(--text-light);margin-bottom:10px">Couldn't estimate: ${nutrition.unmatched.map(escHtml).join(', ')}</p>` : ''}
     <p style="font-size:12px;color:var(--text-light);font-style:italic;margin-bottom:24px">Estimate only, not medical or nutritional advice.</p>
   `;
 }
@@ -604,20 +604,20 @@ function openDetail(id) {
   const total=(r.prepTime||0)+(r.cookTime||0);
   document.getElementById('detailHero').innerHTML=`
     <div class="detail-hero-text">
-      <div class="detail-category">${r.category}</div>
-      <div class="detail-title">${r.name}</div>
+      <div class="detail-category">${escHtml(r.category)}</div>
+      <div class="detail-title">${escHtml(r.name)}</div>
       <div class="detail-meta-row">
-        ${r.prepTime?`<span class="detail-meta-item">🥄 Prep: ${r.prepTime} min</span>`:''}
-        ${r.cookTime?`<span class="detail-meta-item">🔥 Cook: ${r.cookTime} min</span>`:''}
-        ${total?`<span class="detail-meta-item">⏱ Total: ${total} min</span>`:''}
-        <span class="detail-meta-item">${diffIcon(r.difficulty)} ${r.difficulty||'Easy'}</span>
-        ${r.servings?`<span class="detail-meta-item">🍽 <button id="servMinusBtn" style="border:none;background:transparent;color:inherit;cursor:pointer;font-weight:700;padding:0 6px;font-size:14px">−</button><span id="servValueDisplay">${r.servings}</span> servings<button id="servPlusBtn" style="border:none;background:transparent;color:inherit;cursor:pointer;font-weight:700;padding:0 6px;font-size:14px">+</button></span>`:''}
+        ${r.prepTime?`<span class="detail-meta-item">🥄 Prep: ${escHtml(r.prepTime)} min</span>`:''}
+        ${r.cookTime?`<span class="detail-meta-item">🔥 Cook: ${escHtml(r.cookTime)} min</span>`:''}
+        ${total?`<span class="detail-meta-item">⏱ Total: ${escHtml(total)} min</span>`:''}
+        <span class="detail-meta-item">${diffIcon(r.difficulty)} ${escHtml(r.difficulty||'Easy')}</span>
+        ${r.servings?`<span class="detail-meta-item">🍽 <button id="servMinusBtn" style="border:none;background:transparent;color:inherit;cursor:pointer;font-weight:700;padding:0 6px;font-size:14px">−</button><span id="servValueDisplay">${escHtml(r.servings)}</span> servings<button id="servPlusBtn" style="border:none;background:transparent;color:inherit;cursor:pointer;font-weight:700;padding:0 6px;font-size:14px">+</button></span>`:''}
       </div>
-      ${r.description?`<div class="detail-desc">${r.description}</div>`:''}
+      ${r.description?`<div class="detail-desc">${escHtml(r.description)}</div>`:''}
       <div class="detail-actions" id="detailActions"></div>
     </div>
     <div class="detail-image-wrap">
-      ${r.imageData?`<img src="${r.imageData}" alt="${r.name}">`:`<span style="font-size:56px">${r.imageEmoji||'🍽️'}</span>`}
+      ${r.imageData?`<img src="${escHtml(r.imageData)}" alt="${escHtml(r.name)}">`:`<span style="font-size:56px">${escHtml(r.imageEmoji||'🍽️')}</span>`}
     </div>`;
 
   const isOwner = r.userId === currentUser.uid;
@@ -648,8 +648,8 @@ function openDetail(id) {
     actionsEl.innerHTML = `<p style="font-size:13px;color:var(--text-light);font-style:italic">Shared by another cook, for inspiration</p>`;
   }
 
-  const stepsHTML=(r.steps||[]).map((s,i)=>`<div class="step-item"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></div>`).join('');
-  const tagsHTML=r.tags&&r.tags.length?`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px">${r.tags.map(t=>`<span class="tag-chip">#${t}</span>`).join('')}</div>`:'';
+  const stepsHTML=(r.steps||[]).map((s,i)=>`<div class="step-item"><div class="step-num">${i+1}</div><div class="step-text">${escHtml(s)}</div></div>`).join('');
+  const tagsHTML=r.tags&&r.tags.length?`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px">${r.tags.map(t=>`<span class="tag-chip">#${escHtml(t)}</span>`).join('')}</div>`:'';
   const initialServings = parseInt(r.servings) || 1;
   const initialIngredients = scaleIngredientsHTML(r, initialServings);
   const initialNutrition = renderNutritionHTML(r);
@@ -664,7 +664,7 @@ function openDetail(id) {
     <div class="section-heading">My Notes</div>
     <div class="notes-box">
       <div class="notes-title">✍️ My Notes </div>
-      ${r.notes?`<div class="notes-text">${r.notes}</div>`:`<div class="notes-empty">No notes yet!</div>`}
+      ${r.notes?`<div class="notes-text">${escHtml(r.notes)}</div>`:`<div class="notes-empty">No notes yet!</div>`}
     </div>
      ${r.source ? (/^https?:\/\//i.test(r.source)
       ? `<a href="${escHtml(r.source)}" target="_blank" rel="noopener" class="source-link">🔗 ${escHtml(r.source)}</a>`
