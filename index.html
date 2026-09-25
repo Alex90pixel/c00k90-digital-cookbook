@@ -200,6 +200,7 @@
     <div class="header-nav">
       <button class="nav-btn active" id="navHome">Home</button>
       <button class="nav-btn" id="navFav">♡ Favorites</button>
+      <button class="nav-btn" id="navInspired">✨ Get Inspired</button>
       <button class="btn-new" id="newRecipeBtn">+ New Recipe</button>
       <img id="userAvatar" class="user-avatar hidden" src="" alt="user">
       <button class="btn-signout hidden" id="signOutBtn">Sign out</button>
@@ -394,7 +395,7 @@ async function loadRecipes() {
 
 // RENDER
 function getFiltered() {
-  let r = [...allRecipes];
+  let r = currentView === 'inspired' ? [...inspiredRecipes] : [...allRecipes];
   const q = document.getElementById('searchInput').value.toLowerCase().trim();
   if (currentView === 'favorites') r = r.filter(x => x.favorite);
   if (currentCategory !== 'all') r = r.filter(x => x.category === currentCategory);
@@ -419,12 +420,13 @@ function renderGrid() {
     grid.innerHTML = `<div class="empty-state"><div class="empty-icon">${q?'🔍':'🍽️'}</div><h3>${q?'No recipes found.':(currentView==='favorites'?'No favorites yet.':'Your cookbook is empty!')}</h3><p>${q?'Try another ingredient or recipe name.':(currentView==='favorites'?'Click the ♡ on a recipe to save it here.':'Click "+ New Recipe" to add your first recipe!')}</p></div>`;
     return;
   }
-  grid.innerHTML = recipes.map(r => {
+grid.innerHTML = recipes.map(r => {
     const total = (r.prepTime||0)+(r.cookTime||0);
+    const showHeart = currentView !== 'inspired';
     return `<div class="recipe-card" data-id="${r.id}">
       <div class="relative">
         ${r.imageData?`<img src="${r.imageData}" alt="${r.name}" style="width:100%;height:190px;object-fit:cover;">`:`<div class="card-image-placeholder">${r.imageEmoji||'🍽️'}</div>`}
-        <button class="heart-btn ${r.favorite?'fav':''}" data-fav="${r.id}">${r.favorite?'❤️':'🤍'}</button>
+        ${showHeart?`<button class="heart-btn ${r.favorite?'fav':''}" data-fav="${r.id}">${r.favorite?'❤️':'🤍'}</button>`:''}
       </div>
       <div class="card-body">
         <div class="card-category">${r.category}</div>
@@ -535,7 +537,7 @@ function updateServingsDisplay(r, newServings) {
 }
 
 function openDetail(id) {
-  const r = allRecipes.find(x=>x.id===id); if(!r) return;
+  const r = allRecipes.find(x=>x.id===id) || inspiredRecipes.find(x=>x.id===id); if(!r) return;
   const total=(r.prepTime||0)+(r.cookTime||0);
   document.getElementById('detailHero').innerHTML=`
     <div class="detail-hero-text">
@@ -549,24 +551,39 @@ function openDetail(id) {
         ${r.servings?`<span class="detail-meta-item">🍽 <button id="servMinusBtn" style="border:none;background:transparent;color:inherit;cursor:pointer;font-weight:700;padding:0 6px;font-size:14px">−</button><span id="servValueDisplay">${r.servings}</span> servings<button id="servPlusBtn" style="border:none;background:transparent;color:inherit;cursor:pointer;font-weight:700;padding:0 6px;font-size:14px">+</button></span>`:''}
       </div>
       ${r.description?`<div class="detail-desc">${r.description}</div>`:''}
-      <div class="detail-actions">
-        <button class="btn-action primary" id="favDetailBtn">${r.favorite?'❤️ Favorited':'♡ Favorite'}</button>
-        <button class="btn-action" id="editDetailBtn">✏️ Edit</button>
-        <button class="btn-action danger" id="deleteDetailBtn">🗑 Delete</button>
-      </div>
+      <div class="detail-actions" id="detailActions"></div>
     </div>
     <div class="detail-image-wrap">
       ${r.imageData?`<img src="${r.imageData}" alt="${r.name}">`:`<span style="font-size:56px">${r.imageEmoji||'🍽️'}</span>`}
     </div>`;
 
-  document.getElementById('favDetailBtn').addEventListener('click', async () => {
-    r.favorite=!r.favorite;
-    await db.collection('recipes').doc(id).update({favorite:r.favorite});
-    document.getElementById('favDetailBtn').textContent=r.favorite?'❤️ Favorited':'♡ Favorite';
-    renderGrid(); showToast(r.favorite?'❤️ Added to favorites!':'🤍 Removed from favorites');
-  });
-  document.getElementById('editDetailBtn').addEventListener('click', () => { closeDetail(); openEditRecipe(id); });
-  document.getElementById('deleteDetailBtn').addEventListener('click', () => confirmDelete(id));
+  const isOwner = r.userId === currentUser.uid;
+  const actionsEl = document.getElementById('detailActions');
+ 
+  if (isOwner) {
+    actionsEl.innerHTML = `
+      <button class="btn-action primary" id="favDetailBtn">${r.favorite?'❤️ Favorited':'♡ Favorite'}</button>
+      <button class="btn-action" id="editDetailBtn">✏️ Edit</button>
+      <button class="btn-action danger" id="deleteDetailBtn">🗑 Delete</button>
+      <button class="btn-action" id="shareDetailBtn">${r.shared?'✨ Shared to Get Inspired':'✨ Share to Get Inspired'}</button>
+    `;
+    document.getElementById('favDetailBtn').addEventListener('click', async () => {
+      r.favorite=!r.favorite;
+      await db.collection('recipes').doc(id).update({favorite:r.favorite});
+      document.getElementById('favDetailBtn').textContent=r.favorite?'❤️ Favorited':'♡ Favorite';
+      renderGrid(); showToast(r.favorite?'❤️ Added to favorites!':'🤍 Removed from favorites');
+    });
+    document.getElementById('editDetailBtn').addEventListener('click', () => { closeDetail(); openEditRecipe(id); });
+    document.getElementById('deleteDetailBtn').addEventListener('click', () => confirmDelete(id));
+    document.getElementById('shareDetailBtn').addEventListener('click', async () => {
+      r.shared=!r.shared;
+      await db.collection('recipes').doc(id).update({shared:r.shared});
+      document.getElementById('shareDetailBtn').textContent=r.shared?'✨ Shared to Get Inspired':'✨ Share to Get Inspired';
+      showToast(r.shared?'✨ Shared to Get Inspired!':'Removed from Get Inspired');
+    });
+  } else {
+    actionsEl.innerHTML = `<p style="font-size:13px;color:var(--text-light);font-style:italic">Shared by another cook, for inspiration</p>`;
+  }
 
   const stepsHTML=(r.steps||[]).map((s,i)=>`<div class="step-item"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></div>`).join('');
   const tagsHTML=r.tags&&r.tags.length?`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px">${r.tags.map(t=>`<span class="tag-chip">#${t}</span>`).join('')}</div>`:'';
@@ -1038,6 +1055,28 @@ function setDiffButton(value) {
 
   document.getElementById("timeEstimateHint").textContent =
     `Estimated: ${lowTime}-${highTime} min total` + (totalGrams > 0 ? `, ~${estimatedServings} servings` : "");
+}// GET INSPIRED
+let inspiredRecipes = [];
+ 
+document.getElementById('navInspired').addEventListener('click', async () => {
+  currentView='inspired'; currentCategory='all';
+  document.getElementById('searchInput').value='';
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  document.querySelector('.filter-chip[data-cat="all"]').classList.add('active');
+  document.getElementById('navHome').classList.remove('active');
+  document.getElementById('navFav').classList.remove('active');
+  document.getElementById('navInspired').classList.add('active');
+  await loadInspiredRecipes();
+  renderGrid();
+});
+ 
+async function loadInspiredRecipes() {
+  document.getElementById('recipeGrid').innerHTML = '<div class="loading-state"><div class="spinner"></div><p style="color:var(--text-light)">Loading inspiration…</p></div>';
+  try {
+    const snap = await db.collection('recipes').where('shared','==',true).get();
+    inspiredRecipes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    inspiredRecipes.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+  } catch(e) { showToast('⚠️ Error loading inspired recipes'); }
 }
 </script>
 </html>
