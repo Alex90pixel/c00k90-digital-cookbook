@@ -313,11 +313,12 @@
       </div>
       <div class="form-group"><label>Tags (press Enter)</label><div class="tags-input-wrap" id="tagsWrap"><input type="text" id="tagInput" placeholder="e.g. chocolate, summer…"></div></div>
       <div class="form-group">
-        <label>Source / URL</label>
+<label>Source</label>
         <div style="display:flex;gap:8px">
-          <input type="text" id="fSource" placeholder="https://…" style="flex:1">
+          <input type="text" id="fSource" placeholder="Paste a link, or type a source (e.g. Grandma's recipe)" style="flex:1">
           <button type="button" id="importBtn" class="btn-add-row">Import</button>
         </div>
+        <button type="button" id="ownRecipeBtn" class="btn-add-row" style="margin-top:8px;align-self:flex-start">✏️ My own recipe</button>
         <div id="importStatus" style="font-size:12px;color:var(--text-mid);margin-top:4px"></div>
       </div>
       <div class="form-group"><label>My Notes</label><textarea id="fNotes" rows="3" placeholder="Personal tips, substitutions…"></textarea></div>
@@ -1172,7 +1173,31 @@ document.getElementById('userAvatar').addEventListener('click', (e) => {
 });
 document.addEventListener('click', () => {
   document.getElementById('accountDropdown').classList.remove('open');
-});
-</script>
-</html>
+  });
+const fSourceInput = document.getElementById('fSource');
+const importBtnEl = document.getElementById('importBtn');
 
+function updateImportBtn() {
+  const isLink = /^https?:\/\//i.test(fSourceInput.value.trim());
+  importBtnEl.disabled = !isLink;
+  importBtnEl.style.opacity = isLink ? '1' : '0.4';
+  importBtnEl.style.cursor = isLink ? 'pointer' : 'not-allowed';
+}
+
+fSourceInput.addEventListener('input', updateImportBtn);
+fSourceInput.addEventListener('focus', updateImportBtn);
+
+document.getElementById('ownRecipeBtn').addEventListener('click', () => {
+  fSourceInput.value = 'My own recipe';
+  document.getElementById('importStatus').textContent = '';
+  updateImportBtn();
+});
+
+document.getElementById('newRecipeBtn').addEventListener('click', () => {
+  setTimeout(updateImportBtn, 0);
+});
+
+updateImportBtn();
+</script>
+</body>
+</html>
