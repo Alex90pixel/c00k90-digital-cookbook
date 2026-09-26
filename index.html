@@ -274,6 +274,7 @@ button,input,textarea,select{font-family:inherit!important;}
       <div class="account-menu">
         <img id="userAvatar" class="user-avatar hidden" src="" alt="user">
         <div class="account-dropdown" id="accountDropdown">
+          <button class="btn-signout" id="migrateCatBtn">🏷️ Update old categories</button>
           <button class="btn-signout hidden" id="exportDataBtn">Export my data</button>
           <button class="btn-signout hidden" id="signOutBtn">Sign out</button>
           <hr class="dropdown-divider">
@@ -1315,6 +1316,28 @@ function escHtml(str) {
 }
 
 function safeImg(src) {
+  const CATEGORY_MAP = {
+  'main dishes': 'Mains', 'main dish': 'Mains', 'pasta': 'Mains',
+  'cakes': 'Desserts', 'cupcakes': 'Desserts', 'cookies': 'Desserts',
+  'bread': 'Baking'
+};
+
+document.getElementById('migrateCatBtn').addEventListener('click', async () => {
+  const todo = allRecipes.filter(r => CATEGORY_MAP[(r.category || '').trim().toLowerCase()]);
+  if (!todo.length) { showToast('✅ Nothing to update'); return; }
+  if (!confirm(`Update categories for ${todo.length} recipes?`)) return;
+  let done = 0, failed = 0;
+  for (const r of todo) {
+    const newCat = CATEGORY_MAP[r.category.trim().toLowerCase()];
+    try {
+      await db.collection('recipes').doc(r.id).update({ category: newCat, imageEmoji: getCatEmoji(newCat) });
+      r.category = newCat; r.imageEmoji = getCatEmoji(newCat);
+      done++;
+    } catch (e) { failed++; console.error('Category update failed for', r.id, e); }
+  }
+  renderGrid();
+  showToast(`✅ Updated ${done}${failed ? `, ${failed} failed` : ''}`);
+});
   if (typeof src !== 'string' || src.includes('"')) return '';
   if (src.startsWith('data:image/') || src.startsWith('https://firebasestorage.googleapis.com/')) return src;
   return '';
