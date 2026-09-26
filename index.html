@@ -226,6 +226,17 @@ button,input,textarea,select{font-family:inherit!important;}
 .card-title{color:var(--magenta-deep);}
 .filter-chip{background:transparent;}
 .filter-chip:hover{color:var(--teal-deep);}
+/* ===== Galerie poze ===== */
+.form-images{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;}
+.form-image-thumb{position:relative;width:96px;height:96px;border-radius:12px;overflow:hidden;border:1px solid var(--border);}
+.form-image-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.cover-badge{position:absolute;left:6px;bottom:6px;font-size:10px;font-weight:700;padding:2px 6px;border-radius:6px;background:rgba(8,23,22,0.75);color:var(--teal-deep);}
+.thumb-remove{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;border:none;background:rgba(8,23,22,0.75);color:#fff;font-size:12px;cursor:pointer;}
+.detail-gallery{flex-shrink:0;display:flex;flex-direction:column;gap:8px;}
+.detail-thumbs{display:flex;gap:8px;}
+.detail-thumb{width:68px;height:52px;object-fit:cover;border-radius:10px;border:2px solid transparent;cursor:pointer;opacity:.7;transition:all .2s;}
+.detail-thumb.active,.detail-thumb:hover{border-color:var(--teal);opacity:1;}
+@media(max-width:768px){.detail-gallery{width:100%;}}
 </style>
 </head>
 <body>
@@ -328,9 +339,10 @@ button,input,textarea,select{font-family:inherit!important;}
   <div class="upload-icon" id="uploadIcon">📷</div>
   <p id="uploadText">Click to upload a photo</p>
   <img id="fImagePreview" class="image-preview hidden" src="" alt="preview">
+   <div id="fImagesPreview" class="form-images"></div>
   <div id="sourceBadge" class="hidden" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:12px;color:white"></div>
 </div>
-        <input type="file" id="fImageFile" accept="image/*" class="hidden">
+        <input type="file" id="fImageFile" accept="image/*" class="hidden" multiple>
         <input type="hidden" id="fImageData">
       </div>
       <div class="form-group">
@@ -656,6 +668,7 @@ function openDetail(id) {
   const r = allRecipes.find(x=>x.id===id) || inspiredRecipes.find(x=>x.id===id); if(!r) return;
   const total=(r.prepTime||0)+(r.cookTime||0);
   document.getElementById('detailHero').innerHTML=`
+    const imgs=getImages(r);
     <div class="detail-hero-text">
       <div class="detail-category">${escHtml(r.category)}</div>
       <div class="detail-title">${escHtml(r.name)}</div>
@@ -669,10 +682,17 @@ function openDetail(id) {
       ${r.description?`<div class="detail-desc">${escHtml(r.description)}</div>`:''}
       <div class="detail-actions" id="detailActions"></div>
     </div>
-    <div class="detail-image-wrap">
-      ${(r.imageUrl||r.imageData)?`<img src="${safeImg(r.imageUrl||r.imageData)}" alt="${escHtml(r.name)}">`:`<span style="font-size:56px">${escHtml(r.imageEmoji||'🍽️')}</span>`}
+ <div class="detail-gallery">
+      <div class="detail-image-wrap">
+        ${imgs.length?`<img id="detailMainImg" src="${safeImg(imgs[0].url)}" alt="${escHtml(r.name)}">`:`<span style="font-size:56px">${escHtml(r.imageEmoji||'🍽️')}</span>`}
+      </div>
+      ${imgs.length>1?`<div class="detail-thumbs">${imgs.map((im,i)=>`<img class="detail-thumb${i===0?' active':''}" src="${safeImg(im.url)}" alt="">`).join('')}</div>`:''}
     </div>`;
-
+  document.querySelectorAll('.detail-thumb').forEach(t=>t.addEventListener('click',()=>{
+    document.getElementById('detailMainImg').src=t.src;
+    document.querySelectorAll('.detail-thumb').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+  }));
   const isOwner = r.userId === currentUser.uid;
   const actionsEl = document.getElementById('detailActions');
  
@@ -748,17 +768,36 @@ document.getElementById('closeFormBtn').addEventListener('click', closeForm);
 document.getElementById('cancelFormBtn').addEventListener('click', closeForm);
 document.getElementById('saveRecipeBtn').addEventListener('click', saveRecipe);
 document.getElementById('imageUploadArea').addEventListener('click', () => document.getElementById('fImageFile').click());
-let pendingImageBlob = null;
+let formImages = [];
+
+function renderFormImages() {
+  const wrap = document.getElementById('fImagesPreview');
+  wrap.innerHTML = formImages.map((img, i) => `
+    <div class="form-image-thumb">
+      <img src="${img.preview || safeImg(img.url)}" alt="">
+      ${i === 0 ? '<span class="cover-badge">Cover</span>' : ''}
+      <button type="button" class="thumb-remove" data-idx="${i}">✕</button>
+    </div>`).join('');
+  wrap.querySelectorAll('.thumb-remove').forEach(btn => btn.addEventListener('click', e => {
+    e.stopPropagation();
+    formImages.splice(parseInt(btn.dataset.idx), 1);
+    renderFormImages();
+  }));
+  document.getElementById('imageUploadArea').style.display = formImages.length >= 3 ? 'none' : '';
+}
 
 document.getElementById('fImageFile').addEventListener('change', async e => {
-  const file = e.target.files[0]; if (!file) return;
-  if (!file.type.startsWith('image/')) { showToast('⚠️ Please choose an image'); return; }
-  try {
-    pendingImageBlob = await resizeImage(file, 1200, 0.82);
-    const prev = document.getElementById('fImagePreview');
-    prev.src = URL.createObjectURL(pendingImageBlob);
-    prev.classList.remove('hidden');
-  } catch (err) { showToast('⚠️ Could not read this image'); }
+  const files = Array.from(e.target.files || []);
+  e.target.value = '';
+  for (const file of files) {
+    if (formImages.length >= 3) { showToast('⚠️ Max 3 photos per recipe'); break; }
+    if (!file.type.startsWith('image/')) continue;
+    try {
+      const blob = await resizeImage(file, 1200, 0.82);
+      formImages.push({ blob, preview: URL.createObjectURL(blob) });
+    } catch (err) { showToast('⚠️ Could not read an image'); }
+  }
+  renderFormImages();
 });
 
 function resizeImage(file, maxSize, quality) {
@@ -810,8 +849,8 @@ function openEditRecipe(id) {
     updateImportBtn();
   document.getElementById('fNotes').value=r.notes||'';
   document.getElementById('fImageData').value=r.imageData||'';
-  const editImg=r.imageUrl||r.imageData;
-  if(editImg){document.getElementById('fImagePreview').src=editImg;document.getElementById('fImagePreview').classList.remove('hidden');}
+   formImages=getImages(r).map(img=>({url:img.url,path:img.path}));
+  renderFormImages();
   document.getElementById('ingredientsList').innerHTML='';
   (r.ingredients||[]).forEach(ing=>addIngredient(ing.qty,ing.unit,ing.name));
   if(!(r.ingredients||[]).length) addIngredient();
@@ -828,7 +867,7 @@ function clearForm() {
   document.getElementById('fImageData').value=''; document.getElementById('fImagePreview').src='';
   document.getElementById('fImagePreview').classList.add('hidden');
   document.getElementById('ingredientsList').innerHTML=''; document.getElementById('stepsList').innerHTML='';
-  pendingImageBlob=null; document.getElementById('fImageFile').value='';
+  formImages=[]; renderFormImages(); document.getElementById('fImageFile').value='';
   currentTags=[]; renderTags();
 }
 function closeForm() { document.getElementById('formOverlay').classList.add('hidden'); document.body.style.overflow=''; }
@@ -868,26 +907,35 @@ async function saveRecipe() {
   const steps=Array.from(document.querySelectorAll('#stepsList .dynamic-item input')).map(i=>i.value.trim()).filter(Boolean);
   const tagInput=document.getElementById('tagInput').value.trim();
   if(tagInput) currentTags.push(tagInput);
-  const recipe={name,description:document.getElementById('fDesc').value.trim(),category,difficulty:document.getElementById('fDiff').value,prepTime:parseInt(document.getElementById('fPrep').value)||0,cookTime:parseInt(document.getElementById('fCook').value)||0,servings:parseInt(document.getElementById('fServ').value)||0,imageData:document.getElementById('fImageData').value,imageEmoji:getCatEmoji(category),ingredients,steps,tags:[...currentTags],source:document.getElementById('fSource').value.trim(),notes:document.getElementById('fNotes').value.trim(),userId:currentUser.uid,createdAt:Date.now()};
+  const recipe={name,description:document.getElementById('fDesc').value.trim(),category,difficulty:document.getElementById('fDiff').value,prepTime:parseInt(document.getElementById('fPrep').value)||0,cookTime:parseInt(document.getElementById('fCook').value)||0,servings:parseInt(document.getElementById('fServ').value)||0,imageEmoji:getCatEmoji(category),ingredients,steps,tags:[...currentTags],source:document.getElementById('fSource').value.trim(),notes:document.getElementById('fNotes').value.trim(),userId:currentUser.uid,createdAt:Date.now()};
 
   const saveBtn=document.getElementById('saveRecipeBtn');
   saveBtn.disabled=true;
-  let oldImagePath=null;
+  let oldPathsToDelete=[];
   try {
     const existing=editingRecipeId?allRecipes.find(r=>r.id===editingRecipeId):null;
-    recipe.imageUrl=(existing&&existing.imageUrl)||'';
-    recipe.imagePath=(existing&&existing.imagePath)||'';
+    const oldImages=existing?getImages(existing):[];
 
-    if(pendingImageBlob){
-      showToast('📤 Uploading photo…');
-      const path=`recipes/${currentUser.uid}/${Date.now()}_${Math.random().toString(36).slice(2,10)}.jpg`;
-      const ref=storage.ref(path);
-      await ref.put(pendingImageBlob,{contentType:'image/jpeg'});
-      oldImagePath=recipe.imagePath||null;
-      recipe.imageUrl=await ref.getDownloadURL();
-      recipe.imagePath=path;
-      recipe.imageData='';
+    const finalImages=[];
+    let uploadCount=0;
+    for(const img of formImages){
+      if(img.blob){
+        uploadCount++;
+        showToast(`📤 Uploading photo ${uploadCount}…`);
+        const path=`recipes/${currentUser.uid}/${Date.now()}_${Math.random().toString(36).slice(2,10)}.jpg`;
+        const ref=storage.ref(path);
+        await ref.put(img.blob,{contentType:'image/jpeg'});
+        finalImages.push({url:await ref.getDownloadURL(),path});
+      } else {
+        finalImages.push({url:img.url,path:img.path||''});
+      }
     }
+    const legacy=finalImages.find(i=>i.url.startsWith('data:'));
+    recipe.imageData=legacy?legacy.url:'';
+    recipe.images=finalImages.filter(i=>!i.url.startsWith('data:'));
+    recipe.imageUrl=recipe.images[0]?recipe.images[0].url:'';
+    recipe.imagePath=recipe.images[0]?recipe.images[0].path:'';
+    oldPathsToDelete=oldImages.map(i=>i.path).filter(p=>p&&!recipe.images.some(n=>n.path===p));
 
     if(editingRecipeId){
       recipe.favorite=existing?existing.favorite:false;
@@ -901,13 +949,12 @@ async function saveRecipe() {
       allRecipes.unshift({id:ref.id,...recipe});
     }
 
-    if(oldImagePath) storage.ref(oldImagePath).delete().catch(()=>{});
-    pendingImageBlob=null;
+    oldPathsToDelete.forEach(p=>storage.ref(p).delete().catch(()=>{}));
+    formImages=[];
     closeForm(); renderGrid();
     showToast(editingRecipeId?'✅ Recipe updated!':'🎉 Recipe saved!');
   } catch(e){showToast('⚠️ Error saving recipe: '+e.message);}
   finally { saveBtn.disabled=false; }
-}
 // DELETE
 function confirmDelete(id) {
   deleteTargetId=id;
@@ -918,7 +965,7 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', async () =
   try {
     const delRecipe=allRecipes.find(r=>r.id===deleteTargetId);
     await db.collection('recipes').doc(deleteTargetId).delete();
-    if(delRecipe&&delRecipe.imagePath) storage.ref(delRecipe.imagePath).delete().catch(()=>{});
+    if(delRecipe) getImages(delRecipe).forEach(i=>{ if(i.path) storage.ref(i.path).delete().catch(()=>{}); });
     allRecipes=allRecipes.filter(r=>r.id!==deleteTargetId);
     document.getElementById('confirmOverlay').classList.add('hidden');
     closeDetail(); renderGrid();
@@ -1318,6 +1365,12 @@ function safeImg(src) {
   if (typeof src !== 'string' || src.includes('"')) return '';
   if (src.startsWith('data:image/') || src.startsWith('https://firebasestorage.googleapis.com/')) return src;
   return '';
+}
+function getImages(r) {
+  if (r.images && r.images.length) return r.images;
+  if (r.imageUrl) return [{ url: r.imageUrl, path: r.imagePath || '' }];
+  if (r.imageData) return [{ url: r.imageData, path: '' }];
+  return [];
 }
 </script>
 </body>
