@@ -254,6 +254,7 @@ button,input,textarea,select{font-family:inherit!important;}
 @media (prefers-reduced-motion: reduce){
   .modal-overlay:not(.hidden),.recipe-detail,.detail-body > *{animation:none!important;}
 }
+.notes-text{white-space:pre-line;}
 </style>
 </head>
 <body>
@@ -348,7 +349,7 @@ button,input,textarea,select{font-family:inherit!important;}
   <div class="form-body">
       <input type="hidden" id="editingId">
       <div class="form-group"><label>Recipe Name *</label><input type="text" id="fName" placeholder="e.g. Chocolate Lava Cake"></div>
-      <div class="form-group"><label>Description</label><textarea id="fDesc" rows="2" placeholder="A short, appetizing description…"></textarea></div>
+      <div class="form-group" style="display:none"><label>Description</label><textarea id="fDesc" rows="2" placeholder="A short, appetizing description…"></textarea></div>
       <div class="form-group"><label>Category *</label><select id="fCategory"><option value="">Select category</option><option>Breakfast</option><option>Mains</option><option>Soups</option><option>Salads</option><option>Baking</option><option>Desserts</option><option>Drinks</option><option>Other</option></select></div>
       <div class="form-group">
         <label>Recipe Photo</label>
@@ -399,7 +400,7 @@ button,input,textarea,select{font-family:inherit!important;}
         <button type="button" id="ownRecipeBtn" class="btn-add-row" style="margin-top:8px;align-self:flex-start">✏️ My own recipe</button>
         <div id="importStatus" style="font-size:12px;color:var(--text-mid);margin-top:4px"></div>
       </div>
-      <div class="form-group"><label>My Notes</label><textarea id="fNotes" rows="3" placeholder="Personal tips, substitutions…"></textarea></div>
+      <div class="form-group"><label>My Notes</label><textarea id="fNotes" rows="4" placeholder="The story behind it, tips, substitutions…"></textarea></div>
     </div>
     <div class="form-footer"><button class="btn-cancel" id="cancelFormBtn">Cancel</button><button class="btn-save" id="saveRecipeBtn">Save Recipe ✨</button></div>
   </div>
@@ -576,7 +577,7 @@ grid.innerHTML = recipes.map(r => {
       <div class="card-body">
         <div class="card-category">${escHtml(r.category)}</div>
         <div class="card-title">${escHtml(r.name)}</div>
-        <div class="card-desc">${escHtml(r.description||'A delicious recipe waiting to be explored.')}</div>
+        <div class="card-desc">${escHtml(r.description||(r.ingredients||[]).slice(0,4).map(i=>i.name).join(', '))}</div>
         <div class="card-meta">
           ${total?`<span class="meta-pill">⏱ ${escHtml(total)} min</span>`:''}
           <span class="meta-pill">${diffIcon(r.difficulty)} ${escHtml(r.difficulty||'Easy')}</span>
@@ -696,7 +697,6 @@ function openDetail(id) {
         <span class="detail-meta-item">${diffIcon(r.difficulty)} ${escHtml(r.difficulty||'Easy')}</span>
         ${r.servings?`<span class="detail-meta-item">🍽 <button id="servMinusBtn" style="border:none;background:transparent;color:inherit;cursor:pointer;font-weight:700;padding:0 6px;font-size:14px">−</button><span id="servValueDisplay">${escHtml(r.servings)}</span> servings<button id="servPlusBtn" style="border:none;background:transparent;color:inherit;cursor:pointer;font-weight:700;padding:0 6px;font-size:14px">+</button></span>`:''}
       </div>
-      ${r.description?`<div class="detail-desc">${escHtml(r.description)}</div>`:''}
       <div class="detail-actions" id="detailActions"></div>
     </div>
  <div class="detail-gallery">
@@ -754,7 +754,7 @@ function openDetail(id) {
     <div class="section-heading">My Notes</div>
     <div class="notes-box">
       <div class="notes-title">✍️ My Notes </div>
-      ${r.notes?`<div class="notes-text">${escHtml(r.notes)}</div>`:`<div class="notes-empty">No notes yet!</div>`}
+      ${(r.description||r.notes)?`${r.description?`<div class="notes-text" style="margin-bottom:8px">${escHtml(r.description)}</div>`:''}${r.notes?`<div class="notes-text">${escHtml(r.notes)}</div>`:''}`:`<div class="notes-empty">No notes yet!</div>`}
     </div>
      ${r.source ? (/^https?:\/\//i.test(r.source)
       ? `<a href="${escHtml(r.source)}" target="_blank" rel="noopener" class="source-link">🔗 ${escHtml(r.source)}</a>`
