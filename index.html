@@ -380,6 +380,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <script>
 firebase.initializeApp({
   apiKey: "AIzaSyDwZE0QIzeq6hzgO6F3HSi1DLZzcYoapYg",
@@ -392,6 +393,7 @@ firebase.initializeApp({
 
 const auth = firebase.auth();
 const db = firebase.firestore();
+const storage = firebase.storage();
 const provider = new firebase.auth.GoogleAuthProvider();
 
 let currentUser = null;
@@ -490,7 +492,7 @@ grid.innerHTML = recipes.map(r => {
     const showHeart = currentView !== 'inspired';
     return `<div class="recipe-card" data-id="${escHtml(r.id)}">
       <div class="relative">
-        ${r.imageData?`<img src="${safeImg(r.imageData)}" alt="${escHtml(r.name)}" style="width:100%;height:190px;object-fit:cover;">`:`<div class="card-image-placeholder">${escHtml(r.imageEmoji||'🍽️')}</div>`}
+         ${(r.imageUrl||r.imageData)?`<img src="${safeImg(r.imageUrl||r.imageData)}" alt="${escHtml(r.name)}" loading="lazy" decoding="async" style="width:100%;height:190px;object-fit:cover;">`:`<div class="card-image-placeholder">${escHtml(r.imageEmoji||'🍽️')}</div>`}
         ${showHeart?`<button class="heart-btn ${r.favorite?'fav':''}" data-fav="${escHtml(r.id)}">${r.favorite?'❤️':'🤍'}</button>`:''}
       </div>
       <div class="card-body">
@@ -619,7 +621,7 @@ function openDetail(id) {
       <div class="detail-actions" id="detailActions"></div>
     </div>
     <div class="detail-image-wrap">
-      ${r.imageData?`<img src="${safeImg(r.imageData)}" alt="${escHtml(r.name)}">`:`<span style="font-size:56px">${escHtml(r.imageEmoji||'🍽️')}</span>`}
+      ${(r.imageUrl||r.imageData)?`<img src="${safeImg(r.imageUrl||r.imageData)}" alt="${escHtml(r.name)}">`:`<span style="font-size:56px">${escHtml(r.imageEmoji||'🍽️')}</span>`}
     </div>`;
 
   const isOwner = r.userId === currentUser.uid;
@@ -697,12 +699,38 @@ document.getElementById('closeFormBtn').addEventListener('click', closeForm);
 document.getElementById('cancelFormBtn').addEventListener('click', closeForm);
 document.getElementById('saveRecipeBtn').addEventListener('click', saveRecipe);
 document.getElementById('imageUploadArea').addEventListener('click', () => document.getElementById('fImageFile').click());
-document.getElementById('fImageFile').addEventListener('change', e => {
-  const file=e.target.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=ev=>{document.getElementById('fImageData').value=ev.target.result;document.getElementById('fImagePreview').src=ev.target.result;document.getElementById('fImagePreview').classList.remove('hidden');};
-  reader.readAsDataURL(file);
+let pendingImageBlob = null;
+
+document.getElementById('fImageFile').addEventListener('change', async e => {
+  const file = e.target.files[0]; if (!file) return;
+  if (!file.type.startsWith('image/')) { showToast('⚠️ Please choose an image'); return; }
+  try {
+    pendingImageBlob = await resizeImage(file, 1200, 0.82);
+    const prev = document.getElementById('fImagePreview');
+    prev.src = URL.createObjectURL(pendingImageBlob);
+    prev.classList.remove('hidden');
+  } catch (err) { showToast('⚠️ Could not read this image'); }
 });
+
+function resizeImage(file, maxSize, quality) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      let { width, height } = img;
+      if (width > maxSize || height > maxSize) {
+        const s = maxSize / Math.max(width, height);
+        width = Math.round(width * s); height = Math.round(height * s);
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+      URL.revokeObjectURL(img.src);
+      canvas.toBlob(b => b ? resolve(b) : reject(new Error('toBlob failed')), 'image/jpeg', quality);
+    };
+    img.onerror = reject;
+    img.src = URL.createObjectURL(file);
+  });
+}
 document.getElementById('tagInput').addEventListener('keydown', e => {
   if(e.key==='Enter'||e.key===','){e.preventDefault();const v=e.target.value.trim().replace(/,/g,'');if(v&&!currentTags.includes(v)){currentTags.push(v);renderTags();}e.target.value='';}
 });
@@ -717,6 +745,7 @@ function openNewRecipe() {
   document.body.style.overflow='hidden';
 }
 function openEditRecipe(id) {
+    clearForm();
   const r=allRecipes.find(x=>x.id===id); if(!r) return;
   editingRecipeId=id;
   document.getElementById('formTitle').textContent='Edit Recipe ✏️';
@@ -729,9 +758,11 @@ function openEditRecipe(id) {
   document.getElementById('fCook').value=r.cookTime||'';
   document.getElementById('fServ').value=r.servings||'';
   document.getElementById('fSource').value=r.source||'';
+    updateImportBtn();
   document.getElementById('fNotes').value=r.notes||'';
   document.getElementById('fImageData').value=r.imageData||'';
-  if(r.imageData){document.getElementById('fImagePreview').src=r.imageData;document.getElementById('fImagePreview').classList.remove('hidden');}
+  const editImg=r.imageUrl||r.imageData;
+  if(editImg){document.getElementById('fImagePreview').src=editImg;document.getElementById('fImagePreview').classList.remove('hidden');}
   document.getElementById('ingredientsList').innerHTML='';
   (r.ingredients||[]).forEach(ing=>addIngredient(ing.qty,ing.unit,ing.name));
   if(!(r.ingredients||[]).length) addIngredient();
@@ -748,6 +779,7 @@ function clearForm() {
   document.getElementById('fImageData').value=''; document.getElementById('fImagePreview').src='';
   document.getElementById('fImagePreview').classList.add('hidden');
   document.getElementById('ingredientsList').innerHTML=''; document.getElementById('stepsList').innerHTML='';
+  pendingImageBlob=null; document.getElementById('fImageFile').value='';
   currentTags=[]; renderTags();
 }
 function closeForm() { document.getElementById('formOverlay').classList.add('hidden'); document.body.style.overflow=''; }
@@ -788,24 +820,45 @@ async function saveRecipe() {
   const tagInput=document.getElementById('tagInput').value.trim();
   if(tagInput) currentTags.push(tagInput);
   const recipe={name,description:document.getElementById('fDesc').value.trim(),category,difficulty:document.getElementById('fDiff').value,prepTime:parseInt(document.getElementById('fPrep').value)||0,cookTime:parseInt(document.getElementById('fCook').value)||0,servings:parseInt(document.getElementById('fServ').value)||0,imageData:document.getElementById('fImageData').value,imageEmoji:getCatEmoji(category),ingredients,steps,tags:[...currentTags],source:document.getElementById('fSource').value.trim(),notes:document.getElementById('fNotes').value.trim(),userId:currentUser.uid,createdAt:Date.now()};
+
+  const saveBtn=document.getElementById('saveRecipeBtn');
+  saveBtn.disabled=true;
+  let oldImagePath=null;
   try {
+    const existing=editingRecipeId?allRecipes.find(r=>r.id===editingRecipeId):null;
+    recipe.imageUrl=(existing&&existing.imageUrl)||'';
+    recipe.imagePath=(existing&&existing.imagePath)||'';
+
+    if(pendingImageBlob){
+      showToast('📤 Uploading photo…');
+      const path=`recipes/${currentUser.uid}/${Date.now()}_${Math.random().toString(36).slice(2,10)}.jpg`;
+      const ref=storage.ref(path);
+      await ref.put(pendingImageBlob,{contentType:'image/jpeg'});
+      oldImagePath=recipe.imagePath||null;
+      recipe.imageUrl=await ref.getDownloadURL();
+      recipe.imagePath=path;
+      recipe.imageData='';
+    }
+
     if(editingRecipeId){
-      const existing=allRecipes.find(r=>r.id===editingRecipeId);
       recipe.favorite=existing?existing.favorite:false;
       recipe.createdAt=existing?existing.createdAt:Date.now();
       await db.collection('recipes').doc(editingRecipeId).update(recipe);
       const idx=allRecipes.findIndex(r=>r.id===editingRecipeId);
-      if(idx>-1) allRecipes[idx]={id:editingRecipeId,...recipe};
+      if(idx>-1) allRecipes[idx]={...allRecipes[idx],...recipe};
     } else {
       recipe.favorite=false;
       const ref=await db.collection('recipes').add(recipe);
       allRecipes.unshift({id:ref.id,...recipe});
     }
+
+    if(oldImagePath) storage.ref(oldImagePath).delete().catch(()=>{});
+    pendingImageBlob=null;
     closeForm(); renderGrid();
     showToast(editingRecipeId?'✅ Recipe updated!':'🎉 Recipe saved!');
   } catch(e){showToast('⚠️ Error saving recipe: '+e.message);}
+  finally { saveBtn.disabled=false; }
 }
-
 // DELETE
 function confirmDelete(id) {
   deleteTargetId=id;
@@ -814,7 +867,9 @@ function confirmDelete(id) {
 document.getElementById('cancelDeleteBtn').addEventListener('click', () => { document.getElementById('confirmOverlay').classList.add('hidden'); deleteTargetId=null; });
 document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
   try {
+    const delRecipe=allRecipes.find(r=>r.id===deleteTargetId);
     await db.collection('recipes').doc(deleteTargetId).delete();
+    if(delRecipe&&delRecipe.imagePath) storage.ref(delRecipe.imagePath).delete().catch(()=>{});
     allRecipes=allRecipes.filter(r=>r.id!==deleteTargetId);
     document.getElementById('confirmOverlay').classList.add('hidden');
     closeDetail(); renderGrid();
@@ -1206,7 +1261,9 @@ function escHtml(str) {
   return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
   function safeImg(src) {
-  return (typeof src === 'string' && src.startsWith('data:image/') && !src.includes('"')) ? src : '';
+  if (typeof src !== 'string' || src.includes('"')) return '';
+  if (src.startsWith('data:image/') || src.startsWith('https://firebasestorage.googleapis.com/')) return src;
+  return '';
 }
 </script>
 </body>
