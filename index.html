@@ -6,12 +6,12 @@
 <title>C00K90 — Digital Cook Book</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lato:wght@300;400;600;700&display=swap');
- :root {
-    --bg:#081716;--card:#12211F;--card-soft:#17261F;
-    --magenta:#98A85E;--magenta-deep:#7C9142;--magenta-light:#B8C87E;--magenta-pale:#232D18;
-    --teal:#2E8F72;--teal-deep:#1F6B56;--teal-light:#4FB897;--teal-pale:#0F3D3B;
-    --text-dark:#F2F5F3;--text-mid:#B9C7BE;--text-light:#7C8C84;
-    --border:#2A3A35;--border-mag:#4A5A3A;--shadow:rgba(0,0,0,0.35);--shadow-card:rgba(0,0,0,0.45);
+:root {
+    --bg:#050C0B;--card:#0B1614;--card-soft:#0F1D1A;
+    --magenta:#9FB85A;--magenta-deep:#C2D67A;--magenta-light:#D6E59A;--magenta-pale:#141F10;
+    --teal:#34C79A;--teal-deep:#7FE3C0;--teal-light:#5FD6AE;--teal-pale:#0C2A24;
+    --text-dark:#F4F7F2;--text-mid:#C3D0C8;--text-light:#8A9A92;
+    --border:#1E2E2A;--border-mag:#3D4F2E;--shadow:rgba(0,0,0,0.5);--shadow-card:rgba(0,0,0,0.6);
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Lato',sans-serif;background:var(--bg);color:var(--text-dark);min-height:100vh;}
@@ -198,6 +198,19 @@
 .account-dropdown button { width: 100%; text-align: left; }
 .dropdown-divider { border: none; border-top: 1px solid rgba(255,255,255,0.12); margin: 4px 0; }
 #deleteAccountBtn { color: #e57373; border-color: rgba(229,115,115,0.4); }
+/* ===== Design pass: fonturi + curatare mov ===== */
+body{font-family:'DM Sans',sans-serif;}
+button,input,textarea,select{font-family:inherit!important;}
+.card-title,.detail-title,.form-title,.empty-state h3,.confirm-dialog h3,.notes-title{font-family:'Bricolage Grotesque',sans-serif;font-style:normal;letter-spacing:-0.01em;}
+.card-title{font-weight:700;}
+.detail-title{font-weight:800;font-size:36px;}
+.logo-title,.auth-logo{font-family:'JetBrains Mono',monospace;font-weight:800;letter-spacing:0.02em;}
+.modal-overlay{background:rgba(2,8,7,0.75);}
+.auth-card,.recipe-detail,.form-modal,.confirm-dialog{box-shadow:0 24px 80px rgba(0,0,0,0.6);}
+.recipe-card:hover{box-shadow:0 12px 32px rgba(0,0,0,0.6),0 0 0 1px var(--teal);}
+.toast{box-shadow:0 8px 24px rgba(0,0,0,0.5);}
+.btn-action.danger{color:#E57373;border-color:rgba(229,115,115,0.4);}
+.btn-action.danger:hover{background:rgba(229,115,115,0.1);}
 </style>
 </head>
 <body>
