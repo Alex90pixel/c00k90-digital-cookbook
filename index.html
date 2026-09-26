@@ -667,8 +667,8 @@ function updateServingsDisplay(r, newServings) {
 function openDetail(id) {
   const r = allRecipes.find(x=>x.id===id) || inspiredRecipes.find(x=>x.id===id); if(!r) return;
   const total=(r.prepTime||0)+(r.cookTime||0);
+  const imgs=getImages(r);
   document.getElementById('detailHero').innerHTML=`
-    const imgs=getImages(r);
     <div class="detail-hero-text">
       <div class="detail-category">${escHtml(r.category)}</div>
       <div class="detail-title">${escHtml(r.name)}</div>
