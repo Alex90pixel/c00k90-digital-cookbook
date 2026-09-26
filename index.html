@@ -225,6 +225,7 @@
       <div class="account-menu">
         <img id="userAvatar" class="user-avatar hidden" src="" alt="user">
         <div class="account-dropdown" id="accountDropdown">
+          <button class="btn-signout" id="migrateBtn">📦 Migrate old photos</button>
           <button class="btn-signout hidden" id="exportDataBtn">Export my data</button>
           <button class="btn-signout hidden" id="signOutBtn">Sign out</button>
           <hr class="dropdown-divider">
@@ -1259,12 +1260,44 @@ document.getElementById('newRecipeBtn').addEventListener('click', () => {
 updateImportBtn();
 function escHtml(str) {
   return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  }
-  function safeImg(src) {
+}
+
+function safeImg(src) {
   if (typeof src !== 'string' || src.includes('"')) return '';
   if (src.startsWith('data:image/') || src.startsWith('https://firebasestorage.googleapis.com/')) return src;
   return '';
 }
+
+async function dataUrlToBlob(dataUrl) {
+  const res = await fetch(dataUrl);
+  return res.blob();
+}
+
+document.getElementById('migrateBtn').addEventListener('click', async () => {
+  const todo = allRecipes.filter(r => r.imageData && !r.imageUrl);
+  if (!todo.length) { showToast('✅ Nothing to migrate'); return; }
+  if (!confirm(`Move ${todo.length} photos to the new storage? Keep this tab open until it finishes.`)) return;
+  let done = 0, failed = 0;
+  for (const r of todo) {
+    try {
+      const orig = await dataUrlToBlob(r.imageData);
+      const blob = await resizeImage(orig, 1200, 0.82);
+      const path = `recipes/${currentUser.uid}/${Date.now()}_${Math.random().toString(36).slice(2,10)}.jpg`;
+      const ref = storage.ref(path);
+      await ref.put(blob, { contentType: 'image/jpeg' });
+      const url = await ref.getDownloadURL();
+      await db.collection('recipes').doc(r.id).update({ imageUrl: url, imagePath: path, imageData: '' });
+      r.imageUrl = url; r.imagePath = path; r.imageData = '';
+      done++;
+    } catch (e) {
+      failed++;
+      console.error('Migration failed for', r.id, e);
+    }
+    showToast(`📦 ${done + failed}/${todo.length}…`);
+  }
+  renderGrid();
+  showToast(`✅ Migrated ${done}${failed ? `, ${failed} failed` : ''}`);
+});
 </script>
 </body>
 </html>
