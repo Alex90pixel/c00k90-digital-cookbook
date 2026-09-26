@@ -955,6 +955,7 @@ async function saveRecipe() {
     showToast(editingRecipeId?'✅ Recipe updated!':'🎉 Recipe saved!');
   } catch(e){showToast('⚠️ Error saving recipe: '+e.message);}
   finally { saveBtn.disabled=false; }
+  }
 // DELETE
 function confirmDelete(id) {
   deleteTargetId=id;
