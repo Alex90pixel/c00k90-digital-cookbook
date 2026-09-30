@@ -495,7 +495,7 @@ button,input,textarea,select{font-family:inherit!important;}
     </div>
   </div>
   <div class="cookie-btns">
-    <button id="cookieReject" class="btn-save">Reject optional</button>
+     <button id="cookieReject" class="btn-save">Reject all</button>
     <button id="cookieCustomize" class="btn-cancel">Customize</button>
     <button id="cookieAccept" class="btn-save">Accept all</button>
   </div>
@@ -1443,7 +1443,7 @@ function getConsent(){
 }
 function hasConsent(type){ const c=getConsent(); return !!(c && c[type]); }
 function saveConsent(analytics, ads){
-  try{ localStorage.setItem(CONSENT_KEY, JSON.stringify({analytics, ads, version:CONSENT_VERSION, date:new Date().toISOString()})); }catch(e){}
+  try{ localStorage.setItem(CONSENT_KEY, ); }catch(e){}
   document.getElementById('cookieBanner').classList.add('hidden');
   document.getElementById('cookieOptions').classList.add('hidden');
   document.getElementById('cookieCustomize').textContent='Customize';
