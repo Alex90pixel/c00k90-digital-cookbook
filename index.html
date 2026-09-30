@@ -1369,6 +1369,22 @@ function findCiqualMatch(name){
   return found;
 }
 
+const PIECE_NAMES_RO={
+  'oua':'egg','ou':'egg','galbenus':'egg yolk','albus':'egg white',
+  'ceapa':'onion','cepe':'onion','cartofi':'potato','cartof':'potato',
+  'morcovi':'carrot','morcov':'carrot','rosii':'tomato','rosie':'tomato',
+  'ardei':'bell pepper','usturoi':'garlic','catei de usturoi':'garlic','catel de usturoi':'garlic',
+  'lamaie':'lemon','lamai':'lemon','mere':'apple','mar':'apple','banane':'banana','banana':'banana',
+  'dovlecel':'zucchini','dovlecei':'zucchini','vinete':'eggplant','castravete':'cucumber','castraveti':'cucumber',
+  'portocala':'orange','portocale':'orange','avocado':'avocado'
+};
+function pieceNameEN(name){
+  const n=normIng(name||'');
+  const keys=Object.keys(PIECE_NAMES_RO).sort((a,b)=>b.length-a.length);
+  for(const k of keys){ if(new RegExp('(^|[^a-z])'+k+'([^a-z]|$)').test(n)) return PIECE_NAMES_RO[k]; }
+  return name;
+}
+
 function estimateNutrition(recipe) {
   let totals = {cal:0, protein:0, carbs:0, fat:0};
   let matchedAny = false;
@@ -1392,7 +1408,7 @@ function estimateNutrition(recipe) {
     if (unit && UNIT_TO_GRAMS[unit]) {
       grams = qty * UNIT_TO_GRAMS[unit];
     } else {
-      grams = qty * findPieceWeight(ing.name);
+      grams = qty * findPieceWeight(pieceNameEN(ing.name));
     }
 
     const factor = grams / 100;
