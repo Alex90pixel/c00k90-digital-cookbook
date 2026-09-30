@@ -759,9 +759,9 @@ function renderNutritionHTML(recipeLike) {
   `;
 }
 
-function updateServingsDisplay(r, newServings) {
+function updateServingsDisplay(r, newServings, baseServings) {
   document.getElementById('servValueDisplay').textContent = newServings;
-  const orig = parseFloat(r.servings) || 1;
+  const orig = baseServings || parseFloat(r.servings) || 1;
   const factor = newServings / orig;
   const scaled = (r.ingredients||[]).map(ing => {
     const q = parseFloat(String(ing.qty).replace(',', '.'));
@@ -861,11 +861,11 @@ function openDetail(id) {
     let detailServings = initialServings;
     document.getElementById('servMinusBtn').addEventListener('click', () => {
       detailServings = Math.max(1, detailServings - 1);
-      updateServingsDisplay(r, detailServings);
+      updateServingsDisplay(r, detailServings, initialServings);
     });
     document.getElementById('servPlusBtn').addEventListener('click', () => {
       detailServings = detailServings + 1;
-      updateServingsDisplay(r, detailServings);
+      updateServingsDisplay(r, detailServings, initialServings);
     });
   }
 
