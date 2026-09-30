@@ -761,9 +761,21 @@ function renderNutritionHTML(recipeLike) {
 
 function updateServingsDisplay(r, newServings) {
   document.getElementById('servValueDisplay').textContent = newServings;
-  const result = scaleIngredientsHTML(r, newServings);
-  document.getElementById('ingredientsGridWrap').innerHTML = result.html;
-  document.getElementById('nutritionWrap').innerHTML = renderNutritionHTML({ingredients: result.scaled, servings: newServings});
+  const orig = parseFloat(r.servings) || 1;
+  const factor = newServings / orig;
+  const scaled = (r.ingredients||[]).map(ing => {
+    const q = parseFloat(String(ing.qty).replace(',', '.'));
+    if (isNaN(q)) return {...ing};
+    const v = Math.round(q * factor * 100) / 100;
+    return {...ing, qty: Number.isInteger(v) ? String(v) : v.toFixed(2).replace(/0+$/,'').replace(/\.$/,'')};
+  });
+  const cols = {left:[], right:[]};
+  scaled.forEach((ing, i) => cols[i % 2 === 0 ? 'left' : 'right'].push(
+    `<div class="ingredient-item"><span class="ingredient-badge">${escHtml(ing.qty||'')}${ing.unit ? ' ' + escHtml(ing.unit) : ''}</span><span>${escHtml(ing.name)}</span></div>`
+  ));
+  document.getElementById('ingredientsGridWrap').innerHTML =
+    `<div class="ingredients-grid"><div>${cols.left.join('')}</div><div>${cols.right.join('')}</div></div>`;
+  document.getElementById('nutritionWrap').innerHTML = renderNutritionHTML({ingredients: scaled, servings: newServings});
 }
 
 function openDetail(id) {
@@ -845,7 +857,7 @@ function openDetail(id) {
       ? `<a href="${escHtml(r.source)}" target="_blank" rel="noopener" class="source-link">🔗 ${escHtml(r.source)}</a>`
       : `<div class="source-link">📖 Source: ${escHtml(r.source)}</div>`) : ''}`;
 
-  if (document.getElementById('servMinusBtn')) {
+   {
     let detailServings = initialServings;
     document.getElementById('servMinusBtn').addEventListener('click', () => {
       detailServings = Math.max(1, detailServings - 1);
@@ -887,7 +899,7 @@ let formImages = [];
 function renderFormImages() {
   const wrap = document.getElementById('fImagesPreview');
   wrap.innerHTML = formImages.map((img, i) => `
-    <div class="form-image-thumb">
+      <div class="form-image-thumb">
       <img src="${img.preview || safeImg(img.url)}" alt="">
       ${i === 0 ? '<span class="cover-badge">Cover</span>' : ''}
       <button type="button" class="thumb-remove" data-idx="${i}">✕</button>
