@@ -881,7 +881,8 @@ function openEditRecipe(id) {
   document.getElementById('fServ').value=r.servings||'';
   document.getElementById('fSource').value=r.source||'';
     updateImportBtn();
-  document.getElementById('fNotes').value=r.notes||'';
+ document.getElementById('fNotes').value=[r.description,r.notes].filter(Boolean).join('\n\n');
+  document.getElementById('fDesc').value='';
   document.getElementById('fImageData').value=r.imageData||'';
    formImages=getImages(r).map(img=>({url:img.url,path:img.path}));
   renderFormImages();
