@@ -279,6 +279,10 @@ button,input,textarea,select{font-family:inherit!important;}
 .cookie-options label{display:flex;align-items:center;gap:8px;font-size:13px;}
 .cookie-btns{display:flex;gap:8px;flex-wrap:wrap;}
 .cookie-btns button{padding:9px 16px;font-size:13px;}
+.diet-checks{display:flex;flex-wrap:wrap;gap:8px 16px;}
+.diet-checks label{display:flex;align-items:center;gap:6px;text-transform:none;letter-spacing:0;font-weight:600;color:var(--text-mid);font-size:13px;margin:0;cursor:pointer;}
+.diet-checks input{width:auto;padding:0;margin:0;accent-color:var(--teal);}
+.diet-legend{font-size:11px;color:var(--text-light);margin-top:8px;line-height:1.5;}
 </style>
 </head>
 <body>
@@ -374,7 +378,16 @@ button,input,textarea,select{font-family:inherit!important;}
       <input type="hidden" id="editingId">
       <div class="form-group"><label>Recipe Name *</label><input type="text" id="fName" placeholder="e.g. Chocolate Lava Cake"></div>
       <div class="form-group" style="display:none"><label>Description</label><textarea id="fDesc" rows="2" placeholder="A short, appetizing description…"></textarea></div>
-      <div class="form-group"><label>Category *</label><select id="fCategory"><option value="">Select category</option><option>Breakfast</option><option>Mains</option><option>Soups</option><option>Salads</option><option>Baking</option><option>Desserts</option><option>Drinks</option><option>Other</option></select></div>
+       <div class="form-group"><label>Category *</label><select id="fCategory"><option value="">Select category</option><option>Breakfast</option><option>Mains</option><option>Soups</option><option>Salads</option><option>Baking</option><option>Desserts</option><option>Drinks</option><option>Other</option></select></div>
+      <div class="form-group"><label>Diet</label>
+        <div class="diet-checks">
+          <label><input type="checkbox" class="diet-check" value="vegetarian"> 🥕 Vegetarian</label>
+          <label><input type="checkbox" class="diet-check" value="vegan"> 🌱 Vegan</label>
+          <label><input type="checkbox" class="diet-check" value="gluten-free"> 🌾 Gluten-free</label>
+          <label><input type="checkbox" class="diet-check" value="dairy-free"> 🥛 Dairy-free</label>
+        </div>
+        <p class="diet-legend">High protein, Low carb and Low fat are added automatically from the nutrition estimate.</p>
+      </div>
       <div class="form-group">
         <label>Recipe Photo</label>
         <div class="image-upload-area" id="imageUploadArea" style="position:relative">
@@ -947,7 +960,8 @@ function openEditRecipe(id) {
   document.getElementById('stepsList').innerHTML='';
   (r.steps||[]).forEach(s=>addStep(s));
   if(!(r.steps||[]).length) addStep();
-  currentTags=[...(r.tags||[])]; renderTags();
+   currentTags=[...(r.tags||[])]; renderTags();
+  document.querySelectorAll('.diet-check').forEach(c=>c.checked=(r.diets||[]).includes(c.value));
   document.getElementById('formOverlay').classList.remove('hidden');
   document.body.style.overflow='hidden';
 }
@@ -958,6 +972,7 @@ function clearForm() {
   document.getElementById('fImagePreview').classList.add('hidden');
   document.getElementById('ingredientsList').innerHTML=''; document.getElementById('stepsList').innerHTML='';
   formImages=[]; renderFormImages(); document.getElementById('fImageFile').value='';
+   document.querySelectorAll('.diet-check').forEach(c=>c.checked=false);
   currentTags=[]; renderTags();
 }
 function closeForm() { document.getElementById('formOverlay').classList.add('hidden'); document.body.style.overflow=''; }
@@ -999,6 +1014,7 @@ async function saveRecipe() {
   if(tagInput) currentTags.push(tagInput);
   const recipe={name,description:document.getElementById('fDesc').value.trim(),category,difficulty:document.getElementById('fDiff').value,prepTime:parseInt(document.getElementById('fPrep').value)||0,cookTime:parseInt(document.getElementById('fCook').value)||0,servings:parseInt(document.getElementById('fServ').value)||0,imageEmoji:getCatEmoji(category),ingredients,steps,tags:[...currentTags],source:document.getElementById('fSource').value.trim(),notes:document.getElementById('fNotes').value.trim(),userId:currentUser.uid,createdAt:Date.now()};
 
+  recipe.diets=Array.from(document.querySelectorAll('.diet-check:checked')).map(c=>c.value);
   const saveBtn=document.getElementById('saveRecipeBtn');
   saveBtn.disabled=true;
   let oldPathsToDelete=[];
@@ -1455,6 +1471,26 @@ function safeImg(src) {
   if (src.startsWith('data:image/') || src.startsWith('https://firebasestorage.googleapis.com/')) return src;
   return '';
 }
+const DIETS=[
+  {id:'vegetarian',label:'🥕 Vegetarian',manual:true},
+  {id:'vegan',label:'🌱 Vegan',manual:true},
+  {id:'gluten-free',label:'🌾 Gluten-free',manual:true},
+  {id:'dairy-free',label:'🥛 Dairy-free',manual:true},
+  {id:'high-protein',label:'💪 High protein'},
+  {id:'low-carb',label:'🥦 Low carb'},
+  {id:'low-fat',label:'🫒 Low fat'}
+];
+function getDietLabels(r){
+  const labels=[...(r.diets||[])];
+  const n=estimateNutrition(r);
+  if(n && (!n.unmatched || n.unmatched.length===0)){
+    if(parseFloat(n.protein)>=20) labels.push('high-protein');
+    if(parseFloat(n.carbs)<=20) labels.push('low-carb');
+    if(parseFloat(n.fat)<=10) labels.push('low-fat');
+  }
+  return labels;
+}
+
 const CONSENT_KEY='c00k90-consent';
 const CONSENT_VERSION=1;
 const CONSENT_MAX_DAYS=180;
