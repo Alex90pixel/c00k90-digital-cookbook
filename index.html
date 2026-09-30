@@ -755,7 +755,7 @@ function renderNutritionHTML(recipeLike) {
       <span class="detail-meta-item">🧈 ${nutrition.fat}g fat</span>
     </div>
      ${nutrition.unmatched.length ? `<p style="font-size:12px;color:var(--text-light);margin-bottom:10px">Couldn't estimate: ${nutrition.unmatched.map(escHtml).join(', ')}</p>` : ''}
-    <p style="font-size:12px;color:var(--text-light);font-style:italic;margin-bottom:24px">Estimate only, not medical or nutritional advice.</p>
+    <p style="font-size:12px;color:var(--text-light);font-style:italic;margin-bottom:24px">Estimate only, not medical or nutritional advice. Nutrition data: Anses. 2025. Ciqual French food composition table.</p>
   `;
 }
 
@@ -1331,13 +1331,51 @@ function findPieceWeight(name) {
   return 100;
 }
 
+let CIQUAL=null;
+const ciqualCache=new Map();
+function normIng(s){
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/\(.*?\)/g,' ').replace(/[^a-z\s-]/g,' ')
+    .replace(/\b(fresh|chopped|diced|sliced|grated|large|small|medium|finely|roughly|to taste|optional|proaspat|tocat|mare|mic)\b/g,' ')
+    .replace(/\s+/g,' ').trim();
+}
+fetch('ciqual-2025.json').then(r=>r.json()).then(d=>{
+  const byName={};
+  d.foods.forEach(f=>{ byName[f[0]]={name:f[0],cal:f[1],protein:f[2],carbs:f[3],fat:f[4]}; });
+  const esc=k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const aliases=Object.keys(d.aliases).sort((a,b)=>b.length-a.length)
+    .map(k=>({re:new RegExp('(^|[^a-z])'+esc(k)+'([^a-z]|$)'),food:byName[d.aliases[k]]}));
+  const firstSeg={};
+  d.foods.forEach(f=>{ const s=f[0].split(',')[0].toLowerCase().trim(); (firstSeg[s]=firstSeg[s]||[]).push(byName[f[0]]); });
+  CIQUAL={aliases,firstSeg};
+  ciqualCache.clear();
+  if(allRecipes.length) renderGrid();
+}).catch(e=>console.warn('Ciqual not loaded',e));
+
+function findCiqualMatch(name){
+  if(!CIQUAL||!name) return null;
+  if(ciqualCache.has(name)) return ciqualCache.get(name);
+  const n=normIng(name);
+  const nSing=n.replace(/(\w{3,})s\b/g,'$1');
+  let found=null;
+  if(n){
+    for(const a of CIQUAL.aliases){ if(a.re.test(n)||a.re.test(nSing)){ found=a.food; break; } }
+    if(!found){
+      const c=CIQUAL.firstSeg[n]||CIQUAL.firstSeg[nSing];
+      if(c&&c.length) found=c.find(x=>/\braw\b/i.test(x.name))||c.slice().sort((a,b)=>a.name.length-b.name.length)[0];
+    }
+  }
+  ciqualCache.set(name,found);
+  return found;
+}
+
 function estimateNutrition(recipe) {
   let totals = {cal:0, protein:0, carbs:0, fat:0};
   let matchedAny = false;
   let unmatched = [];
 
   (recipe.ingredients||[]).forEach(ing => {
-    const nutrition = findNutritionMatch(ing.name || "");
+     const nutrition = findCiqualMatch(ing.name || "") || findNutritionMatch(ing.name || "");
     if (!nutrition) {
       if (ing.name) unmatched.push(ing.name);
       return;
