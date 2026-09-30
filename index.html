@@ -1431,10 +1431,19 @@ function safeImg(src) {
   return '';
 }
 const CONSENT_KEY='c00k90-consent';
-function getConsent(){ try{ return JSON.parse(localStorage.getItem(CONSENT_KEY)); }catch(e){ return null; } }
+const CONSENT_VERSION=1;
+const CONSENT_MAX_DAYS=180;
+function getConsent(){
+  try{
+    const c=JSON.parse(localStorage.getItem(CONSENT_KEY));
+    if(!c || c.version!==CONSENT_VERSION) return null;
+    if((Date.now()-new Date(c.date).getTime())/86400000 > CONSENT_MAX_DAYS) return null;
+    return c;
+  }catch(e){ return null; }
+}
 function hasConsent(type){ const c=getConsent(); return !!(c && c[type]); }
 function saveConsent(analytics, ads){
-  try{ localStorage.setItem(CONSENT_KEY, JSON.stringify({analytics, ads, date:new Date().toISOString()})); }catch(e){}
+  try{ localStorage.setItem(CONSENT_KEY, JSON.stringify({analytics, ads, version:CONSENT_VERSION, date:new Date().toISOString()})); }catch(e){}
   document.getElementById('cookieBanner').classList.add('hidden');
   document.getElementById('cookieOptions').classList.add('hidden');
   document.getElementById('cookieCustomize').textContent='Customize';
