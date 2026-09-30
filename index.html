@@ -485,6 +485,18 @@ button,input,textarea,select{font-family:inherit!important;}
 
 <div class="toast hidden" id="toast"></div>
 
+<div class="modal-overlay hidden" id="photoConsentOverlay">
+  <div class="confirm-dialog">
+    <div class="confirm-icon">📷</div>
+    <h3>Add photos</h3>
+    <p>C00K90 will upload only the photos you select. Continue?</p>
+    <div class="confirm-btns">
+      <button class="btn-confirm-cancel" id="photoConsentCancel">Cancel</button>
+      <button class="btn-save" id="photoConsentOk">OK</button>
+    </div>
+  </div>
+</div>
+
 <div id="cookieBanner" class="cookie-banner hidden">
   <div class="cookie-text">
     <strong>🍪 Cookies & storage</strong>
@@ -832,7 +844,19 @@ document.getElementById('newRecipeBtn').addEventListener('click', () => openNewR
 document.getElementById('closeFormBtn').addEventListener('click', closeForm);
 document.getElementById('cancelFormBtn').addEventListener('click', closeForm);
 document.getElementById('saveRecipeBtn').addEventListener('click', saveRecipe);
-document.getElementById('imageUploadArea').addEventListener('click', () => document.getElementById('fImageFile').click());
+document.getElementById('imageUploadArea').addEventListener('click', () => {
+  let ok=false; try{ ok=localStorage.getItem('c00k90-photo-ok')==='1'; }catch(e){}
+  if(ok) document.getElementById('fImageFile').click();
+  else document.getElementById('photoConsentOverlay').classList.remove('hidden');
+});
+document.getElementById('photoConsentOk').addEventListener('click', () => {
+  try{ localStorage.setItem('c00k90-photo-ok','1'); }catch(e){}
+  document.getElementById('photoConsentOverlay').classList.add('hidden');
+  document.getElementById('fImageFile').click();
+});
+document.getElementById('photoConsentCancel').addEventListener('click', () => {
+  document.getElementById('photoConsentOverlay').classList.add('hidden');
+});
 let formImages = [];
 
 function renderFormImages() {
