@@ -385,8 +385,9 @@ button,input,textarea,select{font-family:inherit!important;}
           <label><input type="checkbox" class="diet-check" value="vegan"> 🌱 Vegan</label>
           <label><input type="checkbox" class="diet-check" value="gluten-free"> 🌾 Gluten-free</label>
           <label><input type="checkbox" class="diet-check" value="dairy-free"> 🥛 Dairy-free</label>
+          <label><input type="checkbox" class="diet-check" value="kid-friendly"> 🧒 Kid-friendly</label>
         </div>
-        <p class="diet-legend">High protein, Low carb and Low fat are added automatically from the nutrition estimate.</p>
+        <p class="diet-legend">Added automatically: High protein, Low carb, Low fat and Keto (from the nutrition estimate) and Quick (from the total time).</p>
       </div>
       <div class="form-group">
         <label>Recipe Photo</label>
@@ -1476,9 +1477,12 @@ const DIETS=[
   {id:'vegan',label:'🌱 Vegan',manual:true},
   {id:'gluten-free',label:'🌾 Gluten-free',manual:true},
   {id:'dairy-free',label:'🥛 Dairy-free',manual:true},
+  {id:'kid-friendly',label:'🧒 Kid-friendly',manual:true},
+  {id:'quick',label:'⚡ Quick',manual:true},
   {id:'high-protein',label:'💪 High protein'},
   {id:'low-carb',label:'🥦 Low carb'},
-  {id:'low-fat',label:'🫒 Low fat'}
+  {id:'low-fat',label:'🫒 Low fat'},
+  {id:'keto',label:'🥑 Keto'}
 ];
 function getDietLabels(r){
   const labels=[...(r.diets||[])];
@@ -1487,7 +1491,10 @@ function getDietLabels(r){
     if(parseFloat(n.protein)>=20) labels.push('high-protein');
     if(parseFloat(n.carbs)<=20) labels.push('low-carb');
     if(parseFloat(n.fat)<=10) labels.push('low-fat');
+    if(parseFloat(n.carbs)<=10) labels.push('keto');
   }
+  const totalTime=(parseInt(r.prepTime)||0)+(parseInt(r.cookTime)||0);
+  if(totalTime>0 && totalTime<30) labels.push('quick');
   return labels;
 }
 
