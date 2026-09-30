@@ -271,6 +271,14 @@ button,input,textarea,select{font-family:inherit!important;}
 }
 /* Logo: culoare plina, compatibila cu toate browserele */
 .logo-title,.auth-logo{background:none!important;color:var(--magenta-deep)!important;-webkit-text-fill-color:var(--magenta-deep)!important;}
+/* ===== Cookie banner ===== */
+.cookie-banner{position:fixed;left:16px;right:16px;bottom:16px;max-width:720px;margin:0 auto;z-index:1000;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px 20px;box-shadow:0 12px 40px rgba(0,0,0,0.6);display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;}
+.cookie-text{flex:1;min-width:240px;font-size:13px;color:var(--text-mid);line-height:1.5;}
+.cookie-text strong{display:block;color:var(--text-dark);margin-bottom:4px;font-size:14px;}
+.cookie-options{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.cookie-options label{display:flex;align-items:center;gap:8px;font-size:13px;}
+.cookie-btns{display:flex;gap:8px;flex-wrap:wrap;}
+.cookie-btns button{padding:9px 16px;font-size:13px;}
 </style>
 </head>
 <body>
@@ -448,7 +456,7 @@ button,input,textarea,select{font-family:inherit!important;}
       <p style="margin-bottom:14px"><strong>What we don't collect:</strong> we never request or access your Google Drive, Contacts, Calendar, or anything beyond the above.</p>
       <p style="margin-bottom:14px"><strong>How we use your data:</strong> to display and sync your recipes across your devices. We never sell or rent your data, and we don't use it for advertising.</p>
        <p style="margin-bottom:14px"><strong>Where it's stored:</strong> on Firebase (Google Cloud), which acts as our data processor under its own security measures.</p>
-     <p style="margin-bottom:14px"><strong>Cookies & local storage:</strong> we don't use advertising or analytics cookies, and we don't track you across websites. The app only uses the browser storage that's strictly necessary to keep you signed in (set by Firebase Authentication). Fonts are loaded from Google Fonts, which means your browser connects to Google's servers when the page loads.</p>
+     <p style="margin-bottom:14px"><strong>Cookies & local storage:</strong> we don't use advertising or analytics cookies, and we don't track you across websites. The app only uses the browser storage that's strictly necessary to keep you signed in (set by Firebase Authentication). Fonts are loaded from Google Fonts, which means your browser connects to Google's servers when the page loads. If we ever add optional analytics or ads, they will only run with your consent, which you can give or change anytime via "Cookie settings" at the bottom of the page.</p>
       <p style="margin-bottom:14px"><strong>Hosting:</strong> the app is hosted on GitHub Pages. GitHub may log visitors' IP addresses for security purposes, under its own privacy policy.</p>
       <p style="margin-bottom:14px"><strong>Who we are & contact:</strong> C00K90 is a personal, non-commercial project run by its developer. For any privacy question or request, write to <a href="mailto:c00k90.contact@gmail.com" style="color:var(--teal-light)">c00k90.contact@gmail.com</a>.</p>
       <p style="margin-bottom:14px"><strong>Imported recipes:</strong> if you import a recipe from a link (YouTube, TikTok, etc.), we only save the link, title, category, and your own note — never the creator's full content. The source stays visible and credited.</p>
@@ -470,9 +478,28 @@ button,input,textarea,select{font-family:inherit!important;}
 
 <footer style="max-width:1200px;margin:40px auto 24px;padding:0 24px;text-align:center">
   <button id="openLegalBtn" style="background:none;border:none;color:var(--text-light);font-size:12px;cursor:pointer;text-decoration:underline">Privacy Policy &amp; Terms</button>
+  <span style="color:var(--text-light);font-size:12px;margin:0 6px">·</span>
+  <button id="openCookieSettingsBtn" style="background:none;border:none;color:var(--text-light);font-size:12px;cursor:pointer;text-decoration:underline">Cookie settings</button>
 </footer>
 
 <div class="toast hidden" id="toast"></div>
+
+<div id="cookieBanner" class="cookie-banner hidden">
+  <div class="cookie-text">
+    <strong>🍪 Cookies & storage</strong>
+    <p>We use only the storage needed to keep you signed in. Optional analytics and ads stay off unless you allow them (we don't use any yet).</p>
+    <div id="cookieOptions" class="cookie-options hidden">
+      <label><input type="checkbox" checked disabled> Necessary (always on)</label>
+      <label><input type="checkbox" id="consentAnalytics"> Analytics</label>
+      <label><input type="checkbox" id="consentAds"> Ads</label>
+    </div>
+  </div>
+  <div class="cookie-btns">
+    <button id="cookieReject" class="btn-save">Reject optional</button>
+    <button id="cookieCustomize" class="btn-cancel">Customize</button>
+    <button id="cookieAccept" class="btn-save">Accept all</button>
+  </div>
+</div>
 
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -1403,6 +1430,35 @@ function safeImg(src) {
   if (src.startsWith('data:image/') || src.startsWith('https://firebasestorage.googleapis.com/')) return src;
   return '';
 }
+const CONSENT_KEY='c00k90-consent';
+function getConsent(){ try{ return JSON.parse(localStorage.getItem(CONSENT_KEY)); }catch(e){ return null; } }
+function hasConsent(type){ const c=getConsent(); return !!(c && c[type]); }
+function saveConsent(analytics, ads){
+  try{ localStorage.setItem(CONSENT_KEY, JSON.stringify({analytics, ads, date:new Date().toISOString()})); }catch(e){}
+  document.getElementById('cookieBanner').classList.add('hidden');
+  document.getElementById('cookieOptions').classList.add('hidden');
+  document.getElementById('cookieCustomize').textContent='Customize';
+}
+function openCookieBanner(){
+  const c=getConsent()||{};
+  document.getElementById('consentAnalytics').checked=!!c.analytics;
+  document.getElementById('consentAds').checked=!!c.ads;
+  document.getElementById('cookieBanner').classList.remove('hidden');
+}
+document.getElementById('cookieAccept').addEventListener('click',()=>saveConsent(true,true));
+document.getElementById('cookieReject').addEventListener('click',()=>saveConsent(false,false));
+document.getElementById('cookieCustomize').addEventListener('click',()=>{
+  const opts=document.getElementById('cookieOptions');
+  if(opts.classList.contains('hidden')){
+    opts.classList.remove('hidden');
+    document.getElementById('cookieCustomize').textContent='Save choices';
+  } else {
+    saveConsent(document.getElementById('consentAnalytics').checked, document.getElementById('consentAds').checked);
+  }
+});
+document.getElementById('openCookieSettingsBtn').addEventListener('click', openCookieBanner);
+if(!getConsent()) document.getElementById('cookieBanner').classList.remove('hidden');
+
 function getImages(r) {
   if (r.images && r.images.length) return r.images;
   if (r.imageUrl) return [{ url: r.imageUrl, path: r.imagePath || '' }];
