@@ -255,6 +255,9 @@ button,input,textarea,select{font-family:inherit!important;}
   .modal-overlay:not(.hidden),.recipe-detail,.detail-body > *{animation:none!important;}
 }
 .notes-text{white-space:pre-line;}
+@media (hover: none){
+  .nav-btn:hover:not(.active){background:transparent;border-color:var(--border);color:var(--text-mid);}
+}
 </style>
 </head>
 <body>
@@ -595,13 +598,15 @@ grid.innerHTML = recipes.map(r => {
 }
 
 // NAV
+function setActiveNav(id) {
+  ['navHome','navFav','navInspired'].forEach(n => document.getElementById(n).classList.toggle('active', n === id));
+}
 document.getElementById('navHome').addEventListener('click', () => {
   currentView='all'; currentCategory='all';
   document.getElementById('searchInput').value='';
   document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
   document.querySelector('.filter-chip[data-cat="all"]').classList.add('active');
-  document.getElementById('navHome').classList.add('active');
-  document.getElementById('navFav').classList.remove('active');
+  setActiveNav('navHome');
   renderGrid();
 });
 document.getElementById('navFav').addEventListener('click', () => {
@@ -609,8 +614,7 @@ document.getElementById('navFav').addEventListener('click', () => {
   document.getElementById('searchInput').value='';
   document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
   document.querySelector('.filter-chip[data-cat="all"]').classList.add('active');
-  document.getElementById('navHome').classList.remove('active');
-  document.getElementById('navFav').classList.add('active');
+  setActiveNav('navFav');
   renderGrid();
 });
 document.getElementById('logoBtn').addEventListener('click', () => document.getElementById('navHome').click());
@@ -618,11 +622,11 @@ document.getElementById('searchInput').addEventListener('input', renderGrid);
 document.getElementById('sortSelect').addEventListener('change', renderGrid);
 document.querySelectorAll('.filter-chip').forEach(chip => {
   chip.addEventListener('click', () => {
-    currentCategory = chip.dataset.cat; currentView='all';
+    currentCategory = chip.dataset.cat;
+    if (currentView !== 'inspired') currentView='all';
     document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
     chip.classList.add('active');
-    document.getElementById('navHome').classList.add('active');
-    document.getElementById('navFav').classList.remove('active');
+    setActiveNav(currentView === 'inspired' ? 'navInspired' : 'navHome');
     renderGrid();
   });
 });
@@ -1329,9 +1333,7 @@ document.getElementById('navInspired').addEventListener('click', async () => {
   document.getElementById('searchInput').value='';
   document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
   document.querySelector('.filter-chip[data-cat="all"]').classList.add('active');
-  document.getElementById('navHome').classList.remove('active');
-  document.getElementById('navFav').classList.remove('active');
-  document.getElementById('navInspired').classList.add('active');
+  setActiveNav('navInspired');
   await loadInspiredRecipes();
   renderGrid();
 });
