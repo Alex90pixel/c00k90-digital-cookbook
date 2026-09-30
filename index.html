@@ -1464,7 +1464,19 @@ function setDiffButton(value) {
     }
   });
 
-  const estimatedServings = Math.max(1, Math.round(totalGrams / 300));
+    const catNow = document.getElementById('fCategory').value;
+  const KCAL_PER_SERVING = {Breakfast:350, Desserts:350, Baking:350, Soups:250, Salads:250, Mains:550, Drinks:200, Other:400};
+  const tempRecipe = { servings:1, ingredients: Array.from(ingredientRows).map(row => {
+    const i = row.querySelectorAll('input');
+    return { qty:i[0].value, unit:i[1].value, name:i[2].value };
+  })};
+  const nutri = estimateNutrition(tempRecipe);
+  let estimatedServings;
+  if (nutri && (!nutri.unmatched || nutri.unmatched.length <= 1) && parseFloat(nutri.calories) > 0) {
+    estimatedServings = Math.max(1, Math.round(parseFloat(nutri.calories) / (KCAL_PER_SERVING[catNow] || 400)));
+  } else {
+    estimatedServings = Math.max(1, Math.round(totalGrams / 300));
+  }
 
   const prepInput = document.getElementById("fPrep");
   const cookInput = document.getElementById("fCook");
