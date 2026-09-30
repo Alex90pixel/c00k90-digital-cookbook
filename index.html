@@ -283,6 +283,15 @@ button,input,textarea,select{font-family:inherit!important;}
 .diet-checks label{display:flex;align-items:center;gap:6px;text-transform:none;letter-spacing:0;font-weight:600;color:var(--text-mid);font-size:13px;margin:0;cursor:pointer;}
 .diet-checks input{width:auto;padding:0;margin:0;accent-color:var(--teal);}
 .diet-legend{font-size:11px;color:var(--text-light);margin-top:8px;line-height:1.5;}
+/* ===== Filtre dieta ===== */
+.diet-bar{max-width:1200px;margin:12px auto 0;padding:0 24px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.diet-chip{padding:6px 14px;border-radius:50px;border:1.5px solid var(--border);background:transparent;color:var(--text-mid);font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;}
+.diet-chip:hover{border-color:var(--teal-light);color:var(--teal-deep);}
+.diet-chip.active{background:linear-gradient(135deg,var(--magenta),var(--teal));border-color:transparent;color:white;}
+.diet-bar-legend{max-width:1200px;margin:6px auto 0;padding:0 24px;}
+.diet-pill small{opacity:.7;font-weight:400;}
+@media(max-width:768px){.diet-bar,.diet-bar-legend{padding:0 16px;}}
+@media (hover:none){.diet-chip:hover:not(.active){border-color:var(--border);color:var(--text-mid);}}
 </style>
 </head>
 <body>
@@ -617,7 +626,8 @@ function getFiltered() {
   let r = currentView === 'inspired' ? [...inspiredRecipes] : [...allRecipes];
   const q = document.getElementById('searchInput').value.toLowerCase().trim();
   if (currentView === 'favorites') r = r.filter(x => x.favorite);
-  if (currentCategory !== 'all') r = r.filter(x => x.category === currentCategory);
+   if (currentCategory !== 'all') r = r.filter(x => x.category === currentCategory);
+  if (currentDiet) r = r.filter(x => getDietLabels(x).includes(currentDiet));
   if (q) r = r.filter(x => {z
     const ing = (x.ingredients||[]).map(i=>i.name+' '+i.qty+' '+i.unit).join(' ').toLowerCase();
     const tags = (x.tags||[]).join(' ').toLowerCase();
@@ -769,6 +779,7 @@ function openDetail(id) {
         ${r.cookTime?`<span class="detail-meta-item">🔥 Cook: ${escHtml(r.cookTime)} min</span>`:''}
         ${total?`<span class="detail-meta-item">⏱ Total: ${escHtml(total)} min</span>`:''}
         <span class="detail-meta-item">${diffIcon(r.difficulty)} ${escHtml(r.difficulty||'Easy')}</span>
+        ${getDietLabels(r).map(id=>{const d=DIETS.find(x=>x.id===id);return d?`<span class="detail-meta-item diet-pill">${d.label}${d.manual?'':' <small>(est.)</small>'}</span>`:'';}).join('')}
         ${r.servings?`<span class="detail-meta-item">🍽 <button id="servMinusBtn" style="border:none;background:transparent;color:inherit;cursor:pointer;font-weight:700;padding:0 6px;font-size:14px">−</button><span id="servValueDisplay">${escHtml(r.servings)}</span> servings<button id="servPlusBtn" style="border:none;background:transparent;color:inherit;cursor:pointer;font-weight:700;padding:0 6px;font-size:14px">+</button></span>`:''}
       </div>
       <div class="detail-actions" id="detailActions"></div>
@@ -1497,6 +1508,19 @@ function getDietLabels(r){
   if(totalTime>0 && totalTime<30) labels.push('quick');
   return labels;
 }
+
+let currentDiet=null;
+function renderDietBar(){
+  let bar=document.getElementById('dietBar');
+  if(!bar){
+    document.querySelector('.filter-bar').insertAdjacentHTML('afterend',
+      `<div class="diet-bar" id="dietBar"></div><p class="diet-legend diet-bar-legend">💪 High protein ≥20g protein · 🥦 Low carb ≤20g carbs · 🫒 Low fat ≤10g fat · 🥑 Keto ≤10g carbs — per serving, estimated from recognized ingredients. ⚡ Quick = under 30 min total. Other labels are set by the recipe's author.</p>`);
+    bar=document.getElementById('dietBar');
+  }
+  bar.innerHTML=`<span class="filter-label">Diet</span>`+[{id:null,label:'All'},...DIETS].map(d=>`<button class="diet-chip${currentDiet===d.id?' active':''}" data-diet="${d.id||''}">${d.label}</button>`).join('');
+  bar.querySelectorAll('.diet-chip').forEach(b=>b.addEventListener('click',()=>{currentDiet=b.dataset.diet||null;renderDietBar();renderGrid();}));
+}
+renderDietBar();
 
 const CONSENT_KEY='c00k90-consent';
 const CONSENT_VERSION=1;
