@@ -1607,14 +1607,20 @@ function renderDietBar(){
   sortRow.insertAdjacentHTML('afterbegin',
     `<div class="filter-selects" id="filterSelects">
       <select id="catSelect" aria-label="Category"><option value="all">All categories</option>${CATEGORIES.map(c=>`<option value="${c}">${getCatEmoji(c)} ${c}</option>`).join('')}</select>
-      <select id="dietSelect" aria-label="Diet"><option value="">All diets</option>${DIETS.map(d=>`<option value="${d.id}">${d.label}</option>`).join('')}</select>
-      <button type="button" id="dietInfoBtn" class="info-btn" aria-label="What do the diet labels mean?">ⓘ</button>
+      <select id="dietSelect" aria-label="Diet"><option value="">All diets</option>${DIETS.map(d=>`<option value="${d.id}">${d.label}</option>`).join('')}<option value="__info">ℹ️ What do these mean?</option></select>
     </div>`);
   sortRow.insertAdjacentHTML('afterend',
     `<p class="diet-legend diet-bar-legend hidden" id="dietLegend">💪 High protein ≥20g protein · 🥦 Low carb ≤20g carbs · 🫒 Low fat ≤10g fat · 🥑 Keto ≤10g carbs — per serving, estimated from recognized ingredients. ⚡ Quick = under 30 min total. Other labels are set by the recipe's author.</p>`);
   document.getElementById('catSelect').addEventListener('change',e=>{currentCategory=e.target.value;renderGrid();});
-  document.getElementById('dietSelect').addEventListener('change',e=>{currentDiet=e.target.value||null;renderGrid();});
-  document.getElementById('dietInfoBtn').addEventListener('click',()=>document.getElementById('dietLegend').classList.toggle('hidden'));
+document.getElementById('dietSelect').addEventListener('change',e=>{
+    if(e.target.value==='__info'){
+      document.getElementById('dietLegend').classList.toggle('hidden');
+      e.target.value=currentDiet||'';
+      return;
+    }
+    currentDiet=e.target.value||null;
+    renderGrid();
+  });
     document.getElementById('sortSelect').insertAdjacentHTML('beforeend','<option value="protein">Most protein</option><option value="kcal">Fewest calories</option>');
   document.getElementById('filterSelects').appendChild(document.getElementById('sortSelect'));
 }
