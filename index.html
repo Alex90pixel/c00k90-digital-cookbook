@@ -293,6 +293,12 @@ button,input,textarea,select{font-family:inherit!important;}
 .diet-pill small{opacity:.7;font-weight:400;}
 @media(max-width:768px){.diet-bar,.diet-bar-legend{padding:0 16px;}}
 @media (hover:none){.diet-chip:hover:not(.active){border-color:var(--border);color:var(--text-mid);}}
+/* ===== Filtre simplificate ===== */
+.filter-bar{display:none!important;}
+.sort-row{flex-wrap:wrap;}
+.filter-selects{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.filter-selects select{padding:6px 12px;border:1.5px solid var(--border);border-radius:50px;background:var(--card);font-size:13px;color:var(--text-mid);cursor:pointer;outline:none;}
+.info-btn{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);background:transparent;color:var(--text-light);cursor:pointer;font-size:14px;}  
 </style>
 </head>
 <body>
@@ -623,6 +629,7 @@ async function loadRecipes() {
 }
 
 // RENDER
+function nutVal(r,key,fallback){ const n=estimateNutrition(r); return (n && !isNaN(parseFloat(n[key]))) ? parseFloat(n[key]) : fallback; }
 function getFiltered() {
   let r = currentView === 'inspired' ? [...inspiredRecipes] : [...allRecipes];
   const q = document.getElementById('searchInput').value.toLowerCase().trim();
@@ -637,11 +644,15 @@ function getFiltered() {
   const sort = document.getElementById('sortSelect').value;
   if (sort==='alpha') r.sort((a,b)=>a.name.localeCompare(b.name));
   else if (sort==='time') r.sort((a,b)=>((a.prepTime||0)+(a.cookTime||0))-((b.prepTime||0)+(b.cookTime||0)));
+  else if (sort==='protein') r.sort((a,b)=>nutVal(b,'protein',-1)-nutVal(a,'protein',-1));
+  else if (sort==='kcal') r.sort((a,b)=>nutVal(a,'calories',Infinity)-nutVal(b,'calories',Infinity));
   else r.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
   return r;
 }
 
 function renderGrid() {
+  const cs=document.getElementById('catSelect'); if(cs) cs.value=currentCategory;
+  const ds=document.getElementById('dietSelect'); if(ds) ds.value=currentDiet||'';
   const grid = document.getElementById('recipeGrid');
   const recipes = getFiltered();
   document.getElementById('recipeCount').textContent = `${recipes.length} recipe${recipes.length!==1?'s':''}`;
@@ -1589,15 +1600,22 @@ function getDietLabels(r){
 }
 
 let currentDiet=null;
+const CATEGORIES=['Breakfast','Mains','Soups','Salads','Baking','Desserts','Drinks','Other'];
 function renderDietBar(){
-  let bar=document.getElementById('dietBar');
-  if(!bar){
-    document.querySelector('.filter-bar').insertAdjacentHTML('afterend',
-      `<div class="diet-bar" id="dietBar"></div><p class="diet-legend diet-bar-legend">💪 High protein ≥20g protein · 🥦 Low carb ≤20g carbs · 🫒 Low fat ≤10g fat · 🥑 Keto ≤10g carbs — per serving, estimated from recognized ingredients. ⚡ Quick = under 30 min total. Other labels are set by the recipe's author.</p>`);
-    bar=document.getElementById('dietBar');
-  }
-  bar.innerHTML=`<span class="filter-label">Diet</span>`+[{id:null,label:'All'},...DIETS].map(d=>`<button class="diet-chip${currentDiet===d.id?' active':''}" data-diet="${d.id||''}">${d.label}</button>`).join('');
-  bar.querySelectorAll('.diet-chip').forEach(b=>b.addEventListener('click',()=>{currentDiet=b.dataset.diet||null;renderDietBar();renderGrid();}));
+  if(document.getElementById('filterSelects')) return;
+  const sortRow=document.querySelector('.sort-row');
+  sortRow.insertAdjacentHTML('afterbegin',
+    `<div class="filter-selects" id="filterSelects">
+      <select id="catSelect" aria-label="Category"><option value="all">All categories</option>${CATEGORIES.map(c=>`<option value="${c}">${getCatEmoji(c)} ${c}</option>`).join('')}</select>
+      <select id="dietSelect" aria-label="Diet"><option value="">All diets</option>${DIETS.map(d=>`<option value="${d.id}">${d.label}</option>`).join('')}</select>
+      <button type="button" id="dietInfoBtn" class="info-btn" aria-label="What do the diet labels mean?">ⓘ</button>
+    </div>`);
+  sortRow.insertAdjacentHTML('afterend',
+    `<p class="diet-legend diet-bar-legend hidden" id="dietLegend">💪 High protein ≥20g protein · 🥦 Low carb ≤20g carbs · 🫒 Low fat ≤10g fat · 🥑 Keto ≤10g carbs — per serving, estimated from recognized ingredients. ⚡ Quick = under 30 min total. Other labels are set by the recipe's author.</p>`);
+  document.getElementById('catSelect').addEventListener('change',e=>{currentCategory=e.target.value;renderGrid();});
+  document.getElementById('dietSelect').addEventListener('change',e=>{currentDiet=e.target.value||null;renderGrid();});
+  document.getElementById('dietInfoBtn').addEventListener('click',()=>document.getElementById('dietLegend').classList.toggle('hidden'));
+  document.getElementById('sortSelect').insertAdjacentHTML('beforeend','<option value="protein">Most protein</option><option value="kcal">Fewest calories</option>');
 }
 renderDietBar();
 
