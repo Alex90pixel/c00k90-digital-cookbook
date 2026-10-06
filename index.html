@@ -780,7 +780,6 @@ function updateServingsDisplay(r, newServings, baseServings) {
 }
 
 function openDetail(id) {
-  console.log('TEST openDetail', id, 'mine:', !!allRecipes.find(x=>x.id===id), 'inspired:', !!inspiredRecipes.find(x=>x.id===id));
   const r = allRecipes.find(x=>x.id===id) || inspiredRecipes.find(x=>x.id===id); if(!r) return;
   const total=(r.prepTime||0)+(r.cookTime||0);
   const imgs=getImages(r);
@@ -861,11 +860,11 @@ function openDetail(id) {
 
    {
     let detailServings = initialServings;
-    document.getElementById('servMinusBtn').addEventListener('click', () => {
+    document.getElementById('servMinusBtn')?.addEventListener('click', () => {
       detailServings = Math.max(1, detailServings - 1);
       updateServingsDisplay(r, detailServings, initialServings);
     });
-    document.getElementById('servPlusBtn').addEventListener('click', () => {
+    document.getElementById('servPlusBtn')?.addEventListener('click', () => {
       detailServings = detailServings + 1;
       updateServingsDisplay(r, detailServings, initialServings);
     });
