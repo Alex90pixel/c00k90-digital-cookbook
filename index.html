@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex, nofollow">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>C00K90 — Digital Cook Book</title>
@@ -779,6 +780,7 @@ function updateServingsDisplay(r, newServings, baseServings) {
 }
 
 function openDetail(id) {
+  console.log('TEST openDetail', id, 'mine:', !!allRecipes.find(x=>x.id===id), 'inspired:', !!inspiredRecipes.find(x=>x.id===id));
   const r = allRecipes.find(x=>x.id===id) || inspiredRecipes.find(x=>x.id===id); if(!r) return;
   const total=(r.prepTime||0)+(r.cookTime||0);
   const imgs=getImages(r);
