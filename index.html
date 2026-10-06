@@ -1615,7 +1615,8 @@ function renderDietBar(){
   document.getElementById('catSelect').addEventListener('change',e=>{currentCategory=e.target.value;renderGrid();});
   document.getElementById('dietSelect').addEventListener('change',e=>{currentDiet=e.target.value||null;renderGrid();});
   document.getElementById('dietInfoBtn').addEventListener('click',()=>document.getElementById('dietLegend').classList.toggle('hidden'));
-  document.getElementById('sortSelect').insertAdjacentHTML('beforeend','<option value="protein">Most protein</option><option value="kcal">Fewest calories</option>');
+    document.getElementById('sortSelect').insertAdjacentHTML('beforeend','<option value="protein">Most protein</option><option value="kcal">Fewest calories</option>');
+  document.getElementById('filterSelects').appendChild(document.getElementById('sortSelect'));
 }
 renderDietBar();
 
