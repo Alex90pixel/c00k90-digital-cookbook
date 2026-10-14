@@ -301,6 +301,18 @@ button,input,textarea,select{font-family:inherit!important;}
 .filter-selects select{padding:6px 12px;border:1.5px solid var(--border);border-radius:50px;background:var(--card);font-size:13px;color:var(--text-mid);cursor:pointer;outline:none;}
 .info-btn{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);background:transparent;color:var(--text-light);cursor:pointer;font-size:14px;}  
 /* ===== Teme ===== */
+:root{--logo-a:#9FB85A;--logo-b:#34C79A;--logo-rim:#C2D67A;--logo-steam:#7FE3C0;}
+html[data-theme="sea"]{--logo-a:#F6A77A;--logo-b:#F07B3F;--logo-rim:#6FCFC4;--logo-steam:#A8E0D8;}
+html[data-theme="rose"]{--logo-a:#D99AA1;--logo-b:#B5646D;--logo-rim:#1F4D4A;--logo-steam:#8A9497;}
+html[data-theme="sunny"]{--logo-a:#F08AA3;--logo-b:#E55D7E;--logo-rim:#526038;--logo-steam:#9C9D57;}
+:root{--logo-a:#9FB85A;--logo-b:#34C79A;--logo-rim:#C2D67A;--logo-steam:#7FE3C0;}
+html[data-theme="sea"]{--logo-a:#F6A77A;--logo-b:#F07B3F;--logo-rim:#6FCFC4;--logo-steam:#A8E0D8;}
+html[data-theme="rose"]{--logo-a:#D99AA1;--logo-b:#B5646D;--logo-rim:#1F4D4A;--logo-steam:#8A9497;}
+html[data-theme="sunny"]{--logo-a:#F08AA3;--logo-b:#E55D7E;--logo-rim:#526038;--logo-steam:#9C9D57;}
+:root{--logo-a:#9FB85A;--logo-b:#34C79A;--logo-rim:#C2D67A;--logo-steam:#7FE3C0;}
+html[data-theme="sea"]{--logo-a:#F6A77A;--logo-b:#F07B3F;--logo-rim:#6FCFC4;--logo-steam:#A8E0D8;}
+html[data-theme="rose"]{--logo-a:#D99AA1;--logo-b:#B5646D;--logo-rim:#1F4D4A;--logo-steam:#8A9497;}
+html[data-theme="sunny"]{--logo-a:#F08AA3;--logo-b:#E55D7E;--logo-rim:#526038;--logo-steam:#9C9D57;}
 .account-dropdown{background:var(--card)!important;}
 html[data-theme="sea"]{
   --bg:#071A1E;--card:#0E2A2F;--card-soft:#123238;
@@ -342,13 +354,13 @@ html[data-theme="sunny"] .auth-card,html[data-theme="sunny"] .recipe-detail,html
 <div class="auth-screen" id="authScreen">
   <div class="auth-card">
         <svg class="auth-logo-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-      <defs><linearGradient id="authLogoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9FB85A"/><stop offset="1" stop-color="#34C79A"/></linearGradient></defs>
+      <defs><linearGradient id="authLogoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--logo-a)"/><stop offset="1" style="stop-color:var(--logo-b)"/></linearGradient></defs>
       <path d="M8 21h24v5a8 8 0 0 1-8 8h-8a8 8 0 0 1-8-8v-5z" fill="url(#authLogoGrad)"/>
-      <rect x="6" y="18.5" width="28" height="3" rx="1.5" fill="#C2D67A"/>
-      <path d="M5 23.5H3M35 23.5h2" stroke="#C2D67A" stroke-width="2.2" stroke-linecap="round"/>
-      <path d="M13.5 15.5c-1.8-2 1.8-3.8 0-6.5" stroke="#7FE3C0" stroke-width="2" stroke-linecap="round"/>
-      <path d="M20 15.5c-1.8-2.5 1.8-4.5 0-9" stroke="#C2D67A" stroke-width="2" stroke-linecap="round"/>
-      <path d="M26.5 15.5c-1.8-2 1.8-3.8 0-6.5" stroke="#7FE3C0" stroke-width="2" stroke-linecap="round"/>
+      <rect x="6" y="18.5" width="28" height="3" rx="1.5" style="fill:var(--logo-rim)"/>
+      <path d="M5 23.5H3M35 23.5h2" style="stroke:var(--logo-rim)" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M13.5 15.5c-1.8-2 1.8-3.8 0-6.5" style="stroke:var(--logo-steam)" stroke-width="2" stroke-linecap="round"/>
+      <path d="M20 15.5c-1.8-2.5 1.8-4.5 0-9" style="stroke:var(--logo-rim)" stroke-width="2" stroke-linecap="round"/>
+      <path d="M26.5 15.5c-1.8-2 1.8-3.8 0-6.5" style="stroke:var(--logo-steam)" stroke-width="2" stroke-linecap="round"/>
     </svg>
     <div class="auth-logo">C<span class="zero">0</span><span class="zero">0</span>K9<span class="zero">0</span></div>
     <div class="auth-sub">Digital Cook Book</div>
@@ -364,13 +376,13 @@ html[data-theme="sunny"] .auth-card,html[data-theme="sunny"] .recipe-detail,html
   <div class="header-inner">
     <div class="logo" id="logoBtn">
       <svg class="logo-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <defs><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9FB85A"/><stop offset="1" stop-color="#34C79A"/></linearGradient></defs>
+        <defs><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--logo-a)"/><stop offset="1" style="stop-color:var(--logo-b)"/></linearGradient></defs>
         <path d="M8 21h24v5a8 8 0 0 1-8 8h-8a8 8 0 0 1-8-8v-5z" fill="url(#logoGrad)"/>
-        <rect x="6" y="18.5" width="28" height="3" rx="1.5" fill="#C2D67A"/>
-        <path d="M5 23.5H3M35 23.5h2" stroke="#C2D67A" stroke-width="2.2" stroke-linecap="round"/>
-<path d="M13.5 15.5c-1.8-2 1.8-3.8 0-6.5" stroke="#7FE3C0" stroke-width="2" stroke-linecap="round"/>
-        <path d="M20 15.5c-1.8-2.5 1.8-4.5 0-9" stroke="#C2D67A" stroke-width="2" stroke-linecap="round"/>
-        <path d="M26.5 15.5c-1.8-2 1.8-3.8 0-6.5" stroke="#7FE3C0" stroke-width="2" stroke-linecap="round"/>
+        <rect x="6" y="18.5" width="28" height="3" rx="1.5" style="fill:var(--logo-rim)"/>
+        <path d="M5 23.5H3M35 23.5h2" style="stroke:var(--logo-rim)" stroke-width="2.2" stroke-linecap="round"/>
+<path d="M13.5 15.5c-1.8-2 1.8-3.8 0-6.5" style="stroke:var(--logo-steam)" stroke-width="2" stroke-linecap="round"/>
+        <path d="M20 15.5c-1.8-2.5 1.8-4.5 0-9" style="stroke:var(--logo-rim)" stroke-width="2" stroke-linecap="round"/>
+        <path d="M26.5 15.5c-1.8-2 1.8-3.8 0-6.5" style="stroke:var(--logo-steam)" stroke-width="2" stroke-linecap="round"/>
       </svg>
       <div class="logo-title">C<span class="zero">0</span><span class="zero">0</span>K9<span class="zero">0</span></div>
     </div>
