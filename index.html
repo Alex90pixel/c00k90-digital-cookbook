@@ -1950,8 +1950,8 @@ document.getElementById('reportsClose').addEventListener('click', ()=>document.g
 auth.onAuthStateChanged(u=>{ if(u && u.uid===ADMIN_UID) setTimeout(loadReports, 800); });
 
 document.addEventListener('keydown', e => {
-  if (e.key !== 'Escape') return;
-  const open = Array.from(document.querySelectorAll('.modal-overlay')).filter(o => !o.classList.contains('hidden'));
+  if (e.key !== 'Escape' && e.key !== 'Esc') return;  
+  const open = Array.from(document.querySelectorAll('.modal-overlay')).filter(o => getComputedStyle(o).display !== 'none');
   if (!open.length) return;
   const top = open[open.length - 1];
   if (top.id === 'formOverlay') {
