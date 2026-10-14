@@ -2030,7 +2030,7 @@ auth.onAuthStateChanged(u=>{
   const name=(u.displayName||(u.email||'?').split('@')[0]);
   const letter=name.charAt(0).toUpperCase();
   const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect width="64" height="64" rx="32" fill="#2E8F72"/><text x="32" y="41" font-family="sans-serif" font-size="28" font-weight="700" fill="#fff" text-anchor="middle">${letter.replace(/[<>&"']/g,'')}</text></svg>`;
-  setTimeout(()=>{ document.getElementById('userAvatar').src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg); },50);
+  setTimeout(()=>{ document.getElementById('userAvatar').classList.remove('hidden'); document.getElementById('userAvatar').src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg); },50);
 });
 
 function getImages(r) {
