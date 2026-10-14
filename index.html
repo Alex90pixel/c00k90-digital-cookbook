@@ -459,7 +459,7 @@ html[data-theme="sunny"] .btn-action.danger,html[data-theme="rose"] .btn-action.
             <div class="account-menu">
         <img id="userAvatar" class="user-avatar hidden" src="" alt="user"><span id="reportBadge" class="report-badge hidden"></span>
         <div class="account-dropdown" id="accountDropdown">
-          <button class="btn-signout hidden" id="reportsMenuBtn">🚩 Reports</button><button class="btn-signout hidden" id="linkAccountBtn">🔑 Set username &amp; password</button><button class="btn-signout hidden" id="unlinkGoogleBtn">🧹 Remove Google from my account</button><button class="btn-signout" id="themeBtn">🎨 Theme</button>
+          <button class="btn-signout hidden" id="reportsMenuBtn">🚩 Reports</button><button class="btn-signout hidden" id="feedbackInboxBtn">💬 Feedback inbox</button><button class="btn-signout hidden" id="linkAccountBtn">🔑 Set username &amp; password</button><button class="btn-signout hidden" id="unlinkGoogleBtn">🧹 Remove Google from my account</button><button class="btn-signout" id="themeBtn">🎨 Theme</button>
           <button class="btn-signout" id="feedbackBtn">💬 Send feedback</button>
           <button class="btn-signout hidden" id="exportDataBtn">Export my data</button>
           <button class="btn-signout hidden" id="signOutBtn">Sign out</button>
@@ -628,6 +628,14 @@ html[data-theme="sunny"] .btn-action.danger,html[data-theme="rose"] .btn-action.
 </footer>
 
 <div class="toast hidden" id="toast"></div>
+
+<div class="modal-overlay hidden" id="feedbackInboxOverlay">
+  <div class="confirm-dialog" style="max-width:480px">
+    <h3>💬 Feedback inbox</h3>
+    <div id="feedbackInboxList" style="max-height:60vh;overflow-y:auto;margin-bottom:16px"></div>
+    <div class="confirm-btns"><button class="btn-confirm-cancel" id="feedbackInboxClose">Close</button></div>
+  </div>
+</div>
 
 <div class="modal-overlay hidden" id="linkOverlay">
   <div class="confirm-dialog" style="max-width:400px">
@@ -1967,7 +1975,7 @@ async function loadReports(){
   }catch(e){ currentReports=[]; }
   const n=currentReports.length;
   const badge=document.getElementById('reportBadge');
-  badge.textContent=n; badge.classList.toggle('hidden', n===0);
+updateAdminBadge();
   const btn=document.getElementById('reportsMenuBtn');
   btn.classList.remove('hidden');
   btn.textContent=n?`🚩 Reports (${n})`:'🚩 Reports';
@@ -2138,6 +2146,46 @@ document.querySelectorAll('input[type="password"]').forEach(inp=>{
   });
   wrap.appendChild(btn);
 });
+
+let currentFeedback=[];
+const FEEDBACK_TYPES={bug:'🐞 Something\'s broken',idea:'💡 Idea',other:'💬 Other'};
+function updateAdminBadge(){
+  const n=currentReports.length+currentFeedback.length;
+  const badge=document.getElementById('reportBadge');
+  badge.textContent=n; badge.classList.toggle('hidden', n===0);
+}
+async function loadFeedbackInbox(){
+  if(!currentUser || currentUser.uid!==ADMIN_UID) return;
+  try{
+    const snap=await db.collection('feedback').get();
+    currentFeedback=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  }catch(e){ currentFeedback=[]; }
+  const btn=document.getElementById('feedbackInboxBtn');
+  btn.classList.remove('hidden');
+  btn.textContent=currentFeedback.length?`💬 Feedback inbox (${currentFeedback.length})`:'💬 Feedback inbox';
+  updateAdminBadge();
+}
+function renderFeedbackInbox(){
+  const list=document.getElementById('feedbackInboxList');
+  if(!currentFeedback.length){ list.innerHTML='<p>No new messages. 🌿</p>'; return; }
+  list.innerHTML=currentFeedback.map(f=>`
+    <div class="report-item">
+      <strong>${escHtml(FEEDBACK_TYPES[f.type]||f.type||'')}</strong>
+      <div style="margin-top:6px;white-space:pre-line">${escHtml(f.text||'')}</div>
+      <small>${new Date(f.createdAt||0).toLocaleString()}</small>
+      <div class="report-actions"><button class="btn-action" data-done="${escHtml(f.id)}">✓ Done</button></div>
+    </div>`).join('');
+  list.querySelectorAll('[data-done]').forEach(b=>b.addEventListener('click', async ()=>{
+    try{ await db.collection('feedback').doc(b.dataset.done).delete(); await loadFeedbackInbox(); renderFeedbackInbox(); }
+    catch(e){ showToast('⚠️ Could not remove: '+e.message); }
+  }));
+}
+document.getElementById('feedbackInboxBtn').addEventListener('click', async ()=>{
+  await loadFeedbackInbox(); renderFeedbackInbox();
+  document.getElementById('feedbackInboxOverlay').classList.remove('hidden');
+});
+document.getElementById('feedbackInboxClose').addEventListener('click', ()=>document.getElementById('feedbackInboxOverlay').classList.add('hidden'));
+auth.onAuthStateChanged(u=>{ if(u && u.uid===ADMIN_UID) setTimeout(loadFeedbackInbox, 900); });
 
 function getImages(r) {
   if (r.images && r.images.length) return r.images;
