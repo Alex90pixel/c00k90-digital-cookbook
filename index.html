@@ -567,7 +567,7 @@ html[data-theme="sunny"] .btn-action.danger,html[data-theme="rose"] .btn-action.
 
       <h3 style="color:var(--magenta-deep);margin:24px 0 10px">Terms of Use</h3>
       <p style="margin-bottom:14px">C00K90 — Digital Cook Book is a personal project, offered free of charge, with no guarantee of continuous availability, accuracy, or error-free operation. It may be changed, interrupted, or discontinued at any time.</p>
-      <p style="margin-bottom:14px">You're solely responsible for the recipes, notes, and photos you upload. Don't post content that infringes on someone else's copyright.</p>
+      <p style="margin-bottom:14px">You're solely responsible for the recipes, notes, and photos you upload. Don't post content that infringes on someone else's copyright. Don't post offensive, explicit, violent or hateful content. We may hide or remove content that breaks these rules, and suspend accounts that repeatedly do so.</p>
       <p style="margin-bottom:14px">To the fullest extent permitted by law, the developer isn't responsible for errors in recipes or nutrition values, allergic reactions or health issues from preparing or consuming a recipe, or account security issues arising from a compromised Google account.</p>
 
       <h3 style="color:var(--magenta-deep);margin:24px 0 10px">Nutrition Disclaimer</h3>
@@ -584,6 +584,24 @@ html[data-theme="sunny"] .btn-action.danger,html[data-theme="rose"] .btn-action.
 </footer>
 
 <div class="toast hidden" id="toast"></div>
+
+<div class="modal-overlay hidden" id="reportOverlay">
+  <div class="confirm-dialog" style="max-width:420px;text-align:left">
+    <h3 style="text-align:center">🚩 Report this recipe</h3>
+    <p style="text-align:center">Thanks for helping keep C00K90 a friendly place.</p>
+    <select id="reportReason" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:12px;background:var(--card-soft);color:var(--text-dark);font-size:14px;margin-bottom:10px">
+      <option value="inappropriate-photo">Inappropriate photo</option>
+      <option value="offensive-text">Offensive text</option>
+      <option value="spam">Spam or advertising</option>
+      <option value="other">Something else</option>
+    </select>
+    <textarea id="reportText" rows="3" maxlength="500" placeholder="Anything we should know? (optional)" style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:12px;background:var(--card-soft);color:var(--text-dark);font-size:14px;resize:vertical;margin-bottom:16px"></textarea>
+    <div class="confirm-btns">
+      <button class="btn-confirm-cancel" id="reportCancel">Cancel</button>
+      <button class="btn-confirm-delete" id="reportSend">Report</button>
+    </div>
+  </div>
+</div>
 
 <div class="modal-overlay hidden" id="themeOverlay">
   <div class="confirm-dialog" style="max-width:380px">
@@ -948,7 +966,7 @@ function openDetail(id) {
       showToast(r.shared?'✨ Shared to Get Inspired!':'Removed from Get Inspired');
     });
   } else {
-    actionsEl.innerHTML = `<p style="font-size:13px;color:var(--text-light);font-style:italic">Shared by another cook, for inspiration</p>`;
+    actionsEl.innerHTML = `<p style="font-size:13px;color:var(--text-light);font-style:italic">Shared by another cook, for inspiration</p><button class="btn-action" id="reportBtn">🚩 Report</button>`; document.getElementById('reportBtn').addEventListener('click', () => openReport(r)); if(currentUser.uid===ADMIN_UID){ actionsEl.insertAdjacentHTML('beforeend','<button class="btn-action danger" id="modHideBtn">🛡️ Hide from Get Inspired</button>'); document.getElementById('modHideBtn').addEventListener('click', () => moderatorHide(r)); }
   }
 
   const stepsHTML=(r.steps||[]).map((s,i)=>`<div class="step-item"><div class="step-num">${i+1}</div><div class="step-text">${escHtml(s)}</div></div>`).join('');
@@ -1832,6 +1850,39 @@ function renderPairingHTML(r){
   const p=pickPairing(r); if(!p) return '';
   return `<div class="section-heading">Pairs well with</div><div class="pairing-box">${p.wine?`<div>🍷 ${escHtml(p.wine)}</div>`:''}<div>🧃 ${escHtml(p.noAlcohol)}</div><p class="pairing-note">${escHtml(p.wine ? PAIRINGS.disclaimer : PAIRINGS.disclaimer.split('. Please')[0] + '.')}</p></div>`;
 }
+
+const ADMIN_UID='6uZpc802wDVjgA0SAjEdtZCCJem2';
+async function moderatorHide(r){
+  if(!confirm('Hide "'+(r.name||'this recipe')+'" from Get Inspired? The author keeps it privately.')) return;
+  try{
+    await db.collection('recipes').doc(r.id).update({shared:false, hiddenByModerator:true});
+    inspiredRecipes=inspiredRecipes.filter(x=>x.id!==r.id);
+    closeDetail(); renderGrid();
+    showToast('🛡️ Hidden from Get Inspired');
+  }catch(e){ showToast('⚠️ Could not hide: '+e.message); }
+}
+let reportTarget=null;
+function openReport(r){
+  reportTarget=r;
+  document.getElementById('reportText').value='';
+  document.getElementById('reportOverlay').classList.remove('hidden');
+}
+document.getElementById('reportCancel').addEventListener('click', () => document.getElementById('reportOverlay').classList.add('hidden'));
+document.getElementById('reportSend').addEventListener('click', async () => {
+  if(!reportTarget) return;
+  const btn=document.getElementById('reportSend'); btn.disabled=true;
+  try{
+    await db.collection('reports').add({
+      recipeId: reportTarget.id, recipeName: reportTarget.name||'', ownerId: reportTarget.userId||'',
+      reason: document.getElementById('reportReason').value,
+      text: document.getElementById('reportText').value.trim(),
+      reporterId: currentUser.uid, createdAt: Date.now()
+    });
+    document.getElementById('reportOverlay').classList.add('hidden');
+    showToast('🚩 Thank you, we will take a look.');
+  }catch(e){ showToast('⚠️ Could not send report'); }
+  finally{ btn.disabled=false; }
+});
 
 function getImages(r) {
   if (r.images && r.images.length) return r.images;
