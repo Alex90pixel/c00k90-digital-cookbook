@@ -396,6 +396,11 @@ html[data-theme="sunny"] .btn-action.danger,html[data-theme="rose"] .btn-action.
   .detail-actions .btn-action{width:100%;padding:10px 12px;font-size:13px;border-radius:50px;white-space:normal;text-align:center;line-height:1.25;min-height:44px;}
   .detail-actions p{grid-column:1/-1;}
 }
+/* ===== Arata parola ===== */
+.pw-wrap{position:relative;display:block;width:100%;}
+.pw-wrap input{padding-right:46px!important;}
+.pw-toggle{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:none;background:transparent;color:var(--text-light);font-size:18px;cursor:pointer;border-radius:50%;}
+.pw-toggle:hover{color:var(--text-dark);}
 </style>
 </head>
 <body>
@@ -2117,6 +2122,20 @@ auth.onAuthStateChanged(u=>{
     for(const p of paths){ try{ await storage.ref(p).updateMetadata({cacheControl:'public,max-age=31536000'}); }catch(e){} }
     try{ localStorage.setItem('c00k90-cache-'+u.uid,'1'); }catch(e){}
   }, 5000);
+});
+
+document.querySelectorAll('input[type="password"]').forEach(inp=>{
+  const wrap=document.createElement('span'); wrap.className='pw-wrap';
+  inp.parentNode.insertBefore(wrap, inp); wrap.appendChild(inp);
+  const btn=document.createElement('button');
+  btn.type='button'; btn.className='pw-toggle'; btn.textContent='👁'; btn.setAttribute('aria-label','Show password');
+  btn.addEventListener('click', ()=>{
+    const show=inp.type==='password';
+    inp.type=show?'text':'password';
+    btn.textContent=show?'🙈':'👁';
+    btn.setAttribute('aria-label', show?'Hide password':'Show password');
+  });
+  wrap.appendChild(btn);
 });
 
 function getImages(r) {
