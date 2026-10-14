@@ -347,6 +347,7 @@ button,input,textarea,select{font-family:inherit!important;}
       <div class="account-menu">
         <img id="userAvatar" class="user-avatar hidden" src="" alt="user">
         <div class="account-dropdown" id="accountDropdown">
+          <button class="btn-signout" id="feedbackBtn">💬 Send feedback</button>
           <button class="btn-signout hidden" id="exportDataBtn">Export my data</button>
           <button class="btn-signout hidden" id="signOutBtn">Sign out</button>
           <hr class="dropdown-divider">
@@ -514,6 +515,23 @@ button,input,textarea,select{font-family:inherit!important;}
 </footer>
 
 <div class="toast hidden" id="toast"></div>
+
+<div class="modal-overlay hidden" id="feedbackOverlay">
+  <div class="confirm-dialog" style="max-width:420px;text-align:left">
+    <h3 style="text-align:center">💬 Send feedback</h3>
+    <p style="text-align:center">Thank you for helping make C00K90 better!</p>
+    <select id="feedbackType" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:12px;background:var(--card-soft);color:var(--text-dark);font-size:14px;margin-bottom:10px">
+      <option value="bug">🐞 Something's broken</option>
+      <option value="idea">💡 Idea</option>
+      <option value="other">💬 Other</option>
+    </select>
+    <textarea id="feedbackText" rows="5" maxlength="2000" placeholder="What's on your mind?" style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:12px;background:var(--card-soft);color:var(--text-dark);font-size:14px;resize:vertical;margin-bottom:16px"></textarea>
+    <div class="confirm-btns">
+      <button class="btn-confirm-cancel" id="feedbackCancel">Cancel</button>
+      <button class="btn-save" id="feedbackSend">Send</button>
+    </div>
+  </div>
+</div>
 
 <div class="modal-overlay hidden" id="photoConsentOverlay">
   <div class="confirm-dialog">
@@ -1663,6 +1681,28 @@ document.getElementById('cookieCustomize').addEventListener('click',()=>{
 });
 document.getElementById('openCookieSettingsBtn').addEventListener('click', openCookieBanner);
 if(!getConsent()) document.getElementById('cookieBanner').classList.remove('hidden');
+
+document.getElementById('feedbackBtn').addEventListener('click', () => {
+  document.getElementById('feedbackText').value='';
+  document.getElementById('feedbackOverlay').classList.remove('hidden');
+});
+document.getElementById('feedbackCancel').addEventListener('click', () => {
+  document.getElementById('feedbackOverlay').classList.add('hidden');
+});
+document.getElementById('feedbackSend').addEventListener('click', async () => {
+  const text=document.getElementById('feedbackText').value.trim();
+  if(!text){ showToast('✍️ Please write a few words first'); return; }
+  const btn=document.getElementById('feedbackSend'); btn.disabled=true;
+  try{
+    await db.collection('feedback').add({
+      text, type:document.getElementById('feedbackType').value,
+      userId:currentUser.uid, createdAt:Date.now()
+    });
+    document.getElementById('feedbackOverlay').classList.add('hidden');
+    showToast('💚 Thank you for your feedback!');
+  }catch(e){ showToast('⚠️ Could not send feedback'); }
+  finally{ btn.disabled=false; }
+});
 
 function getImages(r) {
   if (r.images && r.images.length) return r.images;
