@@ -348,6 +348,11 @@ html[data-theme="sunny"] .auth-card,html[data-theme="sunny"] .recipe-detail,html
 .theme-opt.active{border-color:var(--teal);}
 .theme-opt .swatch{width:100%;height:36px;border-radius:8px;}
 #navHome{display:none!important;}
+/* ===== Nav: activ vs hover ===== */
+.nav-btn:hover:not(.active){background:transparent;border-color:var(--teal-light);color:var(--text-dark);}
+.nav-btn.active{background:var(--teal-pale);border-color:var(--teal);color:var(--teal-deep);font-weight:700;}
+.nav-btn:focus{outline:none;}
+.nav-btn:focus-visible{outline:2px solid var(--teal);outline-offset:2px;}
 </style>
 </head>
 <body>
