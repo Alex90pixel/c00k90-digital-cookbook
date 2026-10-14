@@ -949,7 +949,7 @@ function openDetail(id) {
       <button class="btn-action primary" id="favDetailBtn">${r.favorite?'❤️ Favorited':'♡ Favorite'}</button>
       <button class="btn-action" id="editDetailBtn">✏️ Edit</button>
       <button class="btn-action danger" id="deleteDetailBtn">🗑 Delete</button>
-      <button class="btn-action" id="shareDetailBtn">${r.shared?'✨ Shared to Get Inspired':'✨ Share to Get Inspired'}</button>
+      ${r.hiddenByModerator?'<button class="btn-action" disabled style="opacity:0.6;cursor:not-allowed" title="This recipe was hidden from Get Inspired by a moderator">🛡️ Hidden by moderator</button>':`<button class="btn-action" id="shareDetailBtn">${r.shared?'✨ Shared to Get Inspired':'✨ Share to Get Inspired'}</button>`}
     `;
     document.getElementById('favDetailBtn').addEventListener('click', async () => {
       r.favorite=!r.favorite;
@@ -959,7 +959,7 @@ function openDetail(id) {
     });
     document.getElementById('editDetailBtn').addEventListener('click', () => { closeDetail(); openEditRecipe(id); });
     document.getElementById('deleteDetailBtn').addEventListener('click', () => confirmDelete(id));
-    document.getElementById('shareDetailBtn').addEventListener('click', async () => {
+    document.getElementById('shareDetailBtn')?.addEventListener('click', async () => {
       r.shared=!r.shared;
       await db.collection('recipes').doc(id).update({shared:r.shared});
       document.getElementById('shareDetailBtn').textContent=r.shared?'✨ Shared to Get Inspired':'✨ Share to Get Inspired';
