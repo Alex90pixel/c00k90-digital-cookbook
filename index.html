@@ -1825,7 +1825,7 @@ function pickPairing(r){
 function renderPairingHTML(r){
   if(r.pairing) return `<div class="section-heading">Pairs well with</div><div class="pairing-box"><div>🍷 ${escHtml(r.pairing)}</div></div>`;
   const p=pickPairing(r); if(!p) return '';
-  return `<div class="section-heading">Pairs well with</div><div class="pairing-box">${p.wine?`<div>🍷 ${escHtml(p.wine)}</div>`:''}<div>🧃 ${escHtml(p.noAlcohol)}</div><p class="pairing-note">${escHtml(PAIRINGS.disclaimer)}</p></div>`;
+  return `<div class="section-heading">Pairs well with</div><div class="pairing-box">${p.wine?`<div>🍷 ${escHtml(p.wine)}</div>`:''}<div>🧃 ${escHtml(p.noAlcohol)}</div><p class="pairing-note">${escHtml(p.wine ? PAIRINGS.disclaimer : PAIRINGS.disclaimer.split('. Please')[0] + '.')}</p></div>`;
 }
 
 function getImages(r) {
