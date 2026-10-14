@@ -3,7 +3,7 @@
 <head>
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex, nofollow">
-<script>try{var t=localStorage.getItem('c00k90-theme');if(t&&t!=='forest'){document.documentElement.setAttribute('data-theme',t);}if(t==='sunny'){document.querySelector('meta[name=color-scheme]').setAttribute('content','light');}}catch(e){}</script>
+<script>try{var t=localStorage.getItem('c00k90-theme');if(t&&t!=='forest'){document.documentElement.setAttribute('data-theme',t);}if(t==='sunny'||t==='rose'){document.querySelector('meta[name=color-scheme]').setAttribute('content','light');}}catch(e){}</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>C00K90 — Digital Cook Book</title>
@@ -310,11 +310,16 @@ html[data-theme="sea"]{
   --border:#1E4044;--border-mag:#5A3F30;
 }
 html[data-theme="rose"]{
-  --bg:#1E2626;--card:#283232;--card-soft:#2E3939;
-  --magenta:#B5646D;--magenta-deep:#E8B4B8;--magenta-light:#F0CDD0;--magenta-pale:#3A2E31;
-  --teal:#2F6B66;--teal-deep:#A9C9C6;--teal-light:#6F9C98;--teal-pale:#223B3A;
-  --text-dark:#F2EEEE;--text-mid:#C9C3C4;--text-light:#8A9497;
-  --border:#3A4545;--border-mag:#5A4246;
+  --bg:#F7ECEC;--card:#FFF8F8;--card-soft:#F3E3E4;
+  --magenta:#B5646D;--magenta-deep:#1F4D4A;--magenta-light:#D99AA1;--magenta-pale:#F6E1E3;
+  --teal:#1F4D4A;--teal-deep:#1F4D4A;--teal-light:#4F7F7A;--teal-pale:#E3ECEB;
+  --text-dark:#2E3333;--text-mid:#4A4A4A;--text-light:#8A9497;
+  --border:#E6D3D5;--border-mag:#E8B4B8;--shadow:rgba(0,0,0,0.08);--shadow-card:rgba(0,0,0,0.08);
+}
+html[data-theme="rose"] .modal-overlay{background:rgba(60,30,35,0.35);}
+html[data-theme="rose"] .heart-btn{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,0.1);}
+html[data-theme="rose"] .dropdown-divider{border-top-color:rgba(0,0,0,0.1);}
+html[data-theme="rose"] .auth-card,html[data-theme="rose"] .recipe-detail,html[data-theme="rose"] .form-modal,html[data-theme="rose"] .confirm-dialog,html[data-theme="rose"] .cookie-banner{box-shadow:0 12px 40px rgba(0,0,0,0.12);}
 }
 html[data-theme="sunny"]{
   --bg:#FBF4DC;--card:#FFFCEF;--card-soft:#F7EEC9;
@@ -556,7 +561,7 @@ html[data-theme="sunny"] .auth-card,html[data-theme="sunny"] .recipe-detail,html
     <div class="theme-options">
       <button class="theme-opt" data-theme-id="forest"><span class="swatch" style="background:linear-gradient(135deg,#081716 40%,#34C79A)"></span>🌿 Forest</button>
       <button class="theme-opt" data-theme-id="sea"><span class="swatch" style="background:linear-gradient(135deg,#071A1E 35%,#2BB3A8 70%,#F07B3F)"></span>🌊 Deep Sea</button>
-      <button class="theme-opt" data-theme-id="rose"><span class="swatch" style="background:linear-gradient(135deg,#1E2626 40%,#B5646D 75%,#E8B4B8)"></span>🌸 Dusty Rose</button>
+            <button class="theme-opt" data-theme-id="rose"><span class="swatch" style="background:linear-gradient(135deg,#F7ECEC 40%,#B5646D 72%,#1F4D4A);border:1px solid #E6D3D5"></span>🌸 Dusty Rose</button>
       <button class="theme-opt" data-theme-id="sunny"><span class="swatch" style="background:linear-gradient(135deg,#FBF4DC 40%,#9C9D57 70%,#E55D7E);border:1px solid #E8DDB0"></span>🍌 Sunny</button>
     </div>
     <div class="confirm-btns"><button class="btn-save" id="themeDone">Done</button></div>
@@ -1755,7 +1760,7 @@ function applyTheme(t){
   if(!t || t==='forest') document.documentElement.removeAttribute('data-theme');
   else document.documentElement.setAttribute('data-theme', t);
   const meta=document.querySelector('meta[name=color-scheme]');
-  if(meta) meta.setAttribute('content', t==='sunny' ? 'light' : 'dark');
+   if(meta) meta.setAttribute('content', (t==='sunny'||t==='rose') ? 'light' : 'dark');
   try{ localStorage.setItem('c00k90-theme', t||'forest'); }catch(e){}
   document.querySelectorAll('.theme-opt').forEach(b=>b.classList.toggle('active', b.dataset.themeId===(t||'forest')));
 }
