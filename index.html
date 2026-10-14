@@ -824,7 +824,7 @@ grid.innerHTML = recipes.map(r => {
 
 // NAV
 function setActiveNav(id) {
-  ['navHome','navFav','navInspired'].forEach(n => document.getElementById(n).classList.toggle('active', n === id));
+  ['navHome','navFav','navInspired'].forEach(n => document.getElementById(n).classList.toggle('active', n === id)); history.replaceState(null, '', id==='navInspired' ? '#inspired' : id==='navFav' ? '#favorites' : location.pathname);
 }
 document.getElementById('navHome').addEventListener('click', () => {
   currentView='all'; currentCategory='all';
@@ -1948,6 +1948,30 @@ document.getElementById('reportsMenuBtn').addEventListener('click', async ()=>{
 });
 document.getElementById('reportsClose').addEventListener('click', ()=>document.getElementById('reportsOverlay').classList.add('hidden'));
 auth.onAuthStateChanged(u=>{ if(u && u.uid===ADMIN_UID) setTimeout(loadReports, 800); });
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  const open = Array.from(document.querySelectorAll('.modal-overlay')).filter(o => !o.classList.contains('hidden'));
+  if (!open.length) return;
+  const top = open[open.length - 1];
+  if (top.id === 'formOverlay') {
+    const started = document.getElementById('fName').value.trim() || document.getElementById('fNotes').value.trim() || document.querySelectorAll('#ingredientsList .dynamic-item').length;
+    if (started && !confirm('Discard your changes?')) return;
+    closeForm();
+  } else if (top.id === 'detailOverlay') {
+    closeDetail();
+  } else {
+    top.classList.add('hidden');
+  }
+});
+
+const _loadRecipesOrig = loadRecipes;
+loadRecipes = async function(){
+  await _loadRecipesOrig();
+  if (currentView !== 'all') return;
+  if (location.hash === '#inspired') document.getElementById('navInspired').click();
+  else if (location.hash === '#favorites') document.getElementById('navFav').click();
+};
 
 function getImages(r) {
   if (r.images && r.images.length) return r.images;
