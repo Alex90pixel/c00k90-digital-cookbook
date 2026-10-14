@@ -3,7 +3,7 @@
 <head>
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex, nofollow">
-<script>try{var t=localStorage.getItem('c00k90-theme');if(t&&t!=='forest'){document.documentElement.setAttribute('data-theme',t);}if(t==='sunny'||t==='rose'){document.querySelector('meta[name=color-scheme]').setAttribute('content','light');}}catch(e){}</script>
+<script>try{var t=localStorage.getItem('c00k90-theme')||'auto';if(t==='auto'){t=window.matchMedia('(prefers-color-scheme: light)').matches?'sunny':'forest';}if(t!=='forest'){document.documentElement.setAttribute('data-theme',t);}if(t==='sunny'||t==='rose'){document.querySelector('meta[name=color-scheme]').setAttribute('content','light');}}catch(e){}</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>C00K90 — Digital Cook Book</title>
@@ -375,7 +375,7 @@ html[data-theme="sunny"] .auth-card,html[data-theme="sunny"] .recipe-detail,html
 
 <header>
   <div class="header-inner">
-          <div class="logo" id="logoBtn" role="button" tabindex="0" title="Home" aria-label="Home"></div>
+           <div class="logo" id="logoBtn" role="button" tabindex="0" title="Home" aria-label="Home"></div>
       <svg class="logo-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
         <defs><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--logo-a)"/><stop offset="1" style="stop-color:var(--logo-b)"/></linearGradient></defs>
         <path d="M8 21h24v5a8 8 0 0 1-8 8h-8a8 8 0 0 1-8-8v-5z" fill="url(#logoGrad)"/>
@@ -571,6 +571,8 @@ html[data-theme="sunny"] .auth-card,html[data-theme="sunny"] .recipe-detail,html
     <h3>🎨 Choose a theme</h3>
     <p>Pick the colors that feel best for you.</p>
     <div class="theme-options">
+            <button class="theme-opt" data-theme-id="auto" style="grid-column:1/-1"><span class="swatch" style="background:linear-gradient(90deg,#081716 50%,#FBF4DC 50%)"></span>🌓 Auto (follows your device)</button>
+            <button class="theme-opt" data-theme-id="auto" style="grid-column:1/-1"><span class="swatch" style="background:linear-gradient(90deg,#081716 50%,#FBF4DC 50%)"></span>🌓 Auto (follows your device)</button>
       <button class="theme-opt" data-theme-id="forest"><span class="swatch" style="background:linear-gradient(135deg,#081716 40%,#34C79A)"></span>🌿 Forest</button>
       <button class="theme-opt" data-theme-id="sea"><span class="swatch" style="background:linear-gradient(135deg,#071A1E 35%,#2BB3A8 70%,#F07B3F)"></span>🌊 Deep Sea</button>
             <button class="theme-opt" data-theme-id="rose"><span class="swatch" style="background:linear-gradient(135deg,#F7ECEC 40%,#B5646D 72%,#1F4D4A);border:1px solid #E6D3D5"></span>🌸 Dusty Rose</button>
@@ -1771,16 +1773,26 @@ document.getElementById('feedbackSend').addEventListener('click', async () => {
   finally{ btn.disabled=false; }
 });
 
-function applyTheme(t){
-  if(!t || t==='forest') document.documentElement.removeAttribute('data-theme');
-  else document.documentElement.setAttribute('data-theme', t);
-  const meta=document.querySelector('meta[name=color-scheme]');
-   if(meta) meta.setAttribute('content', (t==='sunny'||t==='rose') ? 'light' : 'dark');
-  try{ localStorage.setItem('c00k90-theme', t||'forest'); }catch(e){}
-  document.querySelectorAll('.theme-opt').forEach(b=>b.classList.toggle('active', b.dataset.themeId===(t||'forest')));
+function resolveTheme(t){
+  if(t==='auto') return window.matchMedia('(prefers-color-scheme: light)').matches ? 'sunny' : 'forest';
+  return t||'forest';
 }
+function applyTheme(t){
+  t=t||'auto';
+  const r=resolveTheme(t);
+  if(r==='forest') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', r);
+  const meta=document.querySelector('meta[name=color-scheme]');
+  if(meta) meta.setAttribute('content', (r==='sunny'||r==='rose') ? 'light' : 'dark');
+  try{ localStorage.setItem('c00k90-theme', t); }catch(e){}
+  document.querySelectorAll('.theme-opt').forEach(b=>b.classList.toggle('active', b.dataset.themeId===t));
+}
+window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
+  let t='auto'; try{ t=localStorage.getItem('c00k90-theme')||'auto'; }catch(e){}
+  if(t==='auto') applyTheme('auto');
+});
 document.getElementById('themeBtn').addEventListener('click', () => {
-  let t='forest'; try{ t=localStorage.getItem('c00k90-theme')||'forest'; }catch(e){}
+   let t='auto'; try{ t=localStorage.getItem('c00k90-theme')||'auto'; }catch(e){}
   document.querySelectorAll('.theme-opt').forEach(b=>b.classList.toggle('active', b.dataset.themeId===t));
   document.getElementById('themeOverlay').classList.remove('hidden');
 });
