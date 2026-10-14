@@ -360,6 +360,8 @@ html[data-theme="sunny"] .auth-card,html[data-theme="sunny"] .recipe-detail,html
   .btn-new:hover{background:transparent;border-color:var(--teal-light);color:var(--text-dark);opacity:1;transform:none;}
 }
 @media(max-width:768px){ .btn-new .plus-icon{display:none;} }
+.pairing-box{background:var(--card-soft);border:1px solid var(--border);border-radius:14px;padding:14px 18px;margin-bottom:24px;font-size:14px;color:var(--text-dark);display:flex;flex-direction:column;gap:6px;}
+.pairing-note{font-size:11px;color:var(--text-light);font-style:italic;margin-top:4px;}
 </style>
 </head>
 <body>
@@ -518,7 +520,7 @@ html[data-theme="sunny"] .auth-card,html[data-theme="sunny"] .recipe-detail,html
         <button type="button" id="ownRecipeBtn" class="btn-add-row" style="margin-top:8px;align-self:flex-start">✏️ My own recipe</button>
         <div id="importStatus" style="font-size:12px;color:var(--text-mid);margin-top:4px"></div>
       </div>
-    <div class="form-group"><label>✍️ My Notes</label><textarea id="fNotes" rows="4" placeholder="The story behind it, tips, substitutions…"></textarea></div>
+    <div class="form-group"><label>🍷 Pairs well with</label><input type="text" id="fPairing" placeholder="Leave empty for an automatic suggestion"></div><div class="form-group"><label>🍷 Pairs well with</label><input type="text" id="fPairing" placeholder="Leave empty for an automatic suggestion"></div><div class="form-group"><label>✍️ My Notes</label><textarea id="fNotes" rows="4" placeholder="The story behind it, tips, substitutions…"></textarea></div>
     </div>
     <div class="form-footer"><button class="btn-cancel" id="cancelFormBtn">Cancel</button><button class="btn-save" id="saveRecipeBtn">Save Recipe ✨</button></div>
   </div>
@@ -956,7 +958,7 @@ function openDetail(id) {
     <div class="section-heading">Steps</div>
     <div class="steps-list">${stepsHTML}</div>
     ${tagsHTML}
-    <div id="nutritionWrap">${initialNutrition}</div>
+    <div id="nutritionWrap">${initialNutrition}</div>${renderPairingHTML(r)}
     <div class="section-heading">My Notes</div>
     <div class="notes-box">
       <div class="notes-title">✍️ My Notes </div>
@@ -1083,7 +1085,7 @@ function openEditRecipe(id) {
   document.getElementById('fSource').value=r.source||'';
     updateImportBtn();
  document.getElementById('fNotes').value=[r.description,r.notes].filter(Boolean).join('\n\n');
-  document.getElementById('fDesc').value='';
+  document.getElementById('fDesc').value=''; document.getElementById('fPairing').value=r.pairing||''; document.getElementById('fPairing').value=r.pairing||'';
   document.getElementById('fImageData').value=r.imageData||'';
    formImages=getImages(r).map(img=>({url:img.url,path:img.path}));
   renderFormImages();
@@ -1099,7 +1101,7 @@ function openEditRecipe(id) {
   document.body.style.overflow='hidden';
 }
 function clearForm() {
-  ['fName','fDesc','fSource','fNotes','fPrep','fCook','fServ'].forEach(id=>document.getElementById(id).value='');
+  ['fName','fDesc','fSource','fNotes','fPrep','fCook','fServ','fPairing'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('fCategory').value=''; document.getElementById('fDiff').value='Easy';document.getElementById('fCategory').value=''; document.getElementById('fDiff').value='Easy'; setDiffButton('Easy');
   document.getElementById('fImageData').value=''; document.getElementById('fImagePreview').src='';
   document.getElementById('fImagePreview').classList.add('hidden');
@@ -1147,7 +1149,7 @@ async function saveRecipe() {
   if(tagInput) currentTags.push(tagInput);
   const recipe={name,description:document.getElementById('fDesc').value.trim(),category,difficulty:document.getElementById('fDiff').value,prepTime:parseInt(document.getElementById('fPrep').value)||0,cookTime:parseInt(document.getElementById('fCook').value)||0,servings:parseInt(document.getElementById('fServ').value)||0,imageEmoji:getCatEmoji(category),ingredients,steps,tags:[...currentTags],source:document.getElementById('fSource').value.trim(),notes:document.getElementById('fNotes').value.trim(),userId:currentUser.uid,createdAt:Date.now()};
 
-  recipe.diets=Array.from(document.querySelectorAll('.diet-check:checked')).map(c=>c.value);
+  recipe.diets=Array.from(document.querySelectorAll('.diet-check:checked')).map(c=>c.value); recipe.pairing=document.getElementById('fPairing').value.trim(); recipe.pairing=document.getElementById('fPairing').value.trim();
   const saveBtn=document.getElementById('saveRecipeBtn');
   saveBtn.disabled=true;
   let oldPathsToDelete=[];
@@ -1809,6 +1811,22 @@ document.getElementById('themeBtn').addEventListener('click', () => {
 });
 document.querySelectorAll('.theme-opt').forEach(b=>b.addEventListener('click', () => applyTheme(b.dataset.themeId)));
 document.getElementById('themeDone').addEventListener('click', () => document.getElementById('themeOverlay').classList.add('hidden'));
+
+let PAIRINGS=null;
+fetch('pairings.json').then(r=>r.json()).then(d=>{PAIRINGS=d;}).catch(e=>console.warn('Pairings not loaded',e));
+function pickPairing(r){
+  if(!PAIRINGS) return null;
+  const text=' '+normIng([r.name,...(r.ingredients||[]).map(i=>i.name)].join(' '));
+  for(const rule of PAIRINGS.rules){
+    if(rule.keywords.some(k=>text.includes(' '+normIng(k)))) return rule;
+  }
+  return PAIRINGS.rules.find(x=>x.categories.includes(r.category)) || PAIRINGS.rules.find(x=>x.id==='default');
+}
+function renderPairingHTML(r){
+  if(r.pairing) return `<div class="section-heading">Pairs well with</div><div class="pairing-box"><div>🍷 ${escHtml(r.pairing)}</div></div>`;
+  const p=pickPairing(r); if(!p) return '';
+  return `<div class="section-heading">Pairs well with</div><div class="pairing-box">${p.wine?`<div>🍷 ${escHtml(p.wine)}</div>`:''}<div>🧃 ${escHtml(p.noAlcohol)}</div><p class="pairing-note">${escHtml(PAIRINGS.disclaimer)}</p></div>`;
+}
 
 function getImages(r) {
   if (r.images && r.images.length) return r.images;

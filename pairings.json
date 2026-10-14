@@ -1,0 +1,379 @@
+{
+ "version": 1,
+ "disclaimer": "Automatic suggestion based on the app's pairing rules (classic food & drink matching), not expert advice. Please drink responsibly; alcohol is only for adults of legal drinking age.",
+ "rules": [
+  {
+   "id": "spicy-asian",
+   "label": "Spicy & Asian",
+   "keywords": [
+    "chili",
+    "chilli",
+    "curry",
+    "sriracha",
+    "gochujang",
+    "kimchi",
+    "thai",
+    "szechuan",
+    "jalapeno",
+    "soy sauce",
+    "ginger",
+    "sos de soia",
+    "ardei iute"
+   ],
+   "categories": [],
+   "wine": "Off-dry Riesling or a cold lager",
+   "noAlcohol": "Iced green tea or ginger lemonade"
+  },
+  {
+   "id": "seafood",
+   "label": "Seafood & shellfish",
+   "keywords": [
+    "shrimp",
+    "prawn",
+    "mussel",
+    "squid",
+    "octopus",
+    "crab",
+    "lobster",
+    "oyster",
+    "scallop",
+    "creveti",
+    "midii",
+    "calamar",
+    "fructe de mare"
+   ],
+   "categories": [],
+   "wine": "Sparkling wine, Fetească Albă or Albariño",
+   "noAlcohol": "Sparkling water with lemon"
+  },
+  {
+   "id": "salmon",
+   "label": "Salmon & oily fish",
+   "keywords": [
+    "salmon",
+    "somon",
+    "trout",
+    "pastrav",
+    "mackerel",
+    "macrou",
+    "tuna",
+    "ton"
+   ],
+   "categories": [],
+   "wine": "Pinot Noir (light) or dry rosé",
+   "noAlcohol": "Pomegranate spritzer"
+  },
+  {
+   "id": "white-fish",
+   "label": "White fish",
+   "keywords": [
+    "cod",
+    "hake",
+    "sea bass",
+    "bass",
+    "sole",
+    "plaice",
+    "tilapia",
+    "cod",
+    "pește",
+    "peste",
+    "fish"
+   ],
+   "categories": [],
+   "wine": "Fetească Albă or Sauvignon Blanc",
+   "noAlcohol": "Lemonade with mint"
+  },
+  {
+   "id": "lamb",
+   "label": "Lamb",
+   "keywords": [
+    "lamb",
+    "miel",
+    "oaie",
+    "mutton"
+   ],
+   "categories": [],
+   "wine": "Fetească Neagră or Syrah",
+   "noAlcohol": "Sour cherry juice"
+  },
+  {
+   "id": "beef-stew",
+   "label": "Beef & slow-cooked stews",
+   "keywords": [
+    "beef",
+    "vita",
+    "vită",
+    "steak",
+    "stew",
+    "tocana",
+    "tocăniță",
+    "goulash",
+    "gulas",
+    "ragu",
+    "bolognese",
+    "brisket"
+   ],
+   "categories": [],
+   "wine": "Fetească Neagră or Cabernet Sauvignon",
+   "noAlcohol": "Red grape juice, unsweetened"
+  },
+  {
+   "id": "pork",
+   "label": "Pork & sausages",
+   "keywords": [
+    "pork",
+    "porc",
+    "sausage",
+    "carnati",
+    "cârnați",
+    "bacon",
+    "ham",
+    "sunca",
+    "șuncă",
+    "ribs",
+    "coaste",
+    "sarmale",
+    "mici"
+   ],
+   "categories": [],
+   "wine": "Pinot Noir, Fetească Neagră or a Märzen beer",
+   "noAlcohol": "Apple juice or kombucha"
+  },
+  {
+   "id": "game",
+   "label": "Game & duck",
+   "keywords": [
+    "duck",
+    "rata",
+    "rață",
+    "venison",
+    "vanat",
+    "vânat",
+    "rabbit",
+    "iepure",
+    "goose",
+    "gasca",
+    "gâscă"
+   ],
+   "categories": [],
+   "wine": "Pinot Noir or Merlot",
+   "noAlcohol": "Cranberry spritzer"
+  },
+  {
+   "id": "mushroom",
+   "label": "Mushrooms & earthy dishes",
+   "keywords": [
+    "mushroom",
+    "ciuperci",
+    "truffle",
+    "trufe",
+    "porcini",
+    "risotto"
+   ],
+   "categories": [],
+   "wine": "Pinot Noir or an oaked Chardonnay",
+   "noAlcohol": "Cloudy apple juice"
+  },
+  {
+   "id": "tomato-pasta",
+   "label": "Tomato pasta & pizza",
+   "keywords": [
+    "pizza",
+    "tomato sauce",
+    "sos de rosii",
+    "marinara",
+    "lasagna",
+    "lasagne",
+    "napoletana",
+    "arrabbiata"
+   ],
+   "categories": [],
+   "wine": "Sangiovese (Chianti) or Merlot",
+   "noAlcohol": "Blood orange soda or tomato juice"
+  },
+  {
+   "id": "creamy",
+   "label": "Creamy pasta & sauces",
+   "keywords": [
+    "cream",
+    "smantana",
+    "smântână",
+    "frisca",
+    "carbonara",
+    "alfredo",
+    "bechamel",
+    "mac and cheese",
+    "cheese sauce"
+   ],
+   "categories": [],
+   "wine": "Chardonnay or Fetească Albă",
+   "noAlcohol": "Pear juice or sparkling elderflower"
+  },
+  {
+   "id": "chicken",
+   "label": "Chicken & turkey",
+   "keywords": [
+    "chicken",
+    "pui",
+    "turkey",
+    "curcan"
+   ],
+   "categories": [],
+   "wine": "Fetească Regală or a dry rosé",
+   "noAlcohol": "Elderflower lemonade (socată)"
+  },
+  {
+   "id": "cheese",
+   "label": "Cheese-forward dishes",
+   "keywords": [
+    "cheese",
+    "branza",
+    "brânză",
+    "cascaval",
+    "cașcaval",
+    "parmesan",
+    "feta",
+    "mozzarella",
+    "gorgonzola",
+    "brie",
+    "camembert",
+    "telemea"
+   ],
+   "categories": [],
+   "wine": "Tămâioasă Românească (dry) or Sauvignon Blanc",
+   "noAlcohol": "Grape juice or cold-brew tea"
+  },
+  {
+   "id": "vegetarian-roast",
+   "label": "Roasted vegetables & legumes",
+   "keywords": [
+    "lentil",
+    "linte",
+    "chickpea",
+    "naut",
+    "năut",
+    "beans",
+    "fasole",
+    "eggplant",
+    "vinete",
+    "zucchini",
+    "dovlecel",
+    "roasted vegetables"
+   ],
+   "categories": [],
+   "wine": "Light red (Pinot Noir) or rosé",
+   "noAlcohol": "Iced hibiscus tea"
+  },
+  {
+   "id": "salad",
+   "label": "Fresh salads",
+   "keywords": [],
+   "categories": [
+    "Salads"
+   ],
+   "wine": "Sauvignon Blanc or a crisp rosé",
+   "noAlcohol": "Cucumber-mint water"
+  },
+  {
+   "id": "soup",
+   "label": "Soups",
+   "keywords": [],
+   "categories": [
+    "Soups"
+   ],
+   "wine": "Fetească Albă or a dry rosé",
+   "noAlcohol": "A warm herbal tea or mineral water"
+  },
+  {
+   "id": "chocolate",
+   "label": "Chocolate desserts",
+   "keywords": [
+    "chocolate",
+    "ciocolata",
+    "ciocolată",
+    "cocoa",
+    "cacao",
+    "brownie"
+   ],
+   "categories": [],
+   "wine": "Ruby Port or Busuioacă de Bohotin",
+   "noAlcohol": "Cold milk or a mocha"
+  },
+  {
+   "id": "fruit-dessert",
+   "label": "Fruit desserts",
+   "keywords": [
+    "strawberr",
+    "capsun",
+    "căpșun",
+    "raspberr",
+    "zmeur",
+    "peach",
+    "piersic",
+    "apple",
+    "mere",
+    "plum",
+    "prune",
+    "cherry",
+    "cirese",
+    "cireșe",
+    "visine",
+    "vișine",
+    "berries",
+    "fructe de padure"
+   ],
+   "categories": [],
+   "wine": "Moscato d'Asti or Busuioacă de Bohotin",
+   "noAlcohol": "Sparkling berry lemonade"
+  },
+  {
+   "id": "cake-pastry",
+   "label": "Cakes & pastries",
+   "keywords": [],
+   "categories": [
+    "Baking",
+    "Desserts"
+   ],
+   "wine": "Tămâioasă Românească (sweet) or Prosecco",
+   "noAlcohol": "Coffee, tea or hot chocolate"
+  },
+  {
+   "id": "breakfast",
+   "label": "Breakfast",
+   "keywords": [],
+   "categories": [
+    "Breakfast"
+   ],
+   "wine": "",
+   "noAlcohol": "Coffee, tea or a fresh orange juice"
+  },
+  {
+   "id": "drinks",
+   "label": "Drinks",
+   "keywords": [],
+   "categories": [
+    "Drinks"
+   ],
+   "wine": "",
+   "noAlcohol": "Already a drink, enjoy as it is!"
+  },
+  {
+   "id": "mains-default",
+   "label": "Mains (general)",
+   "keywords": [],
+   "categories": [
+    "Mains"
+   ],
+   "wine": "Merlot or a dry rosé",
+   "noAlcohol": "Sparkling water with citrus"
+  },
+  {
+   "id": "default",
+   "label": "Anything else",
+   "keywords": [],
+   "categories": [],
+   "wine": "A dry rosé, a versatile choice",
+   "noAlcohol": "Sparkling water with lemon"
+  }
+ ]
+}
