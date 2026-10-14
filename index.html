@@ -382,8 +382,6 @@ html[data-theme="sunny"] .btn-action.danger,html[data-theme="rose"] .btn-action.
 .auth-legacy{font-size:11px;color:var(--text-light);margin-bottom:6px;}
 #googleSignInBtn{padding:9px 16px;font-size:13px;}
 #googleSignInBtn,.auth-legacy{display:none;}
-.show-google #googleSignInBtn,.show-google .auth-legacy{display:flex;}
-.show-google .auth-legacy{display:block;}
 </style>
 </head>
 <body>
@@ -588,7 +586,7 @@ html[data-theme="sunny"] .btn-action.danger,html[data-theme="rose"] .btn-action.
       <p style="margin-bottom:14px"><strong>Who we are & contact:</strong> C00K90 is a personal, non-commercial project run by its developer. For any privacy question or request, write to <a href="mailto:c00k90.contact@gmail.com" style="color:var(--teal-light)">c00k90.contact@gmail.com</a>.</p>
       <p style="margin-bottom:14px"><strong>Imported recipes:</strong> if you import a recipe from a link (YouTube, TikTok, etc.), we only save the link, title, category, and your own note — never the creator's full content. The source stays visible and credited.</p>
       <p style="margin-bottom:14px"><strong>Shared recipes:</strong> if you choose "Share to Get Inspired" on a recipe, that recipe becomes visible to all signed-in users of the app. Your name and profile picture are not shown with it. You can stop sharing anytime, and the recipe will no longer be visible to others.</p>
-      <p style="margin-bottom:14px"><strong>Your rights:</strong> you can download a copy of all your data using "Export my data", or permanently delete your account and all your data using "Delete account" — both available from the menu under your profile picture. You can also revoke the app's access from your Google account settings.</p>
+      <p style="margin-bottom:14px"><strong>Your rights:</strong> you can download a copy of all your data using "Export my data", or permanently delete your account and all your data using "Delete account" — both available from the menu under your profile picture.</p>
       <p style="margin-bottom:14px"><strong>Minimum age:</strong> this app is intended for users 18 and older.</p>
 
       <h3 style="color:var(--magenta-deep);margin:24px 0 10px">Terms of Use</h3>
@@ -2012,7 +2010,6 @@ loadRecipes = async function(){
 };
 
 const USER_DOMAIN='users.c00k90.app';
-if(new URLSearchParams(location.search).has('google')) document.body.classList.add('show-google');
 function readAuthForm(){
   const u=document.getElementById('authUser').value.trim().toLowerCase();
   const p=document.getElementById('authPass').value;
