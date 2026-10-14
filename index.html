@@ -849,7 +849,7 @@ grid.innerHTML = recipes.map(r => {
     const showHeart = currentView !== 'inspired';
     return `<div class="recipe-card" data-id="${escHtml(r.id)}">
       <div class="relative">
-         ${safeImg(r.imageUrl||r.imageData)?`<img src="${safeImg(r.imageUrl||r.imageData)}" alt="${escHtml(r.name)}" loading="lazy" decoding="async" style="width:100%;height:190px;object-fit:cover;">`:`<div class="card-image-placeholder">${escHtml(r.imageEmoji||'🍽️')}</div>`}
+         ${safeImg(r.thumbUrl||r.imageUrl||r.imageData)?`<img src="${safeImg(r.thumbUrl||r.imageUrl||r.imageData)}" alt="${escHtml(r.name)}" loading="lazy" decoding="async" style="width:100%;height:190px;object-fit:cover;">`:`<div class="card-image-placeholder">${escHtml(r.imageEmoji||'🍽️')}</div>`}
         ${showHeart?`<button class="heart-btn ${r.favorite?'fav':''}" data-fav="${escHtml(r.id)}">${r.favorite?'❤️':'🤍'}</button>`:''}
       </div>
       <div class="card-body">
@@ -1173,7 +1173,7 @@ function openEditRecipe(id) {
  document.getElementById('fNotes').value=[r.description,r.notes].filter(Boolean).join('\n\n');
   document.getElementById('fDesc').value=''; document.getElementById('fPairing').value=r.pairing||''; 
   document.getElementById('fImageData').value=r.imageData||'';
-   formImages=getImages(r).map(img=>({url:img.url,path:img.path}));
+   formImages=getImages(r).map(img=>({...img}));
   renderFormImages();
   document.getElementById('ingredientsList').innerHTML='';
   (r.ingredients||[]).forEach(ing=>addIngredient(ing.qty,ing.unit,ing.name));
@@ -1251,10 +1251,13 @@ async function saveRecipe() {
         showToast(`📤 Uploading photo ${uploadCount}…`);
         const path=`recipes/${currentUser.uid}/${Date.now()}_${Math.random().toString(36).slice(2,10)}.jpg`;
         const ref=storage.ref(path);
-        await ref.put(img.blob,{contentType:'image/jpeg'});
-        finalImages.push({url:await ref.getDownloadURL(),path});
+await ref.put(img.blob,{contentType:'image/jpeg',cacheControl:'public,max-age=31536000'});
+        const thumbPath=path.replace('.jpg','_thumb.jpg');
+        const tref=storage.ref(thumbPath);
+        await tref.put(await resizeImage(img.blob,480,0.78),{contentType:'image/jpeg',cacheControl:'public,max-age=31536000'});
+        finalImages.push({url:await ref.getDownloadURL(),path,thumbUrl:await tref.getDownloadURL(),thumbPath});
       } else {
-        finalImages.push({url:img.url,path:img.path||''});
+        finalImages.push({url:img.url,path:img.path||'',thumbUrl:img.thumbUrl||'',thumbPath:img.thumbPath||''});
       }
     }
     const legacy=finalImages.find(i=>i.url.startsWith('data:'));
@@ -1262,7 +1265,8 @@ async function saveRecipe() {
     recipe.images=finalImages.filter(i=>!i.url.startsWith('data:'));
     recipe.imageUrl=recipe.images[0]?recipe.images[0].url:'';
     recipe.imagePath=recipe.images[0]?recipe.images[0].path:'';
-    oldPathsToDelete=oldImages.map(i=>i.path).filter(p=>p&&!recipe.images.some(n=>n.path===p));
+    recipe.thumbUrl=recipe.images[0]?(recipe.images[0].thumbUrl||''):'';
+    oldPathsToDelete=oldImages.filter(i=>i.path&&!recipe.images.some(n=>n.path===i.path)).flatMap(i=>[i.path,i.thumbPath]).filter(Boolean);
 
     if(editingRecipeId){
       recipe.favorite=existing?existing.favorite:false;
@@ -1293,7 +1297,7 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', async () =
   try {
     const delRecipe=allRecipes.find(r=>r.id===deleteTargetId);
     await db.collection('recipes').doc(deleteTargetId).delete();
-    if(delRecipe) getImages(delRecipe).forEach(i=>{ if(i.path) storage.ref(i.path).delete().catch(()=>{}); });
+    [i.path,i.thumbPath].forEach(p=>{ if(p) storage.ref(p).delete().catch(()=>{}); }); });
     allRecipes=allRecipes.filter(r=>r.id!==deleteTargetId);
     document.getElementById('confirmOverlay').classList.add('hidden');
     closeDetail(); renderGrid();
@@ -2102,6 +2106,18 @@ document.getElementById('unlinkGoogleBtn').addEventListener('click', async ()=>{
 });
 
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(e=>console.warn('SW failed',e)); }
+
+auth.onAuthStateChanged(u=>{
+  if(!u) return;
+  let done=false; try{ done=localStorage.getItem('c00k90-cache-'+u.uid)==='1'; }catch(e){}
+  if(done) return;
+  setTimeout(async ()=>{
+    const paths=[];
+    allRecipes.filter(r=>r.userId===u.uid).forEach(r=>getImages(r).forEach(i=>{ if(i.path) paths.push(i.path); if(i.thumbPath) paths.push(i.thumbPath); }));
+    for(const p of paths){ try{ await storage.ref(p).updateMetadata({cacheControl:'public,max-age=31536000'}); }catch(e){} }
+    try{ localStorage.setItem('c00k90-cache-'+u.uid,'1'); }catch(e){}
+  }, 5000);
+});
 
 function getImages(r) {
   if (r.images && r.images.length) return r.images;
