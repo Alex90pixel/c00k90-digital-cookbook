@@ -3,6 +3,7 @@
 <head>
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex, nofollow">
+<script>try{var t=localStorage.getItem('c00k90-theme');if(t&&t!=='forest'){document.documentElement.setAttribute('data-theme',t);}if(t==='linen'){document.querySelector('meta[name=color-scheme]').setAttribute('content','light');}}catch(e){}</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>C00K90 — Digital Cook Book</title>
@@ -299,6 +300,37 @@ button,input,textarea,select{font-family:inherit!important;}
 .filter-selects{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
 .filter-selects select{padding:6px 12px;border:1.5px solid var(--border);border-radius:50px;background:var(--card);font-size:13px;color:var(--text-mid);cursor:pointer;outline:none;}
 .info-btn{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);background:transparent;color:var(--text-light);cursor:pointer;font-size:14px;}  
+/* ===== Teme ===== */
+.account-dropdown{background:var(--card)!important;}
+html[data-theme="sea"]{
+  --bg:#06121C;--card:#0D1F2D;--card-soft:#112636;
+  --magenta:#5FC4C9;--magenta-deep:#8EE3DF;--magenta-light:#B5EFEA;--magenta-pale:#0E2733;
+  --teal:#2FA8C4;--teal-deep:#8FD8EA;--teal-light:#5CC3DB;--teal-pale:#0C2C3B;
+  --text-dark:#EEF5F8;--text-mid:#BCCCD6;--text-light:#7F93A1;
+  --border:#1F3646;--border-mag:#2B4D57;
+}
+html[data-theme="clay"]{
+  --bg:#1A120E;--card:#251A15;--card-soft:#2C201A;
+  --magenta:#D9825B;--magenta-deep:#E9A27F;--magenta-light:#F2C1A6;--magenta-pale:#33221A;
+  --teal:#8FAE86;--teal-deep:#C2D9B9;--teal-light:#A7C39D;--teal-pale:#24301F;
+  --text-dark:#F6EFEA;--text-mid:#D3C5BC;--text-light:#9C8B80;
+  --border:#3A2B23;--border-mag:#4D3326;
+}
+html[data-theme="linen"]{
+  --bg:#F6F2EA;--card:#FFFDF8;--card-soft:#F1ECE2;
+  --magenta:#7D8F3E;--magenta-deep:#4F5E1E;--magenta-light:#A3B263;--magenta-pale:#EEF0DC;
+  --teal:#2E8F72;--teal-deep:#1F5E4B;--teal-light:#3E9C80;--teal-pale:#E2F0EA;
+  --text-dark:#22261F;--text-mid:#4B5249;--text-light:#7A8076;
+  --border:#DDD6C8;--border-mag:#CBD1A8;--shadow:rgba(0,0,0,0.08);--shadow-card:rgba(0,0,0,0.08);
+}
+html[data-theme="linen"] .modal-overlay{background:rgba(40,40,30,0.35);}
+html[data-theme="linen"] .heart-btn{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,0.1);}
+html[data-theme="linen"] .dropdown-divider{border-top-color:rgba(0,0,0,0.1);}
+html[data-theme="linen"] .auth-card,html[data-theme="linen"] .recipe-detail,html[data-theme="linen"] .form-modal,html[data-theme="linen"] .confirm-dialog,html[data-theme="linen"] .cookie-banner{box-shadow:0 12px 40px rgba(0,0,0,0.12);}
+.theme-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+.theme-opt{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px;border:2px solid var(--border);border-radius:14px;background:transparent;color:var(--text-dark);font-size:13px;font-weight:600;cursor:pointer;}
+.theme-opt.active{border-color:var(--teal);}
+.theme-opt .swatch{width:100%;height:36px;border-radius:8px;}
 </style>
 </head>
 <body>
@@ -347,6 +379,7 @@ button,input,textarea,select{font-family:inherit!important;}
       <div class="account-menu">
         <img id="userAvatar" class="user-avatar hidden" src="" alt="user">
         <div class="account-dropdown" id="accountDropdown">
+          <button class="btn-signout" id="themeBtn">🎨 Theme</button>
           <button class="btn-signout" id="feedbackBtn">💬 Send feedback</button>
           <button class="btn-signout hidden" id="exportDataBtn">Export my data</button>
           <button class="btn-signout hidden" id="signOutBtn">Sign out</button>
@@ -515,6 +548,20 @@ button,input,textarea,select{font-family:inherit!important;}
 </footer>
 
 <div class="toast hidden" id="toast"></div>
+
+<div class="modal-overlay hidden" id="themeOverlay">
+  <div class="confirm-dialog" style="max-width:380px">
+    <h3>🎨 Choose a theme</h3>
+    <p>Pick the colors that feel best for you.</p>
+    <div class="theme-options">
+      <button class="theme-opt" data-theme-id="forest"><span class="swatch" style="background:linear-gradient(135deg,#081716 40%,#34C79A)"></span>🌿 Forest</button>
+      <button class="theme-opt" data-theme-id="sea"><span class="swatch" style="background:linear-gradient(135deg,#06121C 40%,#2FA8C4)"></span>🌊 Deep Sea</button>
+      <button class="theme-opt" data-theme-id="clay"><span class="swatch" style="background:linear-gradient(135deg,#1A120E 40%,#D9825B)"></span>🍂 Clay</button>
+      <button class="theme-opt" data-theme-id="linen"><span class="swatch" style="background:linear-gradient(135deg,#F6F2EA 40%,#7D8F3E);border:1px solid #DDD6C8"></span>🤍 Linen</button>
+    </div>
+    <div class="confirm-btns"><button class="btn-save" id="themeDone">Done</button></div>
+  </div>
+</div>
 
 <div class="modal-overlay hidden" id="feedbackOverlay">
   <div class="confirm-dialog" style="max-width:420px;text-align:left">
@@ -1703,6 +1750,22 @@ document.getElementById('feedbackSend').addEventListener('click', async () => {
   }catch(e){ showToast('⚠️ Could not send feedback'); }
   finally{ btn.disabled=false; }
 });
+
+function applyTheme(t){
+  if(!t || t==='forest') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', t);
+  const meta=document.querySelector('meta[name=color-scheme]');
+  if(meta) meta.setAttribute('content', t==='linen' ? 'light' : 'dark');
+  try{ localStorage.setItem('c00k90-theme', t||'forest'); }catch(e){}
+  document.querySelectorAll('.theme-opt').forEach(b=>b.classList.toggle('active', b.dataset.themeId===(t||'forest')));
+}
+document.getElementById('themeBtn').addEventListener('click', () => {
+  let t='forest'; try{ t=localStorage.getItem('c00k90-theme')||'forest'; }catch(e){}
+  document.querySelectorAll('.theme-opt').forEach(b=>b.classList.toggle('active', b.dataset.themeId===t));
+  document.getElementById('themeOverlay').classList.remove('hidden');
+});
+document.querySelectorAll('.theme-opt').forEach(b=>b.addEventListener('click', () => applyTheme(b.dataset.themeId)));
+document.getElementById('themeDone').addEventListener('click', () => document.getElementById('themeOverlay').classList.add('hidden'));
 
 function getImages(r) {
   if (r.images && r.images.length) return r.images;
