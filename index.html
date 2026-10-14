@@ -1297,7 +1297,7 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', async () =
   try {
     const delRecipe=allRecipes.find(r=>r.id===deleteTargetId);
     await db.collection('recipes').doc(deleteTargetId).delete();
-    [i.path,i.thumbPath].forEach(p=>{ if(p) storage.ref(p).delete().catch(()=>{}); }); });
+        if(delRecipe) getImages(delRecipe).forEach(i=>{ [i.path,i.thumbPath].forEach(p=>{ if(p) storage.ref(p).delete().catch(()=>{}); }); });
     allRecipes=allRecipes.filter(r=>r.id!==deleteTargetId);
     document.getElementById('confirmOverlay').classList.add('hidden');
     closeDetail(); renderGrid();
