@@ -367,6 +367,11 @@ html[data-theme="sunny"] .section-heading{color:#B83A5C;}
 html[data-theme="rose"] .section-heading{color:#94434D;}
 html[data-theme="sunny"] .notes-empty,html[data-theme="rose"] .notes-empty{color:var(--text-mid);}
 html[data-theme="sunny"] .btn-action.danger,html[data-theme="rose"] .btn-action.danger{color:#B3363A;border-color:rgba(179,54,58,0.35);}
+/* ===== Rapoarte moderator ===== */
+.report-badge{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#D64545;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+.report-item{border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:10px;text-align:left;font-size:13px;color:var(--text-dark);}
+.report-item small{color:var(--text-light);display:block;margin-top:4px;}
+.report-item .report-actions{display:flex;gap:8px;margin-top:10px;}
 </style>
 </head>
 <body>
@@ -413,9 +418,9 @@ html[data-theme="sunny"] .btn-action.danger,html[data-theme="rose"] .btn-action.
             <button class="nav-btn" id="navInspired">✨ Get Inspired</button>
       <button class="btn-new" id="newRecipeBtn">🍳 New Recipe</button>
             <div class="account-menu">
-        <img id="userAvatar" class="user-avatar hidden" src="" alt="user">
+        <img id="userAvatar" class="user-avatar hidden" src="" alt="user"><span id="reportBadge" class="report-badge hidden"></span>
         <div class="account-dropdown" id="accountDropdown">
-          <button class="btn-signout" id="themeBtn">🎨 Theme</button>
+          <button class="btn-signout hidden" id="reportsMenuBtn">🚩 Reports</button><button class="btn-signout" id="themeBtn">🎨 Theme</button>
           <button class="btn-signout" id="feedbackBtn">💬 Send feedback</button>
           <button class="btn-signout hidden" id="exportDataBtn">Export my data</button>
           <button class="btn-signout hidden" id="signOutBtn">Sign out</button>
@@ -584,6 +589,14 @@ html[data-theme="sunny"] .btn-action.danger,html[data-theme="rose"] .btn-action.
 </footer>
 
 <div class="toast hidden" id="toast"></div>
+
+<div class="modal-overlay hidden" id="reportsOverlay">
+  <div class="confirm-dialog" style="max-width:480px">
+    <h3>🚩 Reports</h3>
+    <div id="reportsList" style="max-height:60vh;overflow-y:auto;margin-bottom:16px"></div>
+    <div class="confirm-btns"><button class="btn-confirm-cancel" id="reportsClose">Close</button></div>
+  </div>
+</div>
 
 <div class="modal-overlay hidden" id="reportOverlay">
   <div class="confirm-dialog" style="max-width:420px;text-align:left">
@@ -1883,6 +1896,58 @@ document.getElementById('reportSend').addEventListener('click', async () => {
   }catch(e){ showToast('⚠️ Could not send report'); }
   finally{ btn.disabled=false; }
 });
+
+const REPORT_REASONS={'inappropriate-photo':'Inappropriate photo','offensive-text':'Offensive text','spam':'Spam or advertising','other':'Something else'};
+let currentReports=[];
+async function loadReports(){
+  if(!currentUser || currentUser.uid!==ADMIN_UID) return;
+  try{
+    const snap=await db.collection('reports').get();
+    currentReports=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  }catch(e){ currentReports=[]; }
+  const n=currentReports.length;
+  const badge=document.getElementById('reportBadge');
+  badge.textContent=n; badge.classList.toggle('hidden', n===0);
+  const btn=document.getElementById('reportsMenuBtn');
+  btn.classList.remove('hidden');
+  btn.textContent=n?`🚩 Reports (${n})`:'🚩 Reports';
+}
+function renderReports(){
+  const list=document.getElementById('reportsList');
+  if(!currentReports.length){ list.innerHTML='<p>No reports. All clear! 🌿</p>'; return; }
+  list.innerHTML=currentReports.map(rep=>`
+    <div class="report-item">
+      <strong>${escHtml(rep.recipeName||'(untitled recipe)')}</strong>
+      <div>${escHtml(REPORT_REASONS[rep.reason]||rep.reason||'')}</div>
+      ${rep.text?`<div style="font-style:italic;margin-top:4px">"${escHtml(rep.text)}"</div>`:''}
+      <small>${new Date(rep.createdAt||0).toLocaleString()}</small>
+      <div class="report-actions">
+        <button class="btn-action danger" data-hide="${escHtml(rep.id)}">🛡️ Hide recipe</button>
+        <button class="btn-action" data-dismiss="${escHtml(rep.id)}">✓ Dismiss</button>
+      </div>
+    </div>`).join('');
+  list.querySelectorAll('[data-dismiss]').forEach(b=>b.addEventListener('click', async ()=>{
+    try{ await db.collection('reports').doc(b.dataset.dismiss).delete(); await loadReports(); renderReports(); showToast('✓ Report dismissed'); }
+    catch(e){ showToast('⚠️ Could not dismiss: '+e.message); }
+  }));
+  list.querySelectorAll('[data-hide]').forEach(b=>b.addEventListener('click', async ()=>{
+    const rep=currentReports.find(x=>x.id===b.dataset.hide); if(!rep) return;
+    if(!confirm('Hide "'+(rep.recipeName||'this recipe')+'" from Get Inspired? The author keeps it privately.')) return;
+    try{
+      await db.collection('recipes').doc(rep.recipeId).update({shared:false, hiddenByModerator:true});
+      await db.collection('reports').doc(rep.id).delete();
+      inspiredRecipes=inspiredRecipes.filter(x=>x.id!==rep.recipeId);
+      await loadReports(); renderReports(); renderGrid();
+      showToast('🛡️ Recipe hidden, report closed');
+    }catch(e){ showToast('⚠️ Could not hide (maybe already deleted). You can Dismiss the report.'); }
+  }));
+}
+document.getElementById('reportsMenuBtn').addEventListener('click', async ()=>{
+  await loadReports(); renderReports();
+  document.getElementById('reportsOverlay').classList.remove('hidden');
+});
+document.getElementById('reportsClose').addEventListener('click', ()=>document.getElementById('reportsOverlay').classList.add('hidden'));
+auth.onAuthStateChanged(u=>{ if(u && u.uid===ADMIN_UID) setTimeout(loadReports, 800); });
 
 function getImages(r) {
   if (r.images && r.images.length) return r.images;
