@@ -441,7 +441,7 @@ html[data-theme="sunny"] .btn-action.danger,html[data-theme="rose"] .btn-action.
             <div class="account-menu">
         <img id="userAvatar" class="user-avatar hidden" src="" alt="user"><span id="reportBadge" class="report-badge hidden"></span>
         <div class="account-dropdown" id="accountDropdown">
-          <button class="btn-signout hidden" id="reportsMenuBtn">🚩 Reports</button><button class="btn-signout" id="themeBtn">🎨 Theme</button>
+          <button class="btn-signout hidden" id="reportsMenuBtn">🚩 Reports</button><button class="btn-signout hidden" id="linkAccountBtn">🔑 Set username &amp; password</button><button class="btn-signout hidden" id="unlinkGoogleBtn">🧹 Remove Google from my account</button><button class="btn-signout" id="themeBtn">🎨 Theme</button>
           <button class="btn-signout" id="feedbackBtn">💬 Send feedback</button>
           <button class="btn-signout hidden" id="exportDataBtn">Export my data</button>
           <button class="btn-signout hidden" id="signOutBtn">Sign out</button>
@@ -610,6 +610,23 @@ html[data-theme="sunny"] .btn-action.danger,html[data-theme="rose"] .btn-action.
 </footer>
 
 <div class="toast hidden" id="toast"></div>
+
+<div class="modal-overlay hidden" id="linkOverlay">
+  <div class="confirm-dialog" style="max-width:400px">
+    <h3>🔑 Set username &amp; password</h3>
+    <p>Your recipes stay exactly where they are. Afterwards you'll log in with these instead of Google.</p>
+    <div class="auth-form">
+      <input id="linkUser" type="text" placeholder="Username" maxlength="20" autocomplete="username">
+      <input id="linkPass" type="password" placeholder="Password (min. 6 characters)" autocomplete="new-password">
+      <p class="auth-hint">Keep your password safe: it can't be recovered if you forget it.</p>
+      <div id="linkError" class="auth-error"></div>
+    </div>
+    <div class="confirm-btns">
+      <button class="btn-confirm-cancel" id="linkCancel">Cancel</button>
+      <button class="btn-save" id="linkSave">Save</button>
+    </div>
+  </div>
+</div>
 
 <div class="modal-overlay hidden" id="reportsOverlay">
   <div class="confirm-dialog" style="max-width:480px">
@@ -2031,6 +2048,47 @@ auth.onAuthStateChanged(u=>{
   const letter=name.charAt(0).toUpperCase();
   const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect width="64" height="64" rx="32" fill="#2E8F72"/><text x="32" y="41" font-family="sans-serif" font-size="28" font-weight="700" fill="#fff" text-anchor="middle">${letter.replace(/[<>&"']/g,'')}</text></svg>`;
   setTimeout(()=>{ document.getElementById('userAvatar').classList.remove('hidden'); document.getElementById('userAvatar').src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg); },50);
+});
+
+function refreshAccountButtons(){
+  const u=auth.currentUser; if(!u) return;
+  const p=u.providerData.map(x=>x.providerId);
+  document.getElementById('linkAccountBtn').classList.toggle('hidden', !(p.includes('google.com') && !p.includes('password')));
+  document.getElementById('unlinkGoogleBtn').classList.toggle('hidden', !(p.includes('google.com') && p.includes('password')));
+}
+auth.onAuthStateChanged(u=>{ if(u) setTimeout(refreshAccountButtons,300); });
+document.getElementById('linkAccountBtn').addEventListener('click', ()=>{
+  document.getElementById('linkError').textContent='';
+  document.getElementById('linkOverlay').classList.remove('hidden');
+});
+document.getElementById('linkCancel').addEventListener('click', ()=>document.getElementById('linkOverlay').classList.add('hidden'));
+document.getElementById('linkSave').addEventListener('click', async ()=>{
+  const name=document.getElementById('linkUser').value.trim().toLowerCase();
+  const pass=document.getElementById('linkPass').value;
+  const err=document.getElementById('linkError');
+  if(!/^[a-z0-9._-]{3,20}$/.test(name)){ err.textContent='Username: 3–20 characters, letters, numbers, . _ - only.'; return; }
+  if(pass.length<6){ err.textContent='Password must have at least 6 characters.'; return; }
+  try{
+    const cred=firebase.auth.EmailAuthProvider.credential(name+'@'+USER_DOMAIN, pass);
+    await auth.currentUser.linkWithCredential(cred);
+    await auth.currentUser.updateProfile({displayName:name});
+    document.getElementById('linkOverlay').classList.add('hidden');
+    refreshAccountButtons();
+    showToast('🔑 Done! You can now log in as "'+name+'".');
+  }catch(e){
+    console.error('Link failed', e);
+    if(e.code==='auth/email-already-in-use'||e.code==='auth/credential-already-in-use') err.textContent='This username is already taken. Try another one.';
+    else if(e.code==='auth/requires-recent-login') err.textContent='Please sign out, sign in again with Google, then retry.';
+    else err.textContent='Something went wrong: '+(e.code||e.message);
+  }
+});
+document.getElementById('unlinkGoogleBtn').addEventListener('click', async ()=>{
+  if(!confirm('Remove Google from your account? From now on you will log in only with your username and password. Make sure you remember them!')) return;
+  try{
+    await auth.currentUser.unlink('google.com');
+    refreshAccountButtons();
+    showToast('🧹 Google removed. Use your username to log in.');
+  }catch(e){ console.error('Unlink failed', e); showToast('⚠️ Could not remove Google: '+(e.code||e.message)); }
 });
 
 function getImages(r) {
