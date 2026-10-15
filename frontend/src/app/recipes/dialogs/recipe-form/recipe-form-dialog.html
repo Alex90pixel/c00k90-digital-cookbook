@@ -1,0 +1,283 @@
+<!-- Not a <form>: Enter inside an ingredient row must not save the whole recipe. -->
+<div class="form-modal" role="group" aria-labelledby="recipe-form-title">
+  <div class="form-header">
+    <h2 class="form-title" id="recipe-form-title">
+      {{ isEditing ? 'Edit Recipe ✏️' : 'New Recipe ✨' }}
+    </h2>
+    <button type="button" class="detail-close" aria-label="Close" (click)="cancel()">✕</button>
+  </div>
+
+  <div class="form-body">
+    <div class="form-group">
+      <label for="recipe-name">Recipe Name *</label>
+      <input
+        id="recipe-name"
+        type="text"
+        placeholder="e.g. Chocolate Lava Cake"
+        [formField]="recipeForm.name"
+        [class.invalid]="recipeForm.name().touched() && recipeForm.name().invalid()"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="recipe-category">Category *</label>
+      <select
+        id="recipe-category"
+        [formField]="recipeForm.category"
+        [class.invalid]="recipeForm.category().touched() && recipeForm.category().invalid()"
+      >
+        <option value="">Select category</option>
+        @for (c of categories; track c.id) {
+          <option [value]="c.id">{{ c.id }}</option>
+        }
+      </select>
+    </div>
+
+    <fieldset class="form-group">
+      <legend>Diet</legend>
+      <div class="diet-checks">
+        @for (diet of manualDiets; track diet.id) {
+          <label
+            ><input type="checkbox" [formField]="recipeForm.diets[diet.id]" />
+            {{ diet.label }}</label
+          >
+        }
+      </div>
+      <p class="hint">
+        Added automatically: High protein, Low carb, Low fat and Keto (from the nutrition estimate)
+        and Quick (from the total time).
+      </p>
+    </fieldset>
+
+    <div class="form-group">
+      <span class="label" id="photos-label">Recipe Photo</span>
+      @if (photos().length < maxPhotos) {
+        <button
+          type="button"
+          class="image-upload-area"
+          aria-describedby="photos-label"
+          (click)="pickPhotos(fileInput)"
+        >
+          @if (importedFrom(); as platform) {
+            <span class="source-badge" [style.background]="platform.color">
+              <span class="source-badge-icon">{{ platform.emoji }}</span>
+              {{ platform.label }}
+            </span>
+          } @else {
+            <span class="upload-icon" aria-hidden="true">📷</span>
+            <span class="upload-text">Click to add photos (up to {{ maxPhotos }})</span>
+          }
+          <span class="upload-note"
+            >Only the photos you choose are uploaded. We never access your gallery.</span
+          >
+        </button>
+      }
+      <input
+        #fileInput
+        type="file"
+        accept="image/*"
+        multiple
+        hidden
+        (change)="addPhotos(fileInput)"
+      />
+      @if (photos().length) {
+        <div class="form-images">
+          @for (photo of photos(); track photo.previewUrl; let i = $index) {
+            <div class="form-image-thumb">
+              <img [src]="photo.previewUrl" alt="" />
+              @if (i === 0) {
+                <span class="cover-badge">Cover</span>
+              }
+              <button
+                type="button"
+                class="thumb-remove"
+                [attr.aria-label]="'Remove photo ' + (i + 1)"
+                (click)="removePhoto(i)"
+              >
+                ✕
+              </button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="ingredients-paste">Ingredients</label>
+      <textarea
+        id="ingredients-paste"
+        rows="2"
+        placeholder="Paste all ingredients here (one per line, e.g. 200g flour)"
+        [value]="ingredientsPaste()"
+        (input)="ingredientsPaste.set($any($event.target).value)"
+      ></textarea>
+      <button type="button" class="btn-add-row" (click)="addPastedIngredients()">
+        Add pasted ingredients
+      </button>
+      @if (recipeForm.ingredients.length) {
+        <ul class="dynamic-list">
+          @for (ingredient of recipeForm.ingredients; track $index; let i = $index) {
+            <li class="dynamic-item">
+              <input
+                class="qty-input"
+                type="text"
+                placeholder="Qty"
+                aria-label="Quantity"
+                [formField]="ingredient.qty"
+              />
+              <input
+                class="unit-input"
+                type="text"
+                placeholder="Unit"
+                aria-label="Unit"
+                [formField]="ingredient.unit"
+              />
+              <input
+                type="text"
+                placeholder="Ingredient name"
+                aria-label="Ingredient name"
+                [formField]="ingredient.name"
+              />
+              <button
+                type="button"
+                class="btn-remove"
+                [attr.aria-label]="'Remove ingredient ' + (i + 1)"
+                (click)="removeIngredient(i)"
+              >
+                ✕
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="steps-paste">Steps</label>
+      <textarea
+        id="steps-paste"
+        rows="2"
+        placeholder="Paste all steps here (one per line)"
+        [value]="stepsPaste()"
+        (input)="stepsPaste.set($any($event.target).value)"
+      ></textarea>
+      <button type="button" class="btn-add-row" (click)="addPastedSteps()">Add pasted steps</button>
+      @if (recipeForm.steps.length) {
+        <ol class="dynamic-list">
+          @for (step of recipeForm.steps; track $index; let i = $index) {
+            <li class="dynamic-item">
+              <span class="step-num" aria-hidden="true">{{ i + 1 }}</span>
+              <input
+                type="text"
+                [placeholder]="'Describe step ' + (i + 1) + '…'"
+                [attr.aria-label]="'Step ' + (i + 1)"
+                [formField]="step"
+              />
+              <button
+                type="button"
+                class="btn-remove"
+                [attr.aria-label]="'Remove step ' + (i + 1)"
+                (click)="removeStep(i)"
+              >
+                ✕
+              </button>
+            </li>
+          }
+        </ol>
+      }
+    </div>
+
+    <fieldset class="form-group">
+      <legend>Difficulty</legend>
+      <div class="difficulty-buttons">
+        @for (d of difficulties; track d.id) {
+          <button
+            type="button"
+            class="diff-btn"
+            [class.active]="model().difficulty === d.id"
+            [attr.aria-pressed]="model().difficulty === d.id"
+            (click)="setDifficulty(d.id)"
+          >
+            {{ d.icon }} {{ d.id }}
+          </button>
+        }
+      </div>
+    </fieldset>
+
+    @if (estimateHint()) {
+      <p class="estimate-hint">{{ estimateHint() }}</p>
+    }
+    <div class="form-row-3">
+      <div class="form-group">
+        <label for="recipe-prep">Prep time (min)</label>
+        <input id="recipe-prep" type="number" placeholder="30" [formField]="recipeForm.prepTime" />
+      </div>
+      <div class="form-group">
+        <label for="recipe-cook">Cook time (min)</label>
+        <input id="recipe-cook" type="number" placeholder="45" [formField]="recipeForm.cookTime" />
+      </div>
+      <div class="form-group">
+        <label for="recipe-servings">Servings</label>
+        <input
+          id="recipe-servings"
+          type="number"
+          placeholder="8"
+          [formField]="recipeForm.servings"
+        />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="recipe-source">Source</label>
+      <div class="source-row">
+        <input
+          id="recipe-source"
+          type="text"
+          placeholder="Paste a link, or type a source (e.g. Grandma's recipe)"
+          [formField]="recipeForm.source"
+        />
+        <button
+          type="button"
+          class="btn-add-row"
+          [disabled]="!canImport() || importing()"
+          (click)="importFromLink()"
+        >
+          Import
+        </button>
+      </div>
+      <button type="button" class="btn-add-row own-recipe" (click)="markAsOwnRecipe()">
+        ✏️ My own recipe
+      </button>
+      @if (importStatus()) {
+        <p class="import-status" role="status">{{ importStatus() }}</p>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="recipe-pairing">🍷 Pairs well with</label>
+      <input
+        id="recipe-pairing"
+        type="text"
+        placeholder="Leave empty for an automatic suggestion"
+        [formField]="recipeForm.pairing"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="recipe-notes">✍️ My Notes</label>
+      <textarea
+        id="recipe-notes"
+        rows="4"
+        placeholder="The story behind it, tips, substitutions…"
+        [formField]="recipeForm.notes"
+      ></textarea>
+    </div>
+  </div>
+
+  <div class="form-footer">
+    <button type="button" class="btn-cancel" (click)="cancel()">Cancel</button>
+    <button type="button" class="btn-save" [disabled]="saving()" (click)="save()">
+      {{ saving() ? 'Saving…' : 'Save Recipe ✨' }}
+    </button>
+  </div>
+</div>

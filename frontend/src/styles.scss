@@ -1,1 +1,7 @@
-/* You can add global styles to this file, and also import other style files */
+// Global styles: theme tokens and the pieces shared by many components.
+// Component-specific styles live next to each component.
+@use 'styles/tokens';
+@use 'styles/base';
+@use 'styles/buttons';
+@use 'styles/forms';
+@use 'styles/dialogs';

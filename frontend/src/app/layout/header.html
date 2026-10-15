@@ -1,0 +1,32 @@
+<header class="app-header">
+  <div class="header-inner">
+    <a class="logo-link" routerLink="/" aria-label="C00K90 home"><app-logo /></a>
+
+    <label class="search-bar">
+      <span class="search-icon" aria-hidden="true">🔍</span>
+      <input
+        type="search"
+        placeholder="Search recipes or ingredients…"
+        aria-label="Search recipes or ingredients"
+        [value]="store.search()"
+        (input)="onSearch($event)"
+      />
+    </label>
+
+    <nav class="header-nav" aria-label="Main">
+      <a
+        class="nav-btn"
+        [class.active]="store.view() === 'favorites'"
+        [routerLink]="favoritesLink()"
+        >❤️ Favorites</a
+      >
+      <a class="nav-btn" [class.active]="store.view() === 'inspired'" [routerLink]="inspiredLink()"
+        >✨ Get Inspired</a
+      >
+      <button type="button" class="btn-new" aria-label="New Recipe" (click)="dialogs.openForm()">
+        <span class="plus-icon" aria-hidden="true">🍳</span> New Recipe
+      </button>
+      <app-account-menu class="account-menu" />
+    </nav>
+  </div>
+</header>

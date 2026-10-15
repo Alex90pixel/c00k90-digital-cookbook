@@ -1,0 +1,194 @@
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 0 32px;
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, var(--magenta), var(--teal)) 1;
+  background: var(--card);
+  box-shadow: 0 2px 16px var(--shadow);
+}
+
+.header-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+  max-width: 1200px;
+  height: 72px;
+  margin: 0 auto;
+}
+
+.logo-link {
+  flex-shrink: 0;
+  border-radius: 8px;
+  text-decoration: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 4px;
+  }
+}
+
+// ----- Search -----
+.search-bar {
+  position: relative;
+  flex: 1;
+  max-width: 400px;
+
+  input {
+    width: 100%;
+    padding: 10px 16px 10px 40px;
+    border: 1.5px solid var(--border);
+    border-radius: 50px;
+    outline: none;
+    background: var(--card-soft);
+    color: var(--text-dark);
+    font-size: 14px;
+    transition: all 0.2s;
+
+    &::placeholder {
+      color: var(--teal-light);
+    }
+
+    &:focus {
+      border-color: var(--teal);
+      background: var(--card);
+      box-shadow: 0 0 0 3px var(--focus-ring);
+    }
+  }
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  color: var(--teal-light);
+  font-size: 15px;
+  transform: translateY(-50%);
+}
+
+// ----- Navigation -----
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.nav-btn {
+  padding: 8px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 50px;
+  background: transparent;
+  color: var(--text-mid);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s;
+
+  &:hover:not(.active) {
+    border-color: var(--teal-light);
+    color: var(--text-dark);
+  }
+
+  &.active {
+    border-color: var(--teal);
+    background: var(--teal-pale);
+    color: var(--teal-deep);
+    font-weight: 700;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+}
+
+@media (hover: none) {
+  .nav-btn:hover:not(.active) {
+    border-color: var(--border);
+    color: var(--text-mid);
+  }
+}
+
+// Desktop: a calm outlined button. Phone: a round floating "+" button (below).
+.btn-new {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 50px;
+  background: transparent;
+  color: var(--text-mid);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: var(--teal-light);
+    color: var(--text-dark);
+  }
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    padding: 0 16px;
+  }
+  .header-inner {
+    position: relative;
+    height: auto;
+    gap: 12px;
+    padding: 12px 0;
+  }
+  .search-bar {
+    order: 3;
+    width: 100%;
+    max-width: 100%;
+  }
+  .header-nav {
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+    margin-left: 0;
+  }
+  .nav-btn {
+    padding: 7px 12px;
+    font-size: 12px;
+  }
+  .account-menu {
+    position: absolute;
+    top: 12px;
+    right: 0;
+  }
+  .btn-new {
+    position: fixed;
+    right: 18px;
+    bottom: 22px;
+    z-index: 150;
+    justify-content: center;
+    width: 58px;
+    height: 58px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--magenta), var(--teal));
+    color: #fff;
+    font-size: 0;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+
+    &::before {
+      content: '+';
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .plus-icon {
+      display: none;
+    }
+  }
+}

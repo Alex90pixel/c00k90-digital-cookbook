@@ -1,0 +1,89 @@
+:host {
+  position: relative;
+  display: inline-flex;
+}
+
+.avatar-btn {
+  position: relative;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+}
+
+.user-avatar {
+  display: block;
+  width: 34px;
+  height: 34px;
+  border: 2px solid var(--teal-light);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.report-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: #d64545;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+// The menu is rendered in an overlay, outside this component, but Angular still scopes these
+// styles to it because the template lives here.
+.account-dropdown {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 180px;
+  padding: 10px;
+  border: 1px solid var(--divider);
+  border-radius: 12px;
+  background: var(--card);
+  box-shadow: var(--panel-shadow);
+}
+
+.menu-item {
+  width: 100%;
+  padding: 7px 14px;
+  border: 1.5px solid var(--border-mag);
+  border-radius: 50px;
+  background: transparent;
+  color: var(--magenta);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    background: var(--teal-pale);
+  }
+
+  &.danger {
+    border-color: var(--danger-border);
+    color: var(--danger);
+  }
+}
+
+.dropdown-divider {
+  margin: 4px 0;
+  border: none;
+  border-top: 1px solid var(--divider);
+}

@@ -1,0 +1,70 @@
+.page {
+  max-width: 1200px;
+  margin: 24px auto 60px;
+  padding: 0 24px;
+}
+
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.empty-state,
+.loading-state {
+  grid-column: 1 / -1;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.empty-icon {
+  margin-bottom: 16px;
+  font-size: 64px;
+}
+
+.empty-state h2 {
+  margin: 0 0 10px;
+  color: var(--magenta-deep);
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+}
+
+.empty-state p,
+.loading-state p {
+  margin: 0;
+  color: var(--text-light);
+  font-size: 15px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 16px;
+  border: 3px solid var(--border);
+  border-top-color: var(--magenta);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 0 16px;
+  }
+  .recipe-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .recipe-grid {
+    grid-template-columns: 1fr;
+  }
+}

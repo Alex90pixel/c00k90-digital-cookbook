@@ -1,0 +1,58 @@
+.form-group {
+  margin-bottom: 20px;
+
+  > label,
+  > .label,
+  > legend {
+    display: block;
+    margin-bottom: 7px;
+    padding: 0;
+    color: var(--teal-deep);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+  }
+}
+
+// Text fields in forms and dialogs.
+:is(.form-group, .dynamic-item, .source-row) :is(input:not([type='checkbox']), textarea, select),
+.field {
+  width: 100%;
+  padding: 11px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  outline: none;
+  background: var(--card-soft);
+  color: var(--text-dark);
+  font-size: 14px;
+  transition: all 0.2s;
+
+  &:focus {
+    border-color: var(--teal);
+    background: var(--card);
+    box-shadow: 0 0 0 3px var(--focus-ring);
+  }
+
+  &.invalid {
+    border-color: var(--danger);
+  }
+}
+
+textarea {
+  min-height: 80px;
+  line-height: 1.55;
+  resize: vertical;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}

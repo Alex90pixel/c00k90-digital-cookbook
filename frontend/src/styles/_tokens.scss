@@ -1,0 +1,140 @@
+// Color tokens for the 5 themes. Forest is the default; the others are set with
+// <html data-theme="...">. The names come from the old app ("magenta" is the accent color,
+// "teal" the secondary one), so both apps stay easy to compare.
+
+:root {
+  --bg: #081716;
+  --card: #12211f;
+  --card-soft: #17261f;
+  --magenta: #9fb85a;
+  --magenta-deep: #c2d67a;
+  --magenta-light: #d6e59a;
+  --magenta-pale: #1a2614;
+  --teal: #34c79a;
+  --teal-deep: #7fe3c0;
+  --teal-light: #5fd6ae;
+  --teal-pale: #0f3d3b;
+  --text-dark: #f2f5f3;
+  --text-mid: #c3d0c8;
+  --text-light: #8a9a92;
+  --border: #2a3a35;
+  --border-mag: #4a5a3a;
+  --shadow: rgba(0, 0, 0, 0.35);
+  --shadow-card: rgba(0, 0, 0, 0.45);
+
+  // Logo
+  --logo-a: #9fb85a;
+  --logo-b: #34c79a;
+  --logo-rim: #c2d67a;
+  --logo-steam: #7fe3c0;
+
+  // Surfaces and states that differ between dark and light themes
+  --overlay-bg: rgba(2, 8, 7, 0.75);
+  --panel-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+  --banner-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  --toast-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --card-hover-shadow: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--teal);
+  --heart-bg: rgba(8, 23, 22, 0.55);
+  --heart-border: rgba(255, 255, 255, 0.18);
+  --divider: rgba(255, 255, 255, 0.12);
+  --section-heading: var(--magenta);
+  --notes-empty: var(--magenta-light);
+  --danger: #e57373;
+  --danger-border: rgba(229, 115, 115, 0.4);
+  --danger-hover-bg: rgba(229, 115, 115, 0.1);
+  --danger-solid: #c0392b;
+  --focus-ring: rgba(13, 138, 138, 0.12);
+}
+
+html[data-theme='sea'] {
+  --bg: #071a1e;
+  --card: #0e2a2f;
+  --card-soft: #123238;
+  --magenta: #f07b3f;
+  --magenta-deep: #f6a77a;
+  --magenta-light: #f2cdb8;
+  --magenta-pale: #2a2621;
+  --teal: #2bb3a8;
+  --teal-deep: #a8e0d8;
+  --teal-light: #6fcfc4;
+  --teal-pale: #0f3b3d;
+  --text-dark: #eef7f6;
+  --text-mid: #bfd6d3;
+  --text-light: #7fa09c;
+  --border: #1e4044;
+  --border-mag: #5a3f30;
+
+  --logo-a: #f6a77a;
+  --logo-b: #f07b3f;
+  --logo-rim: #6fcfc4;
+  --logo-steam: #a8e0d8;
+}
+
+// Shared by the two light themes.
+html[data-theme='rose'],
+html[data-theme='sunny'] {
+  --shadow: rgba(0, 0, 0, 0.08);
+  --shadow-card: rgba(0, 0, 0, 0.08);
+  --panel-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  --banner-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  --heart-bg: rgba(255, 255, 255, 0.85);
+  --heart-border: rgba(0, 0, 0, 0.1);
+  --divider: rgba(0, 0, 0, 0.1);
+  --notes-empty: var(--text-mid);
+  --danger: #b3363a;
+  --danger-border: rgba(179, 54, 58, 0.35);
+}
+
+html[data-theme='rose'] {
+  --bg: #f7ecec;
+  --card: #fff8f8;
+  --card-soft: #f3e3e4;
+  --magenta: #b5646d;
+  --magenta-deep: #1f4d4a;
+  --magenta-light: #d99aa1;
+  --magenta-pale: #f6e1e3;
+  --teal: #1f4d4a;
+  --teal-deep: #1f4d4a;
+  --teal-light: #4f7f7a;
+  --teal-pale: #e3eceb;
+  --text-dark: #2e3333;
+  --text-mid: #4a4a4a;
+  --text-light: #6e777a;
+  --border: #e6d3d5;
+  --border-mag: #e8b4b8;
+
+  --logo-a: #d99aa1;
+  --logo-b: #b5646d;
+  --logo-rim: #1f4d4a;
+  --logo-steam: #8a9497;
+
+  --overlay-bg: rgba(60, 30, 35, 0.35);
+  --section-heading: #94434d;
+}
+
+html[data-theme='sunny'] {
+  --bg: #fbf4dc;
+  --card: #fffcef;
+  --card-soft: #f7eec9;
+  --magenta: #e55d7e;
+  --magenta-deep: #526038;
+  --magenta-light: #9c9d57;
+  --magenta-pale: #fde9ee;
+  --teal: #6e7a2f;
+  --teal-deep: #3f4a2a;
+  --teal-light: #6e7a2f;
+  --teal-pale: #eef0c9;
+  --text-dark: #2c3320;
+  --text-mid: #4f5838;
+  --text-light: #6b7150;
+  --border: #e8ddb0;
+  --border-mag: #f2c3cf;
+
+  --logo-a: #f08aa3;
+  --logo-b: #e55d7e;
+  --logo-rim: #526038;
+  --logo-steam: #9c9d57;
+
+  --overlay-bg: rgba(60, 50, 20, 0.35);
+  --section-heading: #b83a5c;
+}

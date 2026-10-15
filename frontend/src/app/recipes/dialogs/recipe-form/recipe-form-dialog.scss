@@ -1,0 +1,236 @@
+fieldset {
+  min-width: 0;
+  margin: 0 0 20px;
+  padding: 0;
+  border: 0;
+}
+
+.diet-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    color: var(--text-mid);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    cursor: pointer;
+  }
+
+  input {
+    width: auto;
+    margin: 0;
+    accent-color: var(--teal);
+  }
+}
+
+.hint {
+  margin: 8px 0 0;
+  color: var(--text-light);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+// ----- Photos -----
+.image-upload-area {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 20px;
+  overflow: hidden;
+  border: 2px dashed var(--teal-light);
+  border-radius: 14px;
+  background: var(--card-soft);
+  color: var(--text-light);
+  font-size: 13px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: var(--teal);
+    background: var(--teal-pale);
+  }
+}
+
+.upload-icon {
+  font-size: 30px;
+}
+
+.upload-note {
+  font-size: 11px;
+}
+
+.source-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  padding: 12px;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 13px;
+}
+
+.source-badge-icon {
+  font-size: 32px;
+}
+
+.form-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.form-image-thumb {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.cover-badge {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(8, 23, 22, 0.75);
+  color: var(--teal-deep);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.thumb-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(8, 23, 22, 0.75);
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+// ----- Ingredient and step rows -----
+.dynamic-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dynamic-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  input {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .qty-input {
+    flex: none;
+    width: 70px;
+  }
+
+  .unit-input {
+    flex: none;
+    width: 80px;
+  }
+}
+
+.btn-remove {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: var(--teal-pale);
+  color: var(--teal);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: var(--danger-hover-bg);
+    color: var(--danger);
+  }
+}
+
+.form-group > .btn-add-row {
+  margin-top: 6px;
+}
+
+// ----- Difficulty, times, source -----
+.difficulty-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.estimate-hint {
+  margin: 0 0 8px;
+  color: var(--text-light);
+  font-size: 12px;
+  font-style: italic;
+}
+
+.form-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+.source-row {
+  display: flex;
+  gap: 8px;
+
+  input {
+    flex: 1;
+  }
+}
+
+.own-recipe {
+  margin-top: 8px;
+}
+
+.import-status {
+  margin: 4px 0 0;
+  color: var(--text-mid);
+  font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .form-row-3 {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,218 @@
+// ----- CDK overlay: backdrop and panel -----
+.app-dialog-backdrop {
+  background: var(--overlay-bg);
+  backdrop-filter: blur(4px);
+  animation: overlay-fade 0.25s ease;
+}
+
+.app-dialog-panel .cdk-dialog-container {
+  display: block;
+  width: 100%;
+  max-height: inherit;
+  overflow-y: auto;
+  outline: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+// ----- Close button (top right of a modal) -----
+.detail-close {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: var(--teal-pale);
+  color: var(--teal-deep);
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    background: var(--magenta);
+    color: #fff;
+  }
+}
+
+// ----- Large modal with header / scrolling body / footer (recipe form, legal) -----
+.form-modal {
+  overflow: hidden;
+  border-radius: 28px;
+  background: var(--card);
+  box-shadow: var(--panel-shadow);
+  animation: slide-up 0.3s ease;
+}
+
+.form-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 36px 20px;
+  border-bottom: 1.5px solid var(--border);
+
+  .detail-close {
+    position: static;
+  }
+}
+
+.form-title {
+  margin: 0;
+  color: var(--magenta-deep);
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.form-body {
+  max-height: 72vh;
+  padding: 28px 36px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.form-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 36px 28px;
+  border-top: 1.5px solid var(--border);
+  background: var(--card-soft);
+}
+
+@media (max-width: 768px) {
+  .form-header {
+    padding: 20px;
+  }
+  .form-body {
+    max-height: 65vh;
+    padding: 20px;
+  }
+  .form-footer {
+    padding: 16px 20px;
+  }
+}
+
+// ----- Small centered dialog (confirmations, theme, feedback, inboxes) -----
+.confirm-dialog {
+  padding: 32px;
+  border-radius: 20px;
+  background: var(--card);
+  box-shadow: var(--panel-shadow);
+  text-align: center;
+  animation: slide-up 0.25s ease;
+
+  &.text-left {
+    text-align: left;
+  }
+
+  .centered {
+    text-align: center;
+  }
+
+  h2 {
+    margin: 0 0 10px;
+    color: var(--magenta-deep);
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+  }
+
+  > p {
+    margin: 0 0 22px;
+    color: var(--text-mid);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .field {
+    margin-bottom: 10px;
+    padding: 10px 14px;
+
+    &:last-of-type {
+      margin-bottom: 16px;
+    }
+  }
+}
+
+.confirm-icon {
+  margin-bottom: 14px;
+  font-size: 40px;
+}
+
+.confirm-btns {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+// ----- Moderator inboxes -----
+.inbox-list {
+  max-height: 60vh;
+  margin-bottom: 16px;
+  overflow-y: auto;
+
+  > p {
+    color: var(--text-mid);
+  }
+}
+
+.inbox-item {
+  margin-bottom: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text-dark);
+  font-size: 13px;
+  text-align: left;
+
+  .quote {
+    margin-top: 4px;
+    font-style: italic;
+  }
+
+  .message {
+    margin-top: 6px;
+    white-space: pre-line;
+  }
+
+  small {
+    display: block;
+    margin-top: 4px;
+    color: var(--text-light);
+  }
+}
+
+.inbox-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+// ----- Section heading with a fading line ("INGREDIENTS ———") -----
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
+  color: var(--section-heading);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border-mag), var(--border));
+  }
+}

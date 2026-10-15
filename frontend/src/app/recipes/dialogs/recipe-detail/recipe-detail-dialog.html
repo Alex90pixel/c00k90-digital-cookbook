@@ -1,0 +1,214 @@
+@if (recipe(); as r) {
+  <article class="recipe-detail" aria-labelledby="recipe-detail-title">
+    <button type="button" class="detail-close" aria-label="Close" (click)="close()">✕</button>
+
+    <header class="detail-hero">
+      <div class="detail-hero-text">
+        <div class="detail-category">{{ r.category }}</div>
+        <h2 class="detail-title" id="recipe-detail-title">{{ r.name }}</h2>
+
+        <div class="detail-meta-row">
+          @if (r.prepTime) {
+            <span class="detail-meta-item">🥄 Prep: {{ r.prepTime }} min</span>
+          }
+          @if (r.cookTime) {
+            <span class="detail-meta-item">🔥 Cook: {{ r.cookTime }} min</span>
+          }
+          @if (totalMinutes()) {
+            <span class="detail-meta-item">⏱ Total: {{ totalMinutes() }} min</span>
+          }
+          <span class="detail-meta-item">{{ difficultyIcon() }} {{ difficulty() }}</span>
+          @for (diet of dietPills(); track diet.id) {
+            <span class="detail-meta-item">
+              {{ diet.label }}
+              @if (!diet.manual) {
+                <small class="estimated">(est.)</small>
+              }
+            </span>
+          }
+          @if (r.servings) {
+            <span class="detail-meta-item servings">
+              🍽
+              <button type="button" aria-label="Fewer servings" (click)="changeServings(-1)">
+                −
+              </button>
+              <span aria-live="polite">{{ servings() }}</span> servings
+              <button type="button" aria-label="More servings" (click)="changeServings(1)">
+                +
+              </button>
+            </span>
+          }
+        </div>
+
+        <div class="detail-actions">
+          @if (isOwner()) {
+            <button
+              type="button"
+              class="btn-action primary"
+              [attr.aria-pressed]="!!r.favorite"
+              (click)="toggleFavorite(r)"
+            >
+              {{ r.favorite ? '❤️ Favorited' : '♡ Favorite' }}
+            </button>
+            <button type="button" class="btn-action" (click)="edit(r)">✏️ Edit</button>
+            <button type="button" class="btn-action danger" (click)="delete(r)">🗑 Delete</button>
+            @if (r.hiddenByModerator) {
+              <button
+                type="button"
+                class="btn-action"
+                disabled
+                title="This recipe was hidden from Get Inspired by a moderator"
+              >
+                🛡️ Hidden by moderator
+              </button>
+            } @else {
+              <button
+                type="button"
+                class="btn-action"
+                [attr.aria-pressed]="!!r.shared"
+                (click)="toggleShared(r)"
+              >
+                {{ r.shared ? '✨ Shared to Get Inspired' : '✨ Share to Get Inspired' }}
+              </button>
+            }
+          } @else {
+            <p class="shared-note">Shared by another cook, for inspiration</p>
+            <button type="button" class="btn-action" (click)="report(r)">🚩 Report</button>
+            @if (isAdmin()) {
+              <button type="button" class="btn-action danger" (click)="hideFromInspired(r)">
+                🛡️ Hide from Get Inspired
+              </button>
+            }
+          }
+        </div>
+      </div>
+
+      <div class="detail-gallery">
+        <div class="detail-image-wrap">
+          @if (activeImageUrl(); as url) {
+            <img [src]="url" [alt]="r.name" />
+          } @else {
+            <span aria-hidden="true">{{ r.imageEmoji || '🍽️' }}</span>
+          }
+        </div>
+        @if (images().length > 1) {
+          <div class="detail-thumbs">
+            @for (image of images(); track image.url; let i = $index) {
+              <button
+                type="button"
+                class="detail-thumb"
+                [class.active]="i === activeImage()"
+                [attr.aria-label]="'Show photo ' + (i + 1)"
+                [attr.aria-pressed]="i === activeImage()"
+                (click)="activeImage.set(i)"
+              >
+                <img [src]="image.thumbUrl || image.url" alt="" />
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </header>
+
+    <div class="detail-body">
+      <section>
+        <h3 class="section-heading">Ingredients</h3>
+        <ul class="ingredients-grid">
+          @for (ingredient of ingredients(); track $index) {
+            <li class="ingredient-item">
+              <span class="ingredient-badge"
+                >{{ ingredient.qty }}{{ ingredient.unit ? ' ' + ingredient.unit : '' }}</span
+              >
+              <span>{{ ingredient.name }}</span>
+            </li>
+          }
+        </ul>
+      </section>
+
+      <section>
+        <h3 class="section-heading">Steps</h3>
+        <ol class="steps-list">
+          @for (step of r.steps ?? []; track $index) {
+            <li class="step-item">
+              <span class="step-num" aria-hidden="true">{{ $index + 1 }}</span>
+              <span class="step-text">{{ step }}</span>
+            </li>
+          }
+        </ol>
+      </section>
+
+      @if (r.tags?.length) {
+        <section class="tags">
+          @for (tag of r.tags; track tag) {
+            <span class="tag-chip">#{{ tag }}</span>
+          }
+        </section>
+      }
+
+      @if (nutrition(); as n) {
+        <section>
+          <h3 class="section-heading">Nutrition (estimated, per serving)</h3>
+          <div class="detail-meta-row nutrition-row">
+            <span class="detail-meta-item">🔥 {{ n.calories }} kcal</span>
+            <span class="detail-meta-item">🥩 {{ n.protein }}g protein</span>
+            <span class="detail-meta-item">🌾 {{ n.carbs }}g carbs</span>
+            <span class="detail-meta-item">🧈 {{ n.fat }}g fat</span>
+          </div>
+          @if (n.unmatched.length) {
+            <p class="fine-print">Couldn't estimate: {{ n.unmatched.join(', ') }}</p>
+          }
+          <p class="fine-print disclaimer">
+            Estimate only, not medical or nutritional advice. Nutrition data: Anses. 2025. Ciqual
+            French food composition table.
+          </p>
+        </section>
+      }
+
+      @if (drinks(); as d) {
+        <section>
+          <h3 class="section-heading">Pairs well with</h3>
+          <div class="pairing-box">
+            @if (d.custom) {
+              <div>🍷 {{ d.custom }}</div>
+            } @else {
+              @if (d.wine) {
+                <div>🍷 {{ d.wine }}</div>
+              }
+              <div>🧃 {{ d.noAlcohol }}</div>
+              <p class="pairing-note">{{ d.disclaimer }}</p>
+            }
+          </div>
+        </section>
+      }
+
+      <section>
+        <h3 class="section-heading">My Notes</h3>
+        <div class="notes-box">
+          <div class="notes-title">✍️ My Notes</div>
+          @if (r.description || r.notes) {
+            @if (r.description) {
+              <p class="notes-text">{{ r.description }}</p>
+            }
+            @if (r.notes) {
+              <p class="notes-text">{{ r.notes }}</p>
+            }
+          } @else {
+            <p class="notes-empty">No notes yet!</p>
+          }
+        </div>
+      </section>
+
+      @if (r.source) {
+        <section>
+          @if (sourceIsLink()) {
+            <a class="source-link" [href]="r.source" target="_blank" rel="noopener"
+              >🔗 {{ r.source }}</a
+            >
+          } @else {
+            <div class="source-link">📖 Source: {{ r.source }}</div>
+          }
+        </section>
+      }
+    </div>
+  </article>
+}
