@@ -1,65 +1,89 @@
 @if (recipe(); as r) {
   <article class="recipe-detail" aria-labelledby="recipe-detail-title">
-    <button type="button" class="detail-close" aria-label="Close" (click)="close()">✕</button>
+    <button
+      type="button"
+      class="detail-close"
+      [attr.aria-label]="'common.close' | t"
+      (click)="close()"
+    >
+      ✕
+    </button>
 
     <header class="detail-hero">
       <div class="detail-hero-text">
-        <div class="detail-category">{{ r.category }}</div>
+        <div class="detail-category">{{ i18n.label('categories', r.category) }}</div>
         <h2 class="detail-title" id="recipe-detail-title">{{ r.name }}</h2>
 
         <div class="detail-meta-row">
           @if (r.prepTime) {
-            <span class="detail-meta-item">🥄 Prep: {{ r.prepTime }} min</span>
+            <span class="detail-meta-item">{{ 'detail.prep' | t: { minutes: r.prepTime } }}</span>
           }
           @if (r.cookTime) {
-            <span class="detail-meta-item">🔥 Cook: {{ r.cookTime }} min</span>
+            <span class="detail-meta-item">{{ 'detail.cook' | t: { minutes: r.cookTime } }}</span>
           }
           @if (totalMinutes()) {
-            <span class="detail-meta-item">⏱ Total: {{ totalMinutes() }} min</span>
+            <span class="detail-meta-item">{{
+              'detail.total' | t: { minutes: totalMinutes() }
+            }}</span>
           }
-          <span class="detail-meta-item">{{ difficultyIcon() }} {{ difficulty() }}</span>
+          <span class="detail-meta-item"
+            >{{ difficultyIcon() }} {{ i18n.label('difficulty', difficulty()) }}</span
+          >
           @for (diet of dietPills(); track diet.id) {
             <span class="detail-meta-item">
-              {{ diet.label }}
+              {{ i18n.label('diets', diet.id) }}
               @if (!diet.manual) {
-                <small class="estimated">(est.)</small>
+                <small class="estimated">{{ 'diets.estimated' | t }}</small>
               }
             </span>
           }
           @if (r.servings) {
             <span class="detail-meta-item servings">
               🍽
-              <button type="button" aria-label="Fewer servings" (click)="changeServings(-1)">
+              <button
+                type="button"
+                [attr.aria-label]="'detail.fewerServings' | t"
+                (click)="changeServings(-1)"
+              >
                 −
               </button>
-              <span aria-live="polite">{{ servings() }}</span> servings
-              <button type="button" aria-label="More servings" (click)="changeServings(1)">
+              <span aria-live="polite">{{ servings() }}</span>
+              {{ 'detail.servingsUnit' | t: { count: servings() } }}
+              <button
+                type="button"
+                [attr.aria-label]="'detail.moreServings' | t"
+                (click)="changeServings(1)"
+              >
                 +
               </button>
             </span>
           }
         </div>
 
+        @if (!isOwner()) {
+          <div class="chef-row">
+            <span class="chef-label">{{ 'chefs.sharedBy' | t }}</span>
+            <app-chef-badge [chefId]="r.userId" size="medium" />
+            <app-follow-button [chefId]="r.userId" />
+          </div>
+        }
+
         <div class="detail-actions">
           @if (isOwner()) {
-            <button
-              type="button"
-              class="btn-action primary"
-              [attr.aria-pressed]="!!r.favorite"
-              (click)="toggleFavorite(r)"
-            >
-              {{ r.favorite ? '❤️ Favorited' : '♡ Favorite' }}
+            <button type="button" class="btn-action primary" (click)="edit(r)">
+              {{ 'detail.edit' | t }}
             </button>
-            <button type="button" class="btn-action" (click)="edit(r)">✏️ Edit</button>
-            <button type="button" class="btn-action danger" (click)="delete(r)">🗑 Delete</button>
+            <button type="button" class="btn-action danger" (click)="delete(r)">
+              {{ 'detail.delete' | t }}
+            </button>
             @if (r.hiddenByModerator) {
               <button
                 type="button"
                 class="btn-action"
                 disabled
-                title="This recipe was hidden from Get Inspired by a moderator"
+                [title]="'detail.hiddenByModeratorHint' | t"
               >
-                🛡️ Hidden by moderator
+                {{ 'detail.hiddenByModerator' | t }}
               </button>
             } @else {
               <button
@@ -68,15 +92,24 @@
                 [attr.aria-pressed]="!!r.shared"
                 (click)="toggleShared(r)"
               >
-                {{ r.shared ? '✨ Shared to Get Inspired' : '✨ Share to Get Inspired' }}
+                {{ (r.shared ? 'detail.shared' : 'detail.share') | t }}
               </button>
             }
           } @else {
-            <p class="shared-note">Shared by another cook, for inspiration</p>
-            <button type="button" class="btn-action" (click)="report(r)">🚩 Report</button>
+            <button
+              type="button"
+              class="btn-action primary"
+              [attr.aria-pressed]="isFavorite()"
+              (click)="toggleFavorite(r)"
+            >
+              {{ (isFavorite() ? 'detail.favorited' : 'detail.favorite') | t }}
+            </button>
+            <button type="button" class="btn-action" (click)="report(r)">
+              {{ 'detail.report' | t }}
+            </button>
             @if (isAdmin()) {
               <button type="button" class="btn-action danger" (click)="hideFromInspired(r)">
-                🛡️ Hide from Get Inspired
+                {{ 'detail.hide' | t }}
               </button>
             }
           }
@@ -98,7 +131,7 @@
                 type="button"
                 class="detail-thumb"
                 [class.active]="i === activeImage()"
-                [attr.aria-label]="'Show photo ' + (i + 1)"
+                [attr.aria-label]="'detail.showPhoto' | t: { number: i + 1 }"
                 [attr.aria-pressed]="i === activeImage()"
                 (click)="activeImage.set(i)"
               >
@@ -112,7 +145,7 @@
 
     <div class="detail-body">
       <section>
-        <h3 class="section-heading">Ingredients</h3>
+        <h3 class="section-heading">{{ 'detail.ingredients' | t }}</h3>
         <ul class="ingredients-grid">
           @for (ingredient of ingredients(); track $index) {
             <li class="ingredient-item">
@@ -126,7 +159,7 @@
       </section>
 
       <section>
-        <h3 class="section-heading">Steps</h3>
+        <h3 class="section-heading">{{ 'detail.steps' | t }}</h3>
         <ol class="steps-list">
           @for (step of r.steps ?? []; track $index) {
             <li class="step-item">
@@ -147,26 +180,25 @@
 
       @if (nutrition(); as n) {
         <section>
-          <h3 class="section-heading">Nutrition (estimated, per serving)</h3>
+          <h3 class="section-heading">{{ 'detail.nutrition' | t }}</h3>
           <div class="detail-meta-row nutrition-row">
-            <span class="detail-meta-item">🔥 {{ n.calories }} kcal</span>
-            <span class="detail-meta-item">🥩 {{ n.protein }}g protein</span>
-            <span class="detail-meta-item">🌾 {{ n.carbs }}g carbs</span>
-            <span class="detail-meta-item">🧈 {{ n.fat }}g fat</span>
+            <span class="detail-meta-item">{{ 'detail.calories' | t: { value: n.calories } }}</span>
+            <span class="detail-meta-item">{{ 'detail.protein' | t: { value: n.protein } }}</span>
+            <span class="detail-meta-item">{{ 'detail.carbs' | t: { value: n.carbs } }}</span>
+            <span class="detail-meta-item">{{ 'detail.fat' | t: { value: n.fat } }}</span>
           </div>
           @if (n.unmatched.length) {
-            <p class="fine-print">Couldn't estimate: {{ n.unmatched.join(', ') }}</p>
+            <p class="fine-print">
+              {{ 'detail.unmatched' | t: { items: n.unmatched.join(', ') } }}
+            </p>
           }
-          <p class="fine-print disclaimer">
-            Estimate only, not medical or nutritional advice. Nutrition data: Anses. 2025. Ciqual
-            French food composition table.
-          </p>
+          <p class="fine-print disclaimer">{{ 'detail.nutritionDisclaimer' | t }}</p>
         </section>
       }
 
       @if (drinks(); as d) {
         <section>
-          <h3 class="section-heading">Pairs well with</h3>
+          <h3 class="section-heading">{{ 'detail.pairing' | t }}</h3>
           <div class="pairing-box">
             @if (d.custom) {
               <div>🍷 {{ d.custom }}</div>
@@ -182,9 +214,9 @@
       }
 
       <section>
-        <h3 class="section-heading">My Notes</h3>
+        <h3 class="section-heading">{{ 'detail.notes' | t }}</h3>
         <div class="notes-box">
-          <div class="notes-title">✍️ My Notes</div>
+          <div class="notes-title">{{ 'detail.notesTitle' | t }}</div>
           @if (r.description || r.notes) {
             @if (r.description) {
               <p class="notes-text">{{ r.description }}</p>
@@ -193,7 +225,7 @@
               <p class="notes-text">{{ r.notes }}</p>
             }
           } @else {
-            <p class="notes-empty">No notes yet!</p>
+            <p class="notes-empty">{{ 'detail.noNotes' | t }}</p>
           }
         </div>
       </section>
@@ -205,8 +237,19 @@
               >🔗 {{ r.source }}</a
             >
           } @else {
-            <div class="source-link">📖 Source: {{ r.source }}</div>
+            <div class="source-link">{{ 'detail.source' | t: { source: r.source } }}</div>
           }
+        </section>
+      }
+
+      @if (videoId(); as id) {
+        <section class="video-section">
+          <h3 class="section-heading">{{ 'detail.video' | t }}</h3>
+          <app-video-player
+            [videoId]="id"
+            [title]="r.name"
+            [posterUrl]="images()[0]?.url ?? null"
+          />
         </section>
       }
     </div>

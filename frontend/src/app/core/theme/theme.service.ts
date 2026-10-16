@@ -1,4 +1,5 @@
 import { DOCUMENT, Injectable, computed, effect, inject, signal } from '@angular/core';
+import { TranslationKey } from '../i18n/i18n.types';
 import { STORAGE_KEYS, safeLocalStorage } from '../storage/local-storage';
 
 export type ThemeId = 'forest' | 'sea' | 'rose' | 'sunny';
@@ -6,7 +7,7 @@ export type ThemePreference = ThemeId | 'auto';
 
 export interface ThemeOption {
   id: ThemePreference;
-  label: string;
+  labelKey: TranslationKey;
   /** CSS background of the preview swatch. */
   swatch: string;
   /** Light swatches need a border to stand out from the dialog. */
@@ -16,24 +17,24 @@ export interface ThemeOption {
 export const THEME_OPTIONS: readonly ThemeOption[] = [
   {
     id: 'auto',
-    label: '🌓 Auto (follows your device)',
+    labelKey: 'theme.auto',
     swatch: 'linear-gradient(90deg,#081716 50%,#FBF4DC 50%)',
   },
-  { id: 'forest', label: '🌿 Forest', swatch: 'linear-gradient(135deg,#081716 40%,#34C79A)' },
+  { id: 'forest', labelKey: 'theme.forest', swatch: 'linear-gradient(135deg,#081716 40%,#34C79A)' },
   {
     id: 'sea',
-    label: '🌊 Deep Sea',
+    labelKey: 'theme.sea',
     swatch: 'linear-gradient(135deg,#071A1E 35%,#2BB3A8 70%,#F07B3F)',
   },
   {
     id: 'rose',
-    label: '🌸 Dusty Rose',
+    labelKey: 'theme.rose',
     swatch: 'linear-gradient(135deg,#F7ECEC 40%,#B5646D 72%,#1F4D4A)',
     swatchBorder: '#E6D3D5',
   },
   {
     id: 'sunny',
-    label: '🍌 Sunny',
+    labelKey: 'theme.sunny',
     swatch: 'linear-gradient(135deg,#FBF4DC 40%,#9C9D57 70%,#E55D7E)',
     swatchBorder: '#E8DDB0',
   },

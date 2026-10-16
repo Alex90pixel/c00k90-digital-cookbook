@@ -1,4 +1,6 @@
 import { Component, computed, effect, inject, input, untracked } from '@angular/core';
+import { TranslationKey } from '../../core/i18n/i18n.types';
+import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { RecipeCard } from '../components/recipe-card';
 import { RecipeToolbar } from '../components/recipe-toolbar';
 import { RecipeStore } from '../data/recipe.store';
@@ -7,29 +9,35 @@ import { RecipeDialogs } from '../recipe-dialogs.service';
 
 interface EmptyState {
   icon: string;
-  title: string;
-  text: string;
+  title: TranslationKey;
+  text: TranslationKey;
 }
 
 /** The recipe grid for "My recipes", "Favorites" and "Get Inspired" (`view` comes from the route). */
 @Component({
   selector: 'app-recipe-list-page',
-  imports: [RecipeCard, RecipeToolbar],
+  imports: [RecipeCard, RecipeToolbar, TranslatePipe],
   template: `
     <div class="page">
       <app-recipe-toolbar />
 
-      <section class="recipe-grid" [attr.aria-busy]="store.loading()" aria-label="Recipes">
+      <section
+        class="recipe-grid"
+        [attr.aria-busy]="store.loading()"
+        [attr.aria-label]="'list.label' | t"
+      >
         @if (store.loading()) {
           <div class="loading-state">
             <div class="spinner" aria-hidden="true"></div>
-            <p>{{ view() === 'inspired' ? 'Loading inspiration…' : 'Loading your recipes…' }}</p>
+            <p>{{ (view() === 'inspired' ? 'list.loadingInspired' : 'list.loadingMine') | t }}</p>
           </div>
         } @else {
           @for (recipe of store.visible(); track recipe.id) {
             <app-recipe-card
               [recipe]="recipe"
-              [showFavorite]="view() !== 'inspired'"
+              [showFavorite]="!store.isOwner(recipe)"
+              [favorite]="store.isFavorite(recipe)"
+              [showChef]="view() !== 'all'"
               (open)="dialogs.openDetail(recipe.id)"
               (toggleFavorite)="store.toggleFavorite(recipe)"
             />
@@ -37,8 +45,8 @@ interface EmptyState {
             @let empty = emptyState();
             <div class="empty-state">
               <div class="empty-icon" aria-hidden="true">{{ empty.icon }}</div>
-              <h2>{{ empty.title }}</h2>
-              <p>{{ empty.text }}</p>
+              <h2>{{ empty.title | t }}</h2>
+              <p>{{ empty.text | t }}</p>
             </div>
           }
         }
@@ -55,31 +63,15 @@ export class RecipeListPage {
 
   protected readonly emptyState = computed<EmptyState>(() => {
     if (this.store.search().trim()) {
-      return {
-        icon: '🔍',
-        title: 'No recipes found.',
-        text: 'Try another ingredient or recipe name.',
-      };
+      return { icon: '🔍', title: 'list.searchEmptyTitle', text: 'list.searchEmptyText' };
     }
     switch (this.view()) {
       case 'favorites':
-        return {
-          icon: '🍽️',
-          title: 'No favorites yet.',
-          text: 'Click the ♡ on a recipe to save it here.',
-        };
+        return { icon: '🍽️', title: 'list.favoritesEmptyTitle', text: 'list.favoritesEmptyText' };
       case 'inspired':
-        return {
-          icon: '✨',
-          title: 'Nothing shared yet.',
-          text: 'Share one of your recipes to inspire other cooks!',
-        };
+        return { icon: '✨', title: 'list.inspiredEmptyTitle', text: 'list.inspiredEmptyText' };
       default:
-        return {
-          icon: '🍽️',
-          title: 'Your cookbook is empty!',
-          text: 'Click "+ New Recipe" to add your first recipe!',
-        };
+        return { icon: '🍽️', title: 'list.mineEmptyTitle', text: 'list.mineEmptyText' };
     }
   });
 

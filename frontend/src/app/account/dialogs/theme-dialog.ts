@@ -1,14 +1,16 @@
 import { DialogRef } from '@angular/cdk/dialog';
 import { Component, inject } from '@angular/core';
+import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { THEME_OPTIONS, ThemeService } from '../../core/theme/theme.service';
 
 /** Theme picker; the theme changes as soon as an option is clicked. */
 @Component({
   selector: 'app-theme-dialog',
+  imports: [TranslatePipe],
   template: `
     <div class="confirm-dialog" aria-labelledby="theme-title">
-      <h2 id="theme-title">🎨 Choose a theme</h2>
-      <p>Pick the colors that feel best for you.</p>
+      <h2 id="theme-title">{{ 'theme.title' | t }}</h2>
+      <p>{{ 'theme.intro' | t }}</p>
       <div class="theme-options" role="radiogroup" aria-labelledby="theme-title">
         @for (option of options; track option.id) {
           <button
@@ -25,12 +27,14 @@ import { THEME_OPTIONS, ThemeService } from '../../core/theme/theme.service';
               [style.background]="option.swatch"
               [style.border]="option.swatchBorder ? '1px solid ' + option.swatchBorder : null"
             ></span>
-            {{ option.label }}
+            {{ option.labelKey | t }}
           </button>
         }
       </div>
       <div class="confirm-btns">
-        <button type="button" class="btn-save" (click)="ref.close()">Done</button>
+        <button type="button" class="btn-save" (click)="ref.close()">
+          {{ 'common.done' | t }}
+        </button>
       </div>
     </div>
   `,

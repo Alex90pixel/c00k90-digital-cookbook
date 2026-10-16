@@ -1,9 +1,13 @@
 import { Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
+import { ProfileService } from '../../account/profile/profile.service';
+import { ChefService } from '../../chefs/chef.service';
 import { AuthService } from '../../core/auth/auth.service';
+import { I18nService } from '../../core/i18n/i18n.service';
 import { ToastService } from '../../core/toast/toast.service';
 import { dietLabels, totalMinutes } from '../domain/diets';
 import { formToRecipeData } from '../domain/recipe-form';
 import { recipeStoragePaths } from '../domain/recipe-images';
+import { matchesSearch } from '../domain/search';
 import { FormPhoto, RecipeFormValue } from '../models/recipe-form.model';
 import {
   Category,
@@ -15,6 +19,7 @@ import {
   RecipeView,
 } from '../models/recipe.model';
 import { NutritionService } from './nutrition.service';
+import { FavoritesService } from './favorites.service';
 import { RecipePhotoService } from './recipe-photo.service';
 import { RecipeRepository, newestFirst } from './recipe.repository';
 
@@ -29,11 +34,20 @@ export class RecipeStore {
   private readonly photos = inject(RecipePhotoService);
   private readonly nutrition = inject(NutritionService);
   private readonly toast = inject(ToastService);
+  private readonly i18n = inject(I18nService);
+  private readonly profiles = inject(ProfileService);
+  private readonly chefs = inject(ChefService);
+  private readonly favorites = inject(FavoritesService);
 
   private readonly mine = signal<Recipe[]>([]);
   private readonly shared = signal<Recipe[]>([]);
   private readonly loadingMine = signal(false);
   private readonly loadingShared = signal(false);
+  private sharedLoaded = false;
+
+  /** All recipes shared to "Get Inspired", newest first (loaded on demand). */
+  readonly sharedRecipes = this.shared.asReadonly();
+  readonly sharedLoading = this.loadingShared.asReadonly();
 
   readonly view = signal<RecipeView>('all');
   readonly search = signal('');
@@ -41,8 +55,9 @@ export class RecipeStore {
   readonly diet = signal<DietId | null>(null);
   readonly sort = signal<RecipeSort>('recent');
 
+  /** Favorites and Get Inspired show shared recipes; My Recipes shows the user's own. */
   readonly loading = computed(() =>
-    this.view() === 'inspired' ? this.loadingShared() : this.loadingMine(),
+    this.view() === 'all' ? this.loadingMine() : this.loadingShared(),
   );
 
   /** The recipes of the current view, after search, filters and sort. */
@@ -52,8 +67,8 @@ export class RecipeStore {
     const category = this.category();
     const diet = this.diet();
 
-    let recipes = view === 'inspired' ? this.shared() : this.mine();
-    if (view === 'favorites') recipes = recipes.filter((r) => r.favorite);
+    let recipes = view === 'all' ? this.mine() : this.shared();
+    if (view === 'favorites') recipes = recipes.filter((r) => this.favorites.isFavorite(r.id));
     if (category !== 'all') recipes = recipes.filter((r) => r.category === category);
     if (diet) recipes = recipes.filter((r) => this.dietLabelsOf(r).includes(diet));
     if (query) recipes = recipes.filter((r) => matchesSearch(r, query));
@@ -90,27 +105,40 @@ export class RecipeStore {
     this.search.set('');
     this.category.set('all');
     if (view === 'inspired') void this.loadShared();
+    if (view === 'favorites') this.ensureSharedLoaded();
+  }
+
+  /** Loads the shared recipes once (Followed Chefs, chef profiles); `loadShared` reloads. */
+  ensureSharedLoaded(): void {
+    if (!this.sharedLoaded && !this.loadingShared()) void this.loadShared();
   }
 
   async loadShared(): Promise<void> {
     this.loadingShared.set(true);
     try {
       this.shared.set(await this.repository.listShared());
+      this.sharedLoaded = true;
     } catch {
-      this.toast.show('⚠️ Error loading inspired recipes');
+      this.toast.show(this.i18n.t('recipes.loadInspiredFailed'));
     } finally {
       this.loadingShared.set(false);
     }
   }
 
+  isFavorite(recipe: Recipe): boolean {
+    return this.favorites.isFavorite(recipe.id);
+  }
+
+  /** Saves or removes another cook's recipe from the user's favorites (own recipes can't be). */
   async toggleFavorite(recipe: Recipe): Promise<void> {
-    const favorite = !recipe.favorite;
+    if (this.isOwner(recipe)) return;
+    const favorite = !this.isFavorite(recipe);
     try {
-      await this.repository.update(recipe.id, { favorite });
-      this.patchMine(recipe.id, { favorite });
-      this.toast.show(favorite ? '❤️ Added to favorites!' : '🤍 Removed from favorites');
+      if (favorite) await this.favorites.add(recipe.id);
+      else await this.favorites.remove(recipe.id);
+      this.toast.show(this.i18n.t(favorite ? 'recipes.favoriteAdded' : 'recipes.favoriteRemoved'));
     } catch {
-      this.toast.show('⚠️ Could not update favorites');
+      this.toast.show(this.i18n.t('recipes.favoriteFailed'));
     }
   }
 
@@ -124,10 +152,12 @@ export class RecipeStore {
           ? [{ ...recipe, shared }, ...list].sort(newestFirst)
           : list.filter((r) => r.id !== recipe.id),
       );
-      this.toast.show(shared ? '✨ Shared to Get Inspired!' : 'Removed from Get Inspired');
+      this.toast.show(this.i18n.t(shared ? 'recipes.sharedOn' : 'recipes.sharedOff'));
     } catch {
-      this.toast.show('⚠️ Could not change sharing');
+      this.toast.show(this.i18n.t('recipes.shareFailed'));
+      return;
     }
+    await this.syncChefProfile();
   }
 
   /**
@@ -154,10 +184,10 @@ export class RecipeStore {
         ? recipeStoragePaths(existing).filter((p) => !recipeStoragePaths(data).includes(p))
         : [];
       this.photos.deleteInBackground(removed);
-      this.toast.show(existing ? '✅ Recipe updated!' : '🎉 Recipe saved!');
+      this.toast.show(this.i18n.t(existing ? 'recipes.updated' : 'recipes.saved'));
       return true;
     } catch (error) {
-      this.toast.show(`⚠️ Error saving recipe: ${errorMessage(error)}`);
+      this.toast.show(this.i18n.t('recipes.saveFailed', { error: errorMessage(error) }));
       return false;
     }
   }
@@ -168,10 +198,11 @@ export class RecipeStore {
       this.photos.deleteInBackground(recipeStoragePaths(recipe));
       this.mine.update((list) => list.filter((r) => r.id !== recipe.id));
       this.shared.update((list) => list.filter((r) => r.id !== recipe.id));
-      this.toast.show('🗑️ Recipe deleted');
+      this.toast.show(this.i18n.t('recipes.deleted'));
+      if (recipe.shared) await this.syncChefProfile();
       return true;
     } catch {
-      this.toast.show('⚠️ Error deleting recipe');
+      this.toast.show(this.i18n.t('recipes.deleteFailed'));
       return false;
     }
   }
@@ -188,9 +219,32 @@ export class RecipeStore {
     try {
       this.mine.set(await this.repository.listByOwner(userId));
     } catch {
-      this.toast.show('⚠️ Error loading recipes');
+      this.toast.show(this.i18n.t('recipes.loadFailed'));
+      return;
     } finally {
       this.loadingMine.set(false);
+    }
+    // Refreshes the public profile (e.g. a new Google photo), or creates it for recipes
+    // shared before profiles existed.
+    if (this.sharesRecipes()) await this.syncChefProfile();
+  }
+
+  private sharesRecipes(): boolean {
+    return this.mine().some((r) => r.shared && !r.hiddenByModerator);
+  }
+
+  /**
+   * The public chef profile exists exactly while the user shares at least one recipe.
+   * A failure here never undoes the recipe change; it's retried on the next load.
+   */
+  private async syncChefProfile(): Promise<void> {
+    const userId = this.auth.user()?.uid;
+    if (!userId) return;
+    try {
+      if (this.sharesRecipes()) await this.profiles.publishChefProfile();
+      else await this.chefs.unpublish(userId);
+    } catch (error) {
+      console.error('Could not update the public chef profile', error);
     }
   }
 
@@ -201,7 +255,7 @@ export class RecipeStore {
       if (photo.image) {
         images.push(photo.image);
       } else if (photo.file) {
-        this.toast.show(`📤 Uploading photo ${++uploaded}…`);
+        this.toast.show(this.i18n.t('recipes.uploading', { number: ++uploaded }));
         images.push(await this.photos.upload(userId, photo.file));
       }
     }
@@ -215,6 +269,7 @@ export class RecipeStore {
   private reset(): void {
     this.mine.set([]);
     this.shared.set([]);
+    this.sharedLoaded = false;
     this.view.set('all');
     this.search.set('');
     this.category.set('all');
@@ -243,20 +298,6 @@ export class RecipeStore {
         return list.sort(newestFirst);
     }
   }
-}
-
-function matchesSearch(recipe: Recipe, query: string): boolean {
-  const ingredients = (recipe.ingredients ?? [])
-    .map((i) => `${i.name} ${i.qty} ${i.unit}`)
-    .join(' ');
-  const haystack = [
-    recipe.name,
-    recipe.description,
-    recipe.category,
-    ingredients,
-    ...(recipe.tags ?? []),
-  ];
-  return haystack.some((text) => (text ?? '').toLowerCase().includes(query));
 }
 
 function errorMessage(error: unknown): string {

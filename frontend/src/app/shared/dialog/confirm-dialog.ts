@@ -1,5 +1,6 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, inject } from '@angular/core';
+import { TranslatePipe } from '../../core/i18n/translate.pipe';
 
 export interface ConfirmDialogData {
   icon?: string;
@@ -13,6 +14,7 @@ export interface ConfirmDialogData {
 
 @Component({
   selector: 'app-confirm-dialog',
+  imports: [TranslatePipe],
   template: `
     <div
       class="confirm-dialog"
@@ -27,7 +29,7 @@ export interface ConfirmDialogData {
       <p id="confirm-message">{{ data.message }}</p>
       <div class="confirm-btns">
         <button type="button" class="btn-confirm-cancel" (click)="ref.close(false)">
-          {{ data.cancelLabel ?? 'Cancel' }}
+          {{ data.cancelLabel ?? ('common.cancel' | t) }}
         </button>
         <button
           type="button"

@@ -88,8 +88,15 @@
   }
 }
 
-.shared-note {
-  margin: 0;
+.chef-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.chef-label {
   color: var(--text-light);
   font-size: 13px;
   font-style: italic;
@@ -326,6 +333,10 @@
   font-style: italic;
 }
 
+.video-section {
+  margin-top: 24px;
+}
+
 .source-link {
   display: flex;
   align-items: center;
@@ -367,9 +378,6 @@
       line-height: 1.25;
       text-align: center;
       white-space: normal;
-    }
-    .shared-note {
-      grid-column: 1 / -1;
     }
   }
 }

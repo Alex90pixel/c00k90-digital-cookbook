@@ -1,4 +1,6 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
+import { I18nService } from '../../core/i18n/i18n.service';
+import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { RecipeStore } from '../data/recipe.store';
 import { CATEGORIES, DIETS, SORT_OPTIONS } from '../models/recipe.constants';
 import { Category, DietId, RecipeSort } from '../models/recipe.model';
@@ -6,50 +8,43 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
 /** Category, diet and sort pickers above the recipe grid, plus the recipe count. */
 @Component({
   selector: 'app-recipe-toolbar',
+  imports: [TranslatePipe],
   template: `
     <div class="sort-row">
       <div class="filter-selects">
-        <select aria-label="Category" (change)="setCategory($event)">
-          <option value="all" [selected]="store.category() === 'all'">All categories</option>
+        <select [attr.aria-label]="'categories.label' | t" (change)="setCategory($event)">
+          <option value="all" [selected]="store.category() === 'all'">
+            {{ 'categories.all' | t }}
+          </option>
           @for (c of categories; track c.id) {
             <option [value]="c.id" [selected]="store.category() === c.id">
-              {{ c.emoji }} {{ c.id }}
+              {{ c.emoji }} {{ i18n.label('categories', c.id) }}
             </option>
           }
         </select>
-        <select aria-label="Diet" (change)="setDiet($event)">
-          <option value="" [selected]="!store.diet()">All diets</option>
+        <!-- The tooltip explains how the automatic diet labels are estimated. -->
+        <select
+          [attr.aria-label]="'diets.label' | t"
+          [title]="'diets.legend' | t"
+          (change)="setDiet($event)"
+        >
+          <option value="" [selected]="!store.diet()">{{ 'diets.all' | t }}</option>
           @for (d of diets; track d.id) {
-            <option [value]="d.id" [selected]="store.diet() === d.id">{{ d.label }}</option>
+            <option [value]="d.id" [selected]="store.diet() === d.id">
+              {{ i18n.label('diets', d.id) }}
+            </option>
           }
         </select>
-        <button
-          type="button"
-          class="info-btn"
-          aria-label="What do the diet labels mean?"
-          [attr.aria-expanded]="legendOpen()"
-          aria-controls="diet-legend"
-          (click)="legendOpen.update((open) => !open)"
-        >
-          ℹ️
-        </button>
-        <select aria-label="Sort" (change)="setSort($event)">
+        <select [attr.aria-label]="'sort.label' | t" (change)="setSort($event)">
           @for (s of sortOptions; track s.id) {
-            <option [value]="s.id" [selected]="store.sort() === s.id">{{ s.label }}</option>
+            <option [value]="s.id" [selected]="store.sort() === s.id">{{ s.labelKey | t }}</option>
           }
         </select>
       </div>
-      <span class="recipe-count" aria-live="polite"
-        >{{ count() }} recipe{{ count() === 1 ? '' : 's' }}</span
-      >
+      <span class="recipe-count" aria-live="polite">{{
+        'list.count' | t: { count: count() }
+      }}</span>
     </div>
-    @if (legendOpen()) {
-      <p class="diet-legend" id="diet-legend">
-        💪 High protein ≥20g protein · 🥦 Low carb ≤20g carbs · 🫒 Low fat ≤10g fat · 🥑 Keto ≤10g
-        carbs — per serving, estimated from recognized ingredients. ⚡ Quick = under 30 min total.
-        Other labels are set by the recipe's author.
-      </p>
-    }
   `,
   styles: `
     .sort-row {
@@ -80,34 +75,18 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
         border-color: var(--teal);
       }
     }
-    .info-btn {
-      width: 28px;
-      height: 28px;
-      border: 1.5px solid var(--border);
-      border-radius: 50%;
-      background: transparent;
-      color: var(--text-light);
-      font-size: 14px;
-      cursor: pointer;
-    }
     .recipe-count {
       color: var(--text-light);
       font-size: 13px;
-    }
-    .diet-legend {
-      margin: 6px 0 0;
-      color: var(--text-light);
-      font-size: 11px;
-      line-height: 1.5;
     }
   `,
 })
 export class RecipeToolbar {
   protected readonly store = inject(RecipeStore);
+  protected readonly i18n = inject(I18nService);
   protected readonly categories = CATEGORIES;
   protected readonly diets = DIETS;
   protected readonly sortOptions = SORT_OPTIONS;
-  protected readonly legendOpen = signal(false);
   protected readonly count = computed(() => this.store.visible().length);
 
   protected setCategory(event: Event): void {

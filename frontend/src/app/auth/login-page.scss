@@ -1,9 +1,16 @@
+// Fills the space above the footer (see the sticky-footer layout in App).
+:host {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
 .auth-screen {
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 90px); // leaves room for the footer links
-  padding: 24px 16px;
+  padding: 40px 16px;
   background: linear-gradient(135deg, var(--magenta-pale), var(--teal-pale));
 }
 

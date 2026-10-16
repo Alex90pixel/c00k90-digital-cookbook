@@ -1,11 +1,14 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormField, form, min, required } from '@angular/forms/signals';
+import { FormField, form, min, required, validate } from '@angular/forms/signals';
 import { filter, merge } from 'rxjs';
-import { STORAGE_KEYS, safeLocalStorage } from '../../../core/storage/local-storage';
+import { I18nService } from '../../../core/i18n/i18n.service';
+import { TranslationKey, TranslationParams } from '../../../core/i18n/i18n.types';
+import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { ToastService } from '../../../core/toast/toast.service';
 import { AppDialog } from '../../../shared/dialog/app-dialog.service';
+import { PhotoConsent } from '../../../shared/dialog/photo-consent.service';
 import { NutritionService } from '../../data/nutrition.service';
 import {
   RecipeImportService,
@@ -18,22 +21,25 @@ import { RecipeStore } from '../../data/recipe.store';
 import { parseIngredientLines, parseStepLines } from '../../domain/ingredients';
 import { emptyRecipeForm, recipeToForm } from '../../domain/recipe-form';
 import { recipeImages, safeImageUrl } from '../../domain/recipe-images';
-import { estimateTimeAndServings } from '../../domain/time-estimate';
+import { TimeEstimate, estimateTimeAndServings } from '../../domain/time-estimate';
+import { youtubeVideoId } from '../../domain/video';
 import { FormPhoto, RecipeFormValue } from '../../models/recipe-form.model';
 import {
   CATEGORIES,
-  DIETS,
   DIFFICULTIES,
   MAX_PHOTOS_PER_RECIPE,
   MANUAL_DIET_IDS,
 } from '../../models/recipe.constants';
 import { Difficulty, Recipe } from '../../models/recipe.model';
 
-const OWN_RECIPE_SOURCE = 'My own recipe';
+interface ImportStatus {
+  key: TranslationKey;
+  params?: TranslationParams;
+}
 
 @Component({
   selector: 'app-recipe-form-dialog',
-  imports: [FormField],
+  imports: [FormField, TranslatePipe],
   templateUrl: './recipe-form-dialog.html',
   styleUrl: './recipe-form-dialog.scss',
 })
@@ -45,16 +51,13 @@ export class RecipeFormDialog {
   private readonly importService = inject(RecipeImportService);
   private readonly nutrition = inject(NutritionService);
   private readonly dialog = inject(AppDialog);
+  private readonly photoConsent = inject(PhotoConsent);
   private readonly toast = inject(ToastService);
+  protected readonly i18n = inject(I18nService);
 
   protected readonly categories = CATEGORIES;
   protected readonly difficulties = DIFFICULTIES;
-  protected readonly manualDiets = DIETS.filter((d) =>
-    (MANUAL_DIET_IDS as readonly string[]).includes(d.id),
-  ) as {
-    id: (typeof MANUAL_DIET_IDS)[number];
-    label: string;
-  }[];
+  protected readonly manualDietIds = MANUAL_DIET_IDS;
   protected readonly maxPhotos = MAX_PHOTOS_PER_RECIPE;
   protected readonly isEditing = !!this.existing;
 
@@ -62,17 +65,22 @@ export class RecipeFormDialog {
     this.existing ? recipeToForm(this.existing) : emptyRecipeForm(),
   );
   protected readonly recipeForm = form(this.model, (recipe) => {
-    required(recipe.name, { message: '⚠️ Please enter a recipe name!' });
-    required(recipe.category, { message: '⚠️ Please select a category!' });
+    required(recipe.name, { message: this.i18n.t('form.nameRequired') });
+    required(recipe.category, { message: this.i18n.t('form.categoryRequired') });
     min(recipe.prepTime, 0);
     min(recipe.cookTime, 0);
     min(recipe.servings, 1);
+    validate(recipe.videoUrl, ({ value }) =>
+      value().trim() && !youtubeVideoId(value())
+        ? { kind: 'youtube', message: this.i18n.t('form.videoInvalid') }
+        : null,
+    );
   });
 
-  // Paste boxes: not saved, they only fill the lists below them.
+  // Paste boxes: they fill the lists below them (also on save, if "Add pasted…" wasn't pressed).
   protected readonly ingredientsPaste = signal('');
   protected readonly stepsPaste = signal('');
-  protected readonly estimateHint = signal('');
+  protected readonly estimate = signal<TimeEstimate | null>(null);
 
   // Photos: the existing ones stay until removed; new ones are uploaded on save.
   protected readonly photos = signal<FormPhoto[]>(
@@ -87,7 +95,7 @@ export class RecipeFormDialog {
   // Import from a video link.
   protected readonly canImport = computed(() => isLink(this.model().source));
   protected readonly importing = signal(false);
-  protected readonly importStatus = signal('');
+  protected readonly importStatus = signal<ImportStatus | null>(null);
   protected readonly importedFrom = signal<VideoPlatform | null>(null);
 
   protected readonly saving = signal(false);
@@ -151,24 +159,13 @@ export class RecipeFormDialog {
       cookTime: v.cookTime ?? estimate.cookTime,
       servings: v.servings ?? estimate.servings,
     }));
-    this.estimateHint.set(estimate.hint);
+    this.estimate.set(estimate);
   }
 
   // ----- Photos -----
 
   protected async pickPhotos(input: HTMLInputElement): Promise<void> {
-    if (safeLocalStorage.get(STORAGE_KEYS.photoConsent) !== '1') {
-      const ok = await this.dialog.confirm({
-        icon: '📷',
-        title: 'Add photos',
-        message: 'C00K90 will upload only the photos you select. Continue?',
-        confirmLabel: 'OK',
-        tone: 'primary',
-      });
-      if (!ok) return;
-      safeLocalStorage.set(STORAGE_KEYS.photoConsent, '1');
-    }
-    input.click();
+    if (await this.photoConsent.ask()) input.click();
   }
 
   protected async addPhotos(input: HTMLInputElement): Promise<void> {
@@ -176,7 +173,7 @@ export class RecipeFormDialog {
     input.value = '';
     for (const file of files) {
       if (this.photos().length >= MAX_PHOTOS_PER_RECIPE) {
-        this.toast.show(`⚠️ Max ${MAX_PHOTOS_PER_RECIPE} photos per recipe`);
+        this.toast.show(this.i18n.t('form.maxPhotos', { max: MAX_PHOTOS_PER_RECIPE }));
         break;
       }
       try {
@@ -187,7 +184,7 @@ export class RecipeFormDialog {
         ]);
         this.photosChanged.set(true);
       } catch {
-        this.toast.show('⚠️ Could not read an image');
+        this.toast.show(this.i18n.t('form.badImage'));
       }
     }
   }
@@ -207,11 +204,11 @@ export class RecipeFormDialog {
   protected async importFromLink(): Promise<void> {
     const url = this.model().source.trim();
     if (!url) {
-      this.importStatus.set('Paste a link in the field above first.');
+      this.importStatus.set({ key: 'form.importEmpty' });
       return;
     }
     this.importing.set(true);
-    this.importStatus.set('Fetching the details…');
+    this.importStatus.set({ key: 'form.importing' });
     try {
       const info = await this.importService.fetchInfo(url);
       if (info.title) {
@@ -219,32 +216,39 @@ export class RecipeFormDialog {
         this.recipeForm.name().markAsDirty();
       }
       this.importedFrom.set(videoPlatform(url));
+      // A YouTube source is most likely the recipe's video too.
+      if (youtubeVideoId(url) && !this.model().videoUrl.trim()) {
+        this.recipeForm.videoUrl().value.set(url);
+      }
       this.importStatus.set(
-        info.author ? `Imported from: ${info.author}` : 'Imported successfully.',
+        info.author
+          ? { key: 'form.importedFrom', params: { author: info.author } }
+          : { key: 'form.imported' },
       );
     } catch {
-      this.importStatus.set(
-        "Couldn't get the details from this link. You can fill them in yourself.",
-      );
+      this.importStatus.set({ key: 'form.importFailed' });
     } finally {
       this.importing.set(false);
     }
   }
 
   protected markAsOwnRecipe(): void {
-    this.recipeForm.source().value.set(OWN_RECIPE_SOURCE);
+    this.recipeForm.source().value.set(this.i18n.t('form.ownRecipeSource'));
     this.recipeForm.source().markAsDirty();
-    this.importStatus.set('');
+    this.importStatus.set(null);
   }
 
   // ----- Save / cancel -----
 
   protected async save(): Promise<void> {
     if (this.saving()) return;
+    // Text still in the paste boxes belongs to the recipe too; it was easy to lose before.
+    this.addPastedIngredients();
+    this.addPastedSteps();
     if (this.recipeForm().invalid()) {
       this.recipeForm().markAsTouched();
       const firstError = this.recipeForm().errorSummary()[0];
-      this.toast.show(firstError?.message ?? '⚠️ Please check the form');
+      this.toast.show(firstError?.message ?? this.i18n.t('form.checkForm'));
       firstError?.fieldTree().focusBoundControl();
       return;
     }
@@ -255,14 +259,19 @@ export class RecipeFormDialog {
   }
 
   protected async cancel(): Promise<void> {
-    const changed = this.recipeForm().dirty() || this.photosChanged();
+    const changed =
+      this.recipeForm().dirty() ||
+      this.photosChanged() ||
+      !!this.ingredientsPaste().trim() ||
+      !!this.stepsPaste().trim();
     if (changed) {
+      const t = this.i18n.t;
       const discard = await this.dialog.confirm({
         icon: '✍️',
-        title: 'Discard your changes?',
-        message: "Your changes to this recipe haven't been saved.",
-        cancelLabel: 'Keep editing',
-        confirmLabel: 'Discard',
+        title: t('form.discardTitle'),
+        message: t('form.discardMessage'),
+        cancelLabel: t('form.discardKeep'),
+        confirmLabel: t('form.discardConfirm'),
       });
       if (!discard) return;
     }

@@ -234,3 +234,9 @@ fieldset {
     grid-template-columns: 1fr;
   }
 }
+
+.field-error {
+  margin: 6px 0 0;
+  color: var(--danger);
+  font-size: 12px;
+}

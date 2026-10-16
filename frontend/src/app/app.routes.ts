@@ -1,13 +1,14 @@
 import { Routes } from '@angular/router';
 import { authGuard, guestGuard } from './core/auth/auth.guards';
+import { TranslationKey } from './core/i18n/i18n.types';
 import { RecipeView } from './recipes/models/recipe.model';
 
-const APP_TITLE = 'C00K90 — Digital Cook Book';
+// Titles are translation keys; I18nTitleStrategy turns them into text in the current language.
 
 export const routes: Routes = [
   {
     path: 'login',
-    title: APP_TITLE,
+    title: 'titles.login' satisfies TranslationKey,
     canActivate: [guestGuard],
     loadComponent: () => import('./auth/login-page').then((m) => m.LoginPage),
   },
@@ -19,21 +20,27 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        title: APP_TITLE,
+        title: 'titles.home' satisfies TranslationKey,
         data: { view: 'all' satisfies RecipeView },
         loadComponent: recipeListPage,
       },
       {
         path: 'favorites',
-        title: `Favorites · ${APP_TITLE}`,
+        title: 'titles.favorites' satisfies TranslationKey,
         data: { view: 'favorites' satisfies RecipeView },
         loadComponent: recipeListPage,
       },
       {
         path: 'inspired',
-        title: `Get Inspired · ${APP_TITLE}`,
+        title: 'titles.inspired' satisfies TranslationKey,
         data: { view: 'inspired' satisfies RecipeView },
         loadComponent: recipeListPage,
+      },
+      {
+        path: 'chefs',
+        title: 'titles.chefs' satisfies TranslationKey,
+        loadComponent: () =>
+          import('./chefs/pages/followed-chefs-page').then((m) => m.FollowedChefsPage),
       },
     ],
   },

@@ -1,3 +1,5 @@
+import { TranslationKey } from '../core/i18n/i18n.types';
+
 export type ReportReason = 'inappropriate-photo' | 'offensive-text' | 'spam' | 'other';
 export type FeedbackType = 'bug' | 'idea' | 'other';
 
@@ -22,23 +24,24 @@ export interface FeedbackMessage {
   createdAt: number;
 }
 
-export const REPORT_REASONS: readonly { id: ReportReason; label: string }[] = [
-  { id: 'inappropriate-photo', label: 'Inappropriate photo' },
-  { id: 'offensive-text', label: 'Offensive text' },
-  { id: 'spam', label: 'Spam or advertising' },
-  { id: 'other', label: 'Something else' },
+export const REPORT_REASONS: readonly { id: ReportReason; labelKey: TranslationKey }[] = [
+  { id: 'inappropriate-photo', labelKey: 'report.reasons.inappropriate-photo' },
+  { id: 'offensive-text', labelKey: 'report.reasons.offensive-text' },
+  { id: 'spam', labelKey: 'report.reasons.spam' },
+  { id: 'other', labelKey: 'report.reasons.other' },
 ];
 
-export const FEEDBACK_TYPES: readonly { id: FeedbackType; label: string }[] = [
-  { id: 'bug', label: "🐞 Something's broken" },
-  { id: 'idea', label: '💡 Idea' },
-  { id: 'other', label: '💬 Other' },
+export const FEEDBACK_TYPES: readonly { id: FeedbackType; labelKey: TranslationKey }[] = [
+  { id: 'bug', labelKey: 'feedback.types.bug' },
+  { id: 'idea', labelKey: 'feedback.types.idea' },
+  { id: 'other', labelKey: 'feedback.types.other' },
 ];
 
-export function reportReasonLabel(reason: string): string {
-  return REPORT_REASONS.find((r) => r.id === reason)?.label ?? reason;
+/** Translation key of a stored reason; `null` for unknown values (shown as they are). */
+export function reportReasonKey(reason: string): TranslationKey | null {
+  return REPORT_REASONS.find((r) => r.id === reason)?.labelKey ?? null;
 }
 
-export function feedbackTypeLabel(type: string): string {
-  return FEEDBACK_TYPES.find((t) => t.id === type)?.label ?? type;
+export function feedbackTypeKey(type: string): TranslationKey | null {
+  return FEEDBACK_TYPES.find((t) => t.id === type)?.labelKey ?? null;
 }

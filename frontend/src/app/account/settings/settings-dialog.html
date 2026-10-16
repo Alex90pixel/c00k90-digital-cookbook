@@ -1,0 +1,82 @@
+<div class="form-modal" role="group" aria-labelledby="settings-title">
+  <div class="form-header">
+    <h2 class="form-title" id="settings-title">{{ 'settings.title' | t }}</h2>
+    <button
+      type="button"
+      class="detail-close"
+      [attr.aria-label]="'common.close' | t"
+      (click)="ref.close()"
+    >
+      ✕
+    </button>
+  </div>
+
+  <div class="form-body">
+    <h3 class="section-heading">{{ 'settings.app' | t }}</h3>
+    <ul class="settings-list">
+      <li>
+        <button type="button" class="settings-row" (click)="openTheme()">
+          <span class="row-icon" aria-hidden="true">🎨</span>
+          <span class="row-text">
+            <span class="row-title">{{ 'settings.theme' | t }}</span>
+            <span class="row-desc">{{ themeKey() | t }}</span>
+          </span>
+          <span class="row-chevron" aria-hidden="true">›</span>
+        </button>
+      </li>
+      <li>
+        <button type="button" class="settings-row" (click)="openLanguage()">
+          <span class="row-icon" aria-hidden="true">🌐</span>
+          <span class="row-text">
+            <span class="row-title">{{ 'settings.language' | t }}</span>
+            <span class="row-desc">{{ i18n.option().code }} · {{ i18n.option().label }}</span>
+          </span>
+          <span class="row-chevron" aria-hidden="true">›</span>
+        </button>
+      </li>
+      <li>
+        <button type="button" class="settings-row" (click)="openFeedback()">
+          <span class="row-icon" aria-hidden="true">💬</span>
+          <span class="row-text">
+            <span class="row-title">{{ 'settings.feedback' | t }}</span>
+            <span class="row-desc">{{ 'settings.feedbackDescription' | t }}</span>
+          </span>
+          <span class="row-chevron" aria-hidden="true">›</span>
+        </button>
+      </li>
+    </ul>
+
+    <h3 class="section-heading">{{ 'settings.data' | t }}</h3>
+    <ul class="settings-list">
+      <li>
+        <button type="button" class="settings-row" [disabled]="exporting()" (click)="exportData()">
+          <span class="row-icon" aria-hidden="true">📦</span>
+          <span class="row-text">
+            <span class="row-title">{{
+              (exporting() ? 'settings.exporting' : 'settings.export') | t
+            }}</span>
+            <span class="row-desc">{{ 'settings.exportDescription' | t }}</span>
+          </span>
+          <span class="row-chevron" aria-hidden="true">↓</span>
+        </button>
+      </li>
+      <li>
+        <button
+          type="button"
+          class="settings-row danger"
+          [disabled]="deleting()"
+          (click)="deleteAccount()"
+        >
+          <span class="row-icon" aria-hidden="true">🗑️</span>
+          <span class="row-text">
+            <span class="row-title">{{
+              (deleting() ? 'settings.deleting' : 'settings.delete') | t
+            }}</span>
+            <span class="row-desc">{{ 'settings.deleteDescription' | t }}</span>
+          </span>
+          <span class="row-chevron" aria-hidden="true">›</span>
+        </button>
+      </li>
+    </ul>
+  </div>
+</div>

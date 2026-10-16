@@ -1,0 +1,66 @@
+<div class="page">
+  <h1 class="page-title">{{ 'chefs.pageTitle' | t }}</h1>
+
+  @if (chefs().length) {
+    <section aria-labelledby="following-title">
+      <h2 class="section-heading" id="following-title">{{ 'chefs.followingSection' | t }}</h2>
+      <ul class="chef-list">
+        @for (chef of chefs(); track chef.id) {
+          <li class="chef-card">
+            <button
+              type="button"
+              class="chef-open"
+              [attr.aria-label]="'chefs.openProfile' | t: { name: chef.name }"
+              (click)="chefDialogs.openChef(chef.id)"
+            >
+              <img class="chef-photo" [src]="chef.avatarUrl" alt="" referrerpolicy="no-referrer" />
+              <span class="chef-text">
+                <span class="chef-name">{{ chef.name }}</span>
+                <span class="chef-count">{{
+                  'chefs.recipeCount' | t: { count: chef.recipeCount }
+                }}</span>
+              </span>
+            </button>
+            <div class="chef-actions">
+              @if (chef.profile) {
+                <app-social-icons [chef]="chef.profile" [name]="chef.name" />
+              }
+              <app-follow-button [chefId]="chef.id" />
+            </div>
+          </li>
+        }
+      </ul>
+    </section>
+
+    <section aria-labelledby="latest-title">
+      <h2 class="section-heading" id="latest-title">{{ 'chefs.latestSection' | t }}</h2>
+      <div class="recipe-grid">
+        @if (store.sharedLoading() && !recipes().length) {
+          <div class="loading-state">
+            <div class="spinner" aria-hidden="true"></div>
+            <p>{{ 'chefs.loading' | t }}</p>
+          </div>
+        } @else {
+          @for (recipe of recipes(); track recipe.id) {
+            <app-recipe-card
+              [recipe]="recipe"
+              [showFavorite]="!store.isOwner(recipe)"
+              [favorite]="store.isFavorite(recipe)"
+              [showChef]="true"
+              (open)="recipeDialogs.openDetail(recipe.id)"
+              (toggleFavorite)="store.toggleFavorite(recipe)"
+            />
+          } @empty {
+            <p class="muted">{{ (searching() ? 'chefs.noMatches' : 'chefs.noRecipes') | t }}</p>
+          }
+        }
+      </div>
+    </section>
+  } @else {
+    <div class="empty-state">
+      <div class="empty-icon" aria-hidden="true">👨‍🍳</div>
+      <h2>{{ 'chefs.emptyTitle' | t }}</h2>
+      <p>{{ 'chefs.emptyText' | t }}</p>
+    </div>
+  }
+</div>

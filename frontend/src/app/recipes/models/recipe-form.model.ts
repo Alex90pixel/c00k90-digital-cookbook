@@ -13,6 +13,8 @@ export interface RecipeFormValue {
   steps: string[];
   source: string;
   pairing: string;
+  /** Any YouTube link form; saved as a standard watch link. */
+  videoUrl: string;
   notes: string;
 }
 

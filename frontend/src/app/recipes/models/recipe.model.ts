@@ -47,6 +47,8 @@ export interface RecipeData {
   source?: string;
   notes?: string;
   pairing?: string;
+  /** The author's YouTube video of the recipe, as `https://www.youtube.com/watch?v=…`. */
+  videoUrl?: string;
   images?: RecipeImage[];
   /** Cover photo, kept in sync with `images[0]` for older readers. */
   imageUrl?: string;

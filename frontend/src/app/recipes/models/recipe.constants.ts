@@ -1,3 +1,4 @@
+import { TranslationKey } from '../../core/i18n/i18n.types';
 import { Category, DietId, Difficulty, ManualDietId, RecipeSort } from './recipe.model';
 
 export interface CategoryOption {
@@ -22,24 +23,24 @@ export function categoryEmoji(category: string | undefined): string {
   return CATEGORIES.find((c) => c.id === category)?.emoji ?? DEFAULT_RECIPE_EMOJI;
 }
 
+/** Diet labels are translated with `I18nService.label('diets', id)`. */
 export interface DietOption {
   id: DietId;
-  label: string;
   /** Manual labels are chosen by the author; the others are estimated by the app. */
   manual: boolean;
 }
 
 export const DIETS: readonly DietOption[] = [
-  { id: 'vegetarian', label: '🥕 Vegetarian', manual: true },
-  { id: 'vegan', label: '🌱 Vegan', manual: true },
-  { id: 'gluten-free', label: '🌾 Gluten-free', manual: true },
-  { id: 'dairy-free', label: '🥛 Dairy-free', manual: true },
-  { id: 'kid-friendly', label: '🧒 Kid-friendly', manual: true },
-  { id: 'quick', label: '⚡ Quick', manual: true },
-  { id: 'high-protein', label: '💪 High protein', manual: false },
-  { id: 'low-carb', label: '🥦 Low carb', manual: false },
-  { id: 'low-fat', label: '🫒 Low fat', manual: false },
-  { id: 'keto', label: '🥑 Keto', manual: false },
+  { id: 'vegetarian', manual: true },
+  { id: 'vegan', manual: true },
+  { id: 'gluten-free', manual: true },
+  { id: 'dairy-free', manual: true },
+  { id: 'kid-friendly', manual: true },
+  { id: 'quick', manual: true },
+  { id: 'high-protein', manual: false },
+  { id: 'low-carb', manual: false },
+  { id: 'low-fat', manual: false },
+  { id: 'keto', manual: false },
 ];
 
 /** The diets the author can tick in the recipe form. */
@@ -66,12 +67,12 @@ export function difficultyIcon(difficulty: string | undefined): string {
   return DIFFICULTIES.find((d) => d.id === difficulty)?.icon ?? '🔴';
 }
 
-export const SORT_OPTIONS: readonly { id: RecipeSort; label: string }[] = [
-  { id: 'recent', label: 'Recently added' },
-  { id: 'alpha', label: 'Alphabetical' },
-  { id: 'time', label: 'Shortest prep time' },
-  { id: 'protein', label: 'Most protein' },
-  { id: 'kcal', label: 'Fewest calories' },
+export const SORT_OPTIONS: readonly { id: RecipeSort; labelKey: TranslationKey }[] = [
+  { id: 'recent', labelKey: 'sort.recent' },
+  { id: 'alpha', labelKey: 'sort.alpha' },
+  { id: 'time', labelKey: 'sort.time' },
+  { id: 'protein', labelKey: 'sort.protein' },
+  { id: 'kcal', labelKey: 'sort.kcal' },
 ];
 
 export const MAX_PHOTOS_PER_RECIPE = 3;

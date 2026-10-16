@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { TranslationKey } from '../../core/i18n/i18n.types';
 
 export interface ImportedRecipeInfo {
   title: string;
@@ -12,7 +13,7 @@ export interface ImportedRecipeInfo {
 
 export interface VideoPlatform {
   emoji: string;
-  label: string;
+  labelKey: TranslationKey;
   color: string;
 }
 
@@ -35,10 +36,10 @@ export function isLink(value: string): boolean {
 
 export function videoPlatform(url: string): VideoPlatform | null {
   if (url.includes('youtube.com') || url.includes('youtu.be')) {
-    return { emoji: '▶️', label: 'From YouTube', color: '#FF0000' };
+    return { emoji: '▶️', labelKey: 'form.fromYoutube', color: '#FF0000' };
   }
   if (url.includes('tiktok.com')) {
-    return { emoji: '🎵', label: 'From TikTok', color: '#111111' };
+    return { emoji: '🎵', labelKey: 'form.fromTiktok', color: '#111111' };
   }
   return null;
 }

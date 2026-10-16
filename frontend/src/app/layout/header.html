@@ -1,30 +1,35 @@
 <header class="app-header">
   <div class="header-inner">
-    <a class="logo-link" routerLink="/" aria-label="C00K90 home"><app-logo /></a>
+    <a class="logo-link" routerLink="/" [attr.aria-label]="'header.home' | t"><app-logo /></a>
 
     <label class="search-bar">
       <span class="search-icon" aria-hidden="true">🔍</span>
       <input
         type="search"
-        placeholder="Search recipes or ingredients…"
-        aria-label="Search recipes or ingredients"
+        [placeholder]="'header.search' | t"
+        [attr.aria-label]="'header.search' | t"
         [value]="store.search()"
         (input)="onSearch($event)"
       />
     </label>
 
-    <nav class="header-nav" aria-label="Main">
-      <a
-        class="nav-btn"
-        [class.active]="store.view() === 'favorites'"
-        [routerLink]="favoritesLink()"
-        >❤️ Favorites</a
+    <nav class="header-nav" [attr.aria-label]="'header.nav' | t">
+      @for (item of navItems(); track item.path) {
+        <a
+          class="nav-btn"
+          [class.active]="item.active"
+          [attr.aria-current]="item.active ? 'page' : null"
+          [routerLink]="item.link"
+          >{{ item.labelKey | t }}</a
+        >
+      }
+      <button
+        type="button"
+        class="btn-new"
+        [attr.aria-label]="'header.newRecipe' | t"
+        (click)="dialogs.openForm()"
       >
-      <a class="nav-btn" [class.active]="store.view() === 'inspired'" [routerLink]="inspiredLink()"
-        >✨ Get Inspired</a
-      >
-      <button type="button" class="btn-new" aria-label="New Recipe" (click)="dialogs.openForm()">
-        <span class="plus-icon" aria-hidden="true">🍳</span> New Recipe
+        <span class="plus-icon" aria-hidden="true">🍳</span> {{ 'header.newRecipe' | t }}
       </button>
       <app-account-menu class="account-menu" />
     </nav>

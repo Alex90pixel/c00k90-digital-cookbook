@@ -2,55 +2,59 @@
 <div class="form-modal" role="group" aria-labelledby="recipe-form-title">
   <div class="form-header">
     <h2 class="form-title" id="recipe-form-title">
-      {{ isEditing ? 'Edit Recipe ✏️' : 'New Recipe ✨' }}
+      {{ (isEditing ? 'form.editTitle' : 'form.newTitle') | t }}
     </h2>
-    <button type="button" class="detail-close" aria-label="Close" (click)="cancel()">✕</button>
+    <button
+      type="button"
+      class="detail-close"
+      [attr.aria-label]="'common.close' | t"
+      (click)="cancel()"
+    >
+      ✕
+    </button>
   </div>
 
   <div class="form-body">
     <div class="form-group">
-      <label for="recipe-name">Recipe Name *</label>
+      <label for="recipe-name">{{ 'form.name' | t }}</label>
       <input
         id="recipe-name"
         type="text"
-        placeholder="e.g. Chocolate Lava Cake"
+        [placeholder]="'form.namePlaceholder' | t"
         [formField]="recipeForm.name"
         [class.invalid]="recipeForm.name().touched() && recipeForm.name().invalid()"
       />
     </div>
 
     <div class="form-group">
-      <label for="recipe-category">Category *</label>
+      <label for="recipe-category">{{ 'form.category' | t }}</label>
       <select
         id="recipe-category"
         [formField]="recipeForm.category"
         [class.invalid]="recipeForm.category().touched() && recipeForm.category().invalid()"
       >
-        <option value="">Select category</option>
+        <option value="">{{ 'form.selectCategory' | t }}</option>
         @for (c of categories; track c.id) {
-          <option [value]="c.id">{{ c.id }}</option>
+          <option [value]="c.id">{{ i18n.label('categories', c.id) }}</option>
         }
       </select>
     </div>
 
     <fieldset class="form-group">
-      <legend>Diet</legend>
+      <legend>{{ 'form.diet' | t }}</legend>
       <div class="diet-checks">
-        @for (diet of manualDiets; track diet.id) {
-          <label
-            ><input type="checkbox" [formField]="recipeForm.diets[diet.id]" />
-            {{ diet.label }}</label
-          >
+        @for (dietId of manualDietIds; track dietId) {
+          <label>
+            <input type="checkbox" [formField]="recipeForm.diets[dietId]" />
+            {{ i18n.label('diets', dietId) }}
+          </label>
         }
       </div>
-      <p class="hint">
-        Added automatically: High protein, Low carb, Low fat and Keto (from the nutrition estimate)
-        and Quick (from the total time).
-      </p>
+      <p class="hint">{{ 'form.dietHint' | t }}</p>
     </fieldset>
 
     <div class="form-group">
-      <span class="label" id="photos-label">Recipe Photo</span>
+      <span class="label" id="photos-label">{{ 'form.photos' | t }}</span>
       @if (photos().length < maxPhotos) {
         <button
           type="button"
@@ -61,15 +65,13 @@
           @if (importedFrom(); as platform) {
             <span class="source-badge" [style.background]="platform.color">
               <span class="source-badge-icon">{{ platform.emoji }}</span>
-              {{ platform.label }}
+              {{ platform.labelKey | t }}
             </span>
           } @else {
             <span class="upload-icon" aria-hidden="true">📷</span>
-            <span class="upload-text">Click to add photos (up to {{ maxPhotos }})</span>
+            <span class="upload-text">{{ 'form.addPhotos' | t: { max: maxPhotos } }}</span>
           }
-          <span class="upload-note"
-            >Only the photos you choose are uploaded. We never access your gallery.</span
-          >
+          <span class="upload-note">{{ 'form.photosNote' | t }}</span>
         </button>
       }
       <input
@@ -86,12 +88,12 @@
             <div class="form-image-thumb">
               <img [src]="photo.previewUrl" alt="" />
               @if (i === 0) {
-                <span class="cover-badge">Cover</span>
+                <span class="cover-badge">{{ 'form.cover' | t }}</span>
               }
               <button
                 type="button"
                 class="thumb-remove"
-                [attr.aria-label]="'Remove photo ' + (i + 1)"
+                [attr.aria-label]="'form.removePhoto' | t: { number: i + 1 }"
                 (click)="removePhoto(i)"
               >
                 ✕
@@ -103,16 +105,16 @@
     </div>
 
     <div class="form-group">
-      <label for="ingredients-paste">Ingredients</label>
+      <label for="ingredients-paste">{{ 'form.ingredients' | t }}</label>
       <textarea
         id="ingredients-paste"
         rows="2"
-        placeholder="Paste all ingredients here (one per line, e.g. 200g flour)"
+        [placeholder]="'form.ingredientsPlaceholder' | t"
         [value]="ingredientsPaste()"
         (input)="ingredientsPaste.set($any($event.target).value)"
       ></textarea>
       <button type="button" class="btn-add-row" (click)="addPastedIngredients()">
-        Add pasted ingredients
+        {{ 'form.addIngredients' | t }}
       </button>
       @if (recipeForm.ingredients.length) {
         <ul class="dynamic-list">
@@ -121,27 +123,27 @@
               <input
                 class="qty-input"
                 type="text"
-                placeholder="Qty"
-                aria-label="Quantity"
+                [placeholder]="'form.qty' | t"
+                [attr.aria-label]="'form.quantity' | t"
                 [formField]="ingredient.qty"
               />
               <input
                 class="unit-input"
                 type="text"
-                placeholder="Unit"
-                aria-label="Unit"
+                [placeholder]="'form.unit' | t"
+                [attr.aria-label]="'form.unit' | t"
                 [formField]="ingredient.unit"
               />
               <input
                 type="text"
-                placeholder="Ingredient name"
-                aria-label="Ingredient name"
+                [placeholder]="'form.ingredientName' | t"
+                [attr.aria-label]="'form.ingredientName' | t"
                 [formField]="ingredient.name"
               />
               <button
                 type="button"
                 class="btn-remove"
-                [attr.aria-label]="'Remove ingredient ' + (i + 1)"
+                [attr.aria-label]="'form.removeIngredient' | t: { number: i + 1 }"
                 (click)="removeIngredient(i)"
               >
                 ✕
@@ -153,15 +155,17 @@
     </div>
 
     <div class="form-group">
-      <label for="steps-paste">Steps</label>
+      <label for="steps-paste">{{ 'form.steps' | t }}</label>
       <textarea
         id="steps-paste"
         rows="2"
-        placeholder="Paste all steps here (one per line)"
+        [placeholder]="'form.stepsPlaceholder' | t"
         [value]="stepsPaste()"
         (input)="stepsPaste.set($any($event.target).value)"
       ></textarea>
-      <button type="button" class="btn-add-row" (click)="addPastedSteps()">Add pasted steps</button>
+      <button type="button" class="btn-add-row" (click)="addPastedSteps()">
+        {{ 'form.addSteps' | t }}
+      </button>
       @if (recipeForm.steps.length) {
         <ol class="dynamic-list">
           @for (step of recipeForm.steps; track $index; let i = $index) {
@@ -169,14 +173,14 @@
               <span class="step-num" aria-hidden="true">{{ i + 1 }}</span>
               <input
                 type="text"
-                [placeholder]="'Describe step ' + (i + 1) + '…'"
-                [attr.aria-label]="'Step ' + (i + 1)"
+                [placeholder]="'form.stepPlaceholder' | t: { number: i + 1 }"
+                [attr.aria-label]="'form.stepLabel' | t: { number: i + 1 }"
                 [formField]="step"
               />
               <button
                 type="button"
                 class="btn-remove"
-                [attr.aria-label]="'Remove step ' + (i + 1)"
+                [attr.aria-label]="'form.removeStep' | t: { number: i + 1 }"
                 (click)="removeStep(i)"
               >
                 ✕
@@ -188,7 +192,7 @@
     </div>
 
     <fieldset class="form-group">
-      <legend>Difficulty</legend>
+      <legend>{{ 'form.difficulty' | t }}</legend>
       <div class="difficulty-buttons">
         @for (d of difficulties; track d.id) {
           <button
@@ -198,26 +202,35 @@
             [attr.aria-pressed]="model().difficulty === d.id"
             (click)="setDifficulty(d.id)"
           >
-            {{ d.icon }} {{ d.id }}
+            {{ d.icon }} {{ i18n.label('difficulty', d.id) }}
           </button>
         }
       </div>
     </fieldset>
 
-    @if (estimateHint()) {
-      <p class="estimate-hint">{{ estimateHint() }}</p>
+    @if (estimate(); as e) {
+      <p class="estimate-hint">
+        @if (e.servings) {
+          {{
+            'form.estimateServings'
+              | t: { low: e.minMinutes, high: e.maxMinutes, count: e.servings }
+          }}
+        } @else {
+          {{ 'form.estimate' | t: { low: e.minMinutes, high: e.maxMinutes } }}
+        }
+      </p>
     }
     <div class="form-row-3">
       <div class="form-group">
-        <label for="recipe-prep">Prep time (min)</label>
+        <label for="recipe-prep">{{ 'form.prep' | t }}</label>
         <input id="recipe-prep" type="number" placeholder="30" [formField]="recipeForm.prepTime" />
       </div>
       <div class="form-group">
-        <label for="recipe-cook">Cook time (min)</label>
+        <label for="recipe-cook">{{ 'form.cook' | t }}</label>
         <input id="recipe-cook" type="number" placeholder="45" [formField]="recipeForm.cookTime" />
       </div>
       <div class="form-group">
-        <label for="recipe-servings">Servings</label>
+        <label for="recipe-servings">{{ 'form.servings' | t }}</label>
         <input
           id="recipe-servings"
           type="number"
@@ -228,12 +241,12 @@
     </div>
 
     <div class="form-group">
-      <label for="recipe-source">Source</label>
+      <label for="recipe-source">{{ 'form.source' | t }}</label>
       <div class="source-row">
         <input
           id="recipe-source"
           type="text"
-          placeholder="Paste a link, or type a source (e.g. Grandma's recipe)"
+          [placeholder]="'form.sourcePlaceholder' | t"
           [formField]="recipeForm.source"
         />
         <button
@@ -242,42 +255,60 @@
           [disabled]="!canImport() || importing()"
           (click)="importFromLink()"
         >
-          Import
+          {{ 'form.import' | t }}
         </button>
       </div>
       <button type="button" class="btn-add-row own-recipe" (click)="markAsOwnRecipe()">
-        ✏️ My own recipe
+        {{ 'form.ownRecipe' | t }}
       </button>
-      @if (importStatus()) {
-        <p class="import-status" role="status">{{ importStatus() }}</p>
+      @if (importStatus(); as status) {
+        <p class="import-status" role="status">{{ status.key | t: status.params }}</p>
       }
     </div>
 
     <div class="form-group">
-      <label for="recipe-pairing">🍷 Pairs well with</label>
+      <label for="recipe-video">{{ 'form.video' | t }}</label>
+      <input
+        id="recipe-video"
+        type="url"
+        inputmode="url"
+        autocomplete="off"
+        [placeholder]="'form.videoPlaceholder' | t"
+        [formField]="recipeForm.videoUrl"
+        [class.invalid]="recipeForm.videoUrl().touched() && recipeForm.videoUrl().invalid()"
+      />
+      @if (recipeForm.videoUrl().touched() && recipeForm.videoUrl().errors()[0]; as error) {
+        <p class="field-error">{{ error.message }}</p>
+      } @else {
+        <p class="hint">{{ 'form.videoHint' | t }}</p>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="recipe-pairing">{{ 'form.pairing' | t }}</label>
       <input
         id="recipe-pairing"
         type="text"
-        placeholder="Leave empty for an automatic suggestion"
+        [placeholder]="'form.pairingPlaceholder' | t"
         [formField]="recipeForm.pairing"
       />
     </div>
 
     <div class="form-group">
-      <label for="recipe-notes">✍️ My Notes</label>
+      <label for="recipe-notes">{{ 'form.notes' | t }}</label>
       <textarea
         id="recipe-notes"
         rows="4"
-        placeholder="The story behind it, tips, substitutions…"
+        [placeholder]="'form.notesPlaceholder' | t"
         [formField]="recipeForm.notes"
       ></textarea>
     </div>
   </div>
 
   <div class="form-footer">
-    <button type="button" class="btn-cancel" (click)="cancel()">Cancel</button>
+    <button type="button" class="btn-cancel" (click)="cancel()">{{ 'common.cancel' | t }}</button>
     <button type="button" class="btn-save" [disabled]="saving()" (click)="save()">
-      {{ saving() ? 'Saving…' : 'Save Recipe ✨' }}
+      {{ (saving() ? 'common.saving' : 'form.save') | t }}
     </button>
   </div>
 </div>

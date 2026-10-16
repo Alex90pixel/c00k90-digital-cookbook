@@ -1,6 +1,10 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, computed, effect, inject, linkedSignal, signal } from '@angular/core';
+import { ChefBadge } from '../../../chefs/components/chef-badge';
+import { FollowButton } from '../../../chefs/components/follow-button';
 import { AuthService } from '../../../core/auth/auth.service';
+import { I18nService } from '../../../core/i18n/i18n.service';
+import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { ToastService } from '../../../core/toast/toast.service';
 import { AppDialog } from '../../../shared/dialog/app-dialog.service';
 import { NutritionService } from '../../data/nutrition.service';
@@ -9,12 +13,15 @@ import { RecipeStore } from '../../data/recipe.store';
 import { totalMinutes } from '../../domain/diets';
 import { scaleIngredients } from '../../domain/ingredients';
 import { recipeImages, safeImageUrl } from '../../domain/recipe-images';
+import { youtubeVideoId } from '../../domain/video';
+import { VideoPlayer } from '../../components/video-player';
 import { DIETS, difficultyIcon } from '../../models/recipe.constants';
 import { Recipe } from '../../models/recipe.model';
 import { RecipeDialogs } from '../../recipe-dialogs.service';
 
 @Component({
   selector: 'app-recipe-detail-dialog',
+  imports: [TranslatePipe, ChefBadge, FollowButton, VideoPlayer],
   templateUrl: './recipe-detail-dialog.html',
   styleUrl: './recipe-detail-dialog.scss',
 })
@@ -28,11 +35,16 @@ export class RecipeDetailDialog {
   private readonly toast = inject(ToastService);
   private readonly nutritionService = inject(NutritionService);
   private readonly pairingService = inject(PairingService);
+  protected readonly i18n = inject(I18nService);
 
   /** Read from the store, so favorite/share changes show up immediately. */
   protected readonly recipe = computed(() => this.store.findById(this.recipeId));
   protected readonly isOwner = computed(() => this.recipe()?.userId === this.auth.user()?.uid);
   protected readonly isAdmin = this.auth.isAdmin;
+  protected readonly isFavorite = computed(() => {
+    const recipe = this.recipe();
+    return !!recipe && this.store.isFavorite(recipe);
+  });
 
   protected readonly totalMinutes = computed(() => totalMinutes(this.recipe() ?? {}));
   protected readonly difficulty = computed(() => this.recipe()?.difficulty ?? 'Easy');
@@ -68,6 +80,7 @@ export class RecipeDetailDialog {
     () => this.images()[this.activeImage()]?.url ?? null,
   );
 
+  protected readonly videoId = computed(() => youtubeVideoId(this.recipe()?.videoUrl));
   protected readonly sourceIsLink = computed(() =>
     /^https?:\/\//i.test(this.recipe()?.source ?? ''),
   );
@@ -101,12 +114,13 @@ export class RecipeDetailDialog {
   }
 
   protected async delete(recipe: Recipe): Promise<void> {
+    const t = this.i18n.t;
     const confirmed = await this.dialog.confirm({
       icon: '🗑️',
-      title: 'Delete Recipe?',
-      message: 'Are you sure you want to delete this recipe? This cannot be undone.',
-      cancelLabel: 'Keep it',
-      confirmLabel: 'Delete',
+      title: t('detail.deleteTitle'),
+      message: t('detail.deleteMessage'),
+      cancelLabel: t('detail.deleteKeep'),
+      confirmLabel: t('detail.deleteConfirm'),
     });
     if (confirmed) await this.store.delete(recipe);
   }
@@ -116,18 +130,21 @@ export class RecipeDetailDialog {
   }
 
   protected async hideFromInspired(recipe: Recipe): Promise<void> {
+    const t = this.i18n.t;
     const confirmed = await this.dialog.confirm({
       icon: '🛡️',
-      title: 'Hide from Get Inspired?',
-      message: `Hide "${recipe.name || 'this recipe'}" from Get Inspired? The author keeps it privately.`,
-      confirmLabel: 'Hide',
+      title: t('detail.hideTitle'),
+      message: t('detail.hideMessage', { name: recipe.name || t('detail.thisRecipe') }),
+      confirmLabel: t('detail.hideConfirm'),
     });
     if (!confirmed) return;
     try {
       await this.store.hideFromInspired(recipe.id);
-      this.toast.show('🛡️ Hidden from Get Inspired');
+      this.toast.show(t('detail.hidden'));
     } catch (error) {
-      this.toast.show(`⚠️ Could not hide: ${error instanceof Error ? error.message : error}`);
+      this.toast.show(
+        t('detail.hideFailed', { error: error instanceof Error ? error.message : String(error) }),
+      );
     }
   }
 }

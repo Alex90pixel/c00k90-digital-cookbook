@@ -14,7 +14,8 @@ describe('estimateTimeAndServings', () => {
       prepTime: 10,
       cookTime: 18,
       servings: 2,
-      hint: 'Estimated: 22-34 min total, ~2 servings',
+      minMinutes: 22,
+      maxMinutes: 34,
     });
   });
 

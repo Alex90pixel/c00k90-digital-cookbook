@@ -24,4 +24,6 @@ export const STORAGE_KEYS = {
   theme: 'c00k90-theme',
   consent: 'c00k90-consent',
   photoConsent: 'c00k90-photo-ok',
+  /** New-app only: the old app is English-only. */
+  language: 'c00k90-lang',
 } as const;

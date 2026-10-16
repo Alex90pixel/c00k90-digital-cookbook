@@ -1,0 +1,126 @@
+<div class="form-modal" role="group" aria-labelledby="profile-title">
+  <div class="form-header">
+    <h2 class="form-title" id="profile-title">{{ 'profile.title' | t }}</h2>
+    <button
+      type="button"
+      class="detail-close"
+      [attr.aria-label]="'common.close' | t"
+      (click)="ref.close()"
+    >
+      ✕
+    </button>
+  </div>
+
+  <div class="form-body" [attr.aria-busy]="loading()">
+    @if (loadFailed()) {
+      <p class="load-error" role="alert">
+        {{ 'profile.loadFailed' | t }}
+      </p>
+    }
+
+    <div class="profile-photo">
+      <img
+        class="photo-preview"
+        [src]="photoPreviewUrl()"
+        [alt]="'profile.photoAlt' | t"
+        referrerpolicy="no-referrer"
+      />
+      <div class="photo-actions">
+        <div class="photo-buttons">
+          <button
+            type="button"
+            class="btn-add-row"
+            [disabled]="preparingPhoto()"
+            (click)="pickPhoto(photoInput)"
+          >
+            {{
+              (preparingPhoto()
+                ? 'profile.preparing'
+                : hasOwnPhoto()
+                  ? 'profile.changePhoto'
+                  : 'profile.choosePhoto'
+              ) | t
+            }}
+          </button>
+          @if (hasOwnPhoto()) {
+            <button type="button" class="btn-action danger" (click)="removePhoto()">
+              {{ 'profile.removePhoto' | t }}
+            </button>
+          }
+        </div>
+        <p class="hint">{{ 'profile.photoHint' | t }}</p>
+      </div>
+      <input #photoInput type="file" accept="image/*" hidden (change)="photoPicked(photoInput)" />
+    </div>
+
+    <div class="form-group">
+      <label for="profile-display-name">{{ 'profile.displayName' | t }}</label>
+      <input
+        id="profile-display-name"
+        type="text"
+        autocomplete="nickname"
+        [placeholder]="'profile.displayNamePlaceholder' | t"
+        [formField]="profileForm.displayName"
+        [class.invalid]="profileForm.displayName().touched() && profileForm.displayName().invalid()"
+      />
+      <p class="hint">{{ 'profile.displayNameHint' | t }}</p>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="profile-first-name">{{ 'profile.firstName' | t }}</label>
+        <input
+          id="profile-first-name"
+          type="text"
+          autocomplete="given-name"
+          [formField]="profileForm.firstName"
+        />
+      </div>
+      <div class="form-group">
+        <label for="profile-last-name">{{ 'profile.lastName' | t }}</label>
+        <input
+          id="profile-last-name"
+          type="text"
+          autocomplete="family-name"
+          [formField]="profileForm.lastName"
+        />
+      </div>
+    </div>
+    <p class="hint names-hint">🔒 {{ 'profile.namesPrivate' | t }}</p>
+
+    <h3 class="section-heading">{{ 'profile.social' | t }}</h3>
+    @for (platform of platforms; track platform.id) {
+      @let field = profileForm[platform.id];
+      <div class="form-group">
+        <label [for]="'profile-' + platform.id">{{ platform.icon }} {{ platform.label }}</label>
+        <input
+          [id]="'profile-' + platform.id"
+          type="text"
+          inputmode="url"
+          autocomplete="off"
+          [placeholder]="platform.placeholderKey | t"
+          [formField]="field"
+          [class.invalid]="field().touched() && field().invalid()"
+        />
+        @if (field().touched() && field().errors()[0]; as error) {
+          <p class="field-error">{{ error.message }}</p>
+        }
+      </div>
+    }
+    <p class="hint">{{ 'profile.socialHint' | t }}</p>
+  </div>
+
+  <div class="form-footer">
+    <button type="button" class="btn-cancel" (click)="ref.close()">
+      {{ 'common.cancel' | t }}
+    </button>
+    <button
+      type="button"
+      class="btn-save"
+      [disabled]="loading() || saving() || preparingPhoto()"
+      (click)="save()"
+    >
+      {{ (saving() ? 'common.saving' : 'profile.save') | t }}
+    </button>
+  </div>
+</div>

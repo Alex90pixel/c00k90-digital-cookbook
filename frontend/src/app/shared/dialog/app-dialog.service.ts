@@ -47,6 +47,11 @@ export class AppDialog {
     });
   }
 
+  /** Closes every open dialog (e.g. after deleting the account). */
+  closeAll(): void {
+    this.dialog.closeAll();
+  }
+
   /** Asks a yes/no question; resolves `true` only when the user confirms. */
   async confirm(data: ConfirmDialogData): Promise<boolean> {
     const ref = this.open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {

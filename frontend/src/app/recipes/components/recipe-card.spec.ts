@@ -18,11 +18,13 @@ const recipe: Recipe = {
   ],
 };
 
-function render(inputs: { recipe: Recipe; showFavorite?: boolean }) {
+function render(inputs: { recipe: Recipe; showFavorite?: boolean; favorite?: boolean }) {
   const fixture = TestBed.createComponent(RecipeCard);
   fixture.componentRef.setInput('recipe', inputs.recipe);
-  if (inputs.showFavorite !== undefined)
+  if (inputs.showFavorite !== undefined) {
     fixture.componentRef.setInput('showFavorite', inputs.showFavorite);
+  }
+  if (inputs.favorite !== undefined) fixture.componentRef.setInput('favorite', inputs.favorite);
   fixture.detectChanges();
   return { fixture, element: fixture.nativeElement as HTMLElement };
 }
@@ -42,22 +44,26 @@ describe('RecipeCard', () => {
     expect(element.querySelector('.card-image-placeholder')?.textContent).toContain('🍲');
   });
 
-  it('emits open and toggleFavorite', () => {
-    const { fixture, element } = render({ recipe });
+  it('has no heart by default (your own recipes cannot be favorites)', () => {
+    const { element } = render({ recipe });
+    expect(element.querySelector('.heart-btn')).toBeNull();
+  });
+
+  it('shows the favorite state and emits open and toggleFavorite', () => {
+    const { fixture, element } = render({ recipe, showFavorite: true, favorite: true });
     const opened = vi.fn();
     const toggled = vi.fn();
     fixture.componentInstance.open.subscribe(opened);
     fixture.componentInstance.toggleFavorite.subscribe(toggled);
 
+    const heart = element.querySelector<HTMLButtonElement>('.heart-btn');
+    expect(heart?.getAttribute('aria-pressed')).toBe('true');
+    expect(heart?.textContent).toContain('❤️');
+
     element.querySelector<HTMLButtonElement>('.card-open')?.click();
-    element.querySelector<HTMLButtonElement>('.heart-btn')?.click();
+    heart?.click();
 
     expect(opened).toHaveBeenCalledTimes(1);
     expect(toggled).toHaveBeenCalledTimes(1);
-  });
-
-  it('hides the heart for recipes of other cooks', () => {
-    const { element } = render({ recipe, showFavorite: false });
-    expect(element.querySelector('.heart-btn')).toBeNull();
   });
 });

@@ -1,31 +1,33 @@
 import { Component, inject, linkedSignal, signal } from '@angular/core';
 import { ConsentService } from '../core/consent/consent.service';
+import { TranslatePipe } from '../core/i18n/translate.pipe';
 
 @Component({
   selector: 'app-cookie-banner',
+  imports: [TranslatePipe],
   template: `
     @if (consent.bannerOpen()) {
       <section class="cookie-banner" aria-labelledby="cookie-title">
         <div class="cookie-text">
-          <strong id="cookie-title">🍪 Cookies &amp; storage</strong>
-          <p>
-            We use only the storage needed to keep you signed in. Optional analytics and ads stay
-            off unless you allow them (we don't use any yet).
-          </p>
+          <strong id="cookie-title">{{ 'cookies.title' | t }}</strong>
+          <p>{{ 'cookies.text' | t }}</p>
           @if (customizing()) {
             <div class="cookie-options">
-              <label><input type="checkbox" checked disabled /> Necessary (always on)</label>
+              <label
+                ><input type="checkbox" checked disabled /> {{ 'cookies.necessary' | t }}</label
+              >
               <label>
                 <input
                   type="checkbox"
                   [checked]="analytics()"
                   (change)="analytics.set(!analytics())"
                 />
-                Analytics
+                {{ 'cookies.analytics' | t }}
               </label>
-              <label
-                ><input type="checkbox" [checked]="ads()" (change)="ads.set(!ads())" /> Ads</label
-              >
+              <label>
+                <input type="checkbox" [checked]="ads()" (change)="ads.set(!ads())" />
+                {{ 'cookies.ads' | t }}
+              </label>
             </div>
           }
         </div>
@@ -35,13 +37,15 @@ import { ConsentService } from '../core/consent/consent.service';
             class="btn-save"
             (click)="consent.save({ analytics: false, ads: false })"
           >
-            Reject all
+            {{ 'cookies.reject' | t }}
           </button>
           @if (customizing()) {
-            <button type="button" class="btn-cancel" (click)="saveChoices()">Save choices</button>
+            <button type="button" class="btn-cancel" (click)="saveChoices()">
+              {{ 'cookies.saveChoices' | t }}
+            </button>
           } @else {
             <button type="button" class="btn-cancel" (click)="customizing.set(true)">
-              Customize
+              {{ 'cookies.customize' | t }}
             </button>
           }
           <button
@@ -49,7 +53,7 @@ import { ConsentService } from '../core/consent/consent.service';
             class="btn-save"
             (click)="consent.save({ analytics: true, ads: true })"
           >
-            Accept all
+            {{ 'cookies.accept' | t }}
           </button>
         </div>
       </section>

@@ -3,33 +3,34 @@ import { ConnectedPosition } from '@angular/cdk/overlay';
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../core/auth/auth.service';
-import { ToastService } from '../core/toast/toast.service';
+import { TranslatePipe } from '../core/i18n/translate.pipe';
 import { FeedbackInboxDialog } from '../moderation/dialogs/feedback-inbox-dialog';
 import { ReportsDialog } from '../moderation/dialogs/reports-dialog';
 import { ModerationService } from '../moderation/moderation.service';
 import { AppDialog } from '../shared/dialog/app-dialog.service';
-import { AccountService } from './account.service';
-import { FeedbackDialog } from './dialogs/feedback-dialog';
-import { ThemeDialog } from './dialogs/theme-dialog';
+import { ProfileDialog } from './profile/profile-dialog';
+import { SettingsDialog } from './settings/settings-dialog';
 
 /** Avatar button with the account menu (and, for the moderator, the inboxes). */
 @Component({
   selector: 'app-account-menu',
-  imports: [CdkMenuTrigger, CdkMenu, CdkMenuItem],
+  imports: [CdkMenuTrigger, CdkMenu, CdkMenuItem, TranslatePipe],
   template: `
     @if (auth.avatarUrl(); as avatar) {
       <button
         type="button"
         class="avatar-btn"
-        aria-label="Account menu"
+        [attr.aria-label]="'menu.label' | t"
         [cdkMenuTriggerFor]="menu"
         [cdkMenuPosition]="menuPosition"
       >
         <img class="user-avatar" [src]="avatar" alt="" referrerpolicy="no-referrer" />
         @if (auth.isAdmin() && moderation.openItems()) {
-          <span class="report-badge" [attr.aria-label]="moderation.openItems() + ' open items'">{{
-            moderation.openItems()
-          }}</span>
+          <span
+            class="report-badge"
+            [attr.aria-label]="'menu.openItems' | t: { count: moderation.openItems() }"
+            >{{ moderation.openItems() }}</span
+          >
         }
       </button>
     }
@@ -43,9 +44,8 @@ import { ThemeDialog } from './dialogs/theme-dialog';
             class="menu-item"
             (cdkMenuItemTriggered)="open('reports')"
           >
-            🚩 Reports{{
-              moderation.reports().length ? ' (' + moderation.reports().length + ')' : ''
-            }}
+            {{ 'menu.reports' | t
+            }}{{ moderation.reports().length ? ' (' + moderation.reports().length + ')' : '' }}
           </button>
           <button
             type="button"
@@ -53,36 +53,30 @@ import { ThemeDialog } from './dialogs/theme-dialog';
             class="menu-item"
             (cdkMenuItemTriggered)="open('feedbackInbox')"
           >
-            💬 Feedback inbox{{
-              moderation.feedback().length ? ' (' + moderation.feedback().length + ')' : ''
-            }}
+            {{ 'menu.feedbackInbox' | t
+            }}{{ moderation.feedback().length ? ' (' + moderation.feedback().length + ')' : '' }}
           </button>
+          <hr class="dropdown-divider" />
         }
-        <button type="button" cdkMenuItem class="menu-item" (cdkMenuItemTriggered)="open('theme')">
-          🎨 Theme
+        <button
+          type="button"
+          cdkMenuItem
+          class="menu-item"
+          (cdkMenuItemTriggered)="open('profile')"
+        >
+          {{ 'menu.profile' | t }}
         </button>
         <button
           type="button"
           cdkMenuItem
           class="menu-item"
-          (cdkMenuItemTriggered)="open('feedback')"
+          (cdkMenuItemTriggered)="open('settings')"
         >
-          💬 Send feedback
-        </button>
-        <button type="button" cdkMenuItem class="menu-item" (cdkMenuItemTriggered)="exportData()">
-          📦 Export my data
-        </button>
-        <button type="button" cdkMenuItem class="menu-item" (cdkMenuItemTriggered)="signOut()">
-          🚪 Sign out
+          {{ 'menu.settings' | t }}
         </button>
         <hr class="dropdown-divider" />
-        <button
-          type="button"
-          cdkMenuItem
-          class="menu-item danger"
-          (cdkMenuItemTriggered)="deleteAccount()"
-        >
-          🗑️ Delete account
+        <button type="button" cdkMenuItem class="menu-item" (cdkMenuItemTriggered)="signOut()">
+          {{ 'menu.signOut' | t }}
         </button>
       </div>
     </ng-template>
@@ -92,9 +86,7 @@ import { ThemeDialog } from './dialogs/theme-dialog';
 export class AccountMenu {
   protected readonly auth = inject(AuthService);
   protected readonly moderation = inject(ModerationService);
-  private readonly account = inject(AccountService);
   private readonly dialog = inject(AppDialog);
-  private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
 
   /** Opens below the avatar, aligned to its right edge. */
@@ -102,7 +94,7 @@ export class AccountMenu {
     { originX: 'end', originY: 'bottom', overlayX: 'end', overlayY: 'top', offsetY: 8 },
   ];
 
-  protected open(dialog: 'reports' | 'feedbackInbox' | 'theme' | 'feedback'): void {
+  protected open(dialog: 'reports' | 'feedbackInbox' | 'profile' | 'settings'): void {
     switch (dialog) {
       case 'reports':
         this.dialog.open(ReportsDialog, { width: 'wide' });
@@ -110,52 +102,17 @@ export class AccountMenu {
       case 'feedbackInbox':
         this.dialog.open(FeedbackInboxDialog, { width: 'wide' });
         break;
-      case 'theme':
-        this.dialog.open(ThemeDialog, { width: 'small' });
+      case 'profile':
+        this.dialog.open(ProfileDialog, { width: 'legal' });
         break;
-      case 'feedback':
-        this.dialog.open(FeedbackDialog, { width: 'medium' });
+      case 'settings':
+        this.dialog.open(SettingsDialog, { width: 'wide' });
         break;
-    }
-  }
-
-  protected async exportData(): Promise<void> {
-    try {
-      await this.account.exportData();
-      this.toast.show('📦 Data exported successfully!');
-    } catch (error) {
-      console.error('Export failed', error);
-      this.toast.show('⚠️ Error exporting data');
     }
   }
 
   protected async signOut(): Promise<void> {
     await this.auth.signOut();
     await this.router.navigateByUrl('/login');
-  }
-
-  protected async deleteAccount(): Promise<void> {
-    const confirmed = await this.dialog.confirm({
-      icon: '⚠️',
-      title: 'Delete your account?',
-      message:
-        'This will permanently delete your account and all your recipes. This cannot be undone.',
-      cancelLabel: 'Keep my account',
-      confirmLabel: 'Delete everything',
-    });
-    if (!confirmed) return;
-    try {
-      await this.account.deleteAccount();
-      this.toast.show('Account deleted');
-      await this.router.navigateByUrl('/login');
-    } catch (error) {
-      console.error('Delete account failed', error);
-      const code = (error as { code?: string }).code;
-      this.toast.show(
-        code === 'auth/requires-recent-login'
-          ? '⚠️ Please sign out and sign in again, then retry deleting your account'
-          : `⚠️ Error deleting account: ${error instanceof Error ? error.message : error}`,
-      );
-    }
   }
 }

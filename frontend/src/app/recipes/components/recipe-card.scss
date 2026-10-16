@@ -136,8 +136,9 @@
 
 .card-meta {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   font-size: 12px;
 }
 
@@ -150,4 +151,12 @@
   background: var(--teal-pale);
   color: var(--teal-deep);
   font-weight: 600;
+}
+
+// Above the card's stretched click area, so the chef opens instead of the recipe.
+.card-chef {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  margin-top: 12px;
 }

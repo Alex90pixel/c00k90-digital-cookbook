@@ -1,0 +1,79 @@
+.settings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 0 24px;
+  padding: 0;
+  list-style: none;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  background: var(--card-soft);
+  color: var(--text-dark);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    border-color: var(--teal-light);
+    background: var(--teal-pale);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+
+  &.danger {
+    border-color: var(--danger-border);
+
+    .row-title {
+      color: var(--danger);
+    }
+
+    &:hover:not(:disabled) {
+      border-color: var(--danger);
+      background: var(--danger-hover-bg);
+    }
+  }
+}
+
+.row-icon {
+  flex-shrink: 0;
+  font-size: 20px;
+}
+
+.row-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.row-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.row-desc {
+  color: var(--text-light);
+  font-size: 12px;
+}
+
+.row-chevron {
+  flex-shrink: 0;
+  color: var(--text-light);
+  font-size: 18px;
+}

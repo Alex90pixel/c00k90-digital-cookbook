@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { deleteObject, getDownloadURL, listAll, ref, uploadBytes } from 'firebase/storage';
 import { FIREBASE_STORAGE } from '../../core/firebase/firebase-storage.token';
+import { resizeImage } from '../../core/images/image-processing';
 import { RecipeImage } from '../models/recipe.model';
 
 const PHOTO_MAX_SIZE = 1200;
@@ -47,29 +48,4 @@ export class RecipePhotoService {
     const folder = await listAll(ref(this.storage, `recipes/${userId}`));
     await Promise.all(folder.items.map((item) => deleteObject(item).catch(() => undefined)));
   }
-}
-
-function resizeImage(file: Blob, maxSize: number, quality: number): Promise<Blob> {
-  return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(file);
-    const image = new Image();
-    image.onload = () => {
-      URL.revokeObjectURL(url);
-      const scale = Math.min(1, maxSize / Math.max(image.width, image.height));
-      const canvas = document.createElement('canvas');
-      canvas.width = Math.round(image.width * scale);
-      canvas.height = Math.round(image.height * scale);
-      canvas.getContext('2d')?.drawImage(image, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob(
-        (blob) => (blob ? resolve(blob) : reject(new Error('Could not encode image'))),
-        'image/jpeg',
-        quality,
-      );
-    };
-    image.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error('Could not read image'));
-    };
-    image.src = url;
-  });
 }

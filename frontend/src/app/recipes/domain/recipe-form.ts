@@ -1,6 +1,7 @@
 import { MANUAL_DIET_IDS, categoryEmoji } from '../models/recipe.constants';
 import { RecipeFormValue } from '../models/recipe-form.model';
 import { Category, Recipe, RecipeData, RecipeImage } from '../models/recipe.model';
+import { youtubeVideoId, youtubeWatchUrl } from './video';
 
 export function emptyRecipeForm(): RecipeFormValue {
   return {
@@ -21,6 +22,7 @@ export function emptyRecipeForm(): RecipeFormValue {
     steps: [],
     source: '',
     pairing: '',
+    videoUrl: '',
     notes: '',
   };
 }
@@ -47,6 +49,7 @@ export function recipeToForm(recipe: Recipe): RecipeFormValue {
     steps: [...(recipe.steps ?? [])],
     source: recipe.source ?? '',
     pairing: recipe.pairing ?? '',
+    videoUrl: recipe.videoUrl ?? '',
     // The old "description" field is no longer edited separately; it's merged into the notes.
     notes: [recipe.description, recipe.notes].filter(Boolean).join('\n\n'),
   };
@@ -84,6 +87,7 @@ export function formToRecipeData(
     source: value.source.trim(),
     notes: value.notes.trim(),
     pairing: value.pairing.trim(),
+    videoUrl: videoUrlOf(value.videoUrl),
     images: uploaded,
     imageUrl: cover?.url ?? '',
     imagePath: cover?.path ?? '',
@@ -93,4 +97,10 @@ export function formToRecipeData(
     createdAt: existing?.createdAt ?? Date.now(),
     favorite: existing?.favorite ?? false,
   };
+}
+
+/** A standard YouTube watch link, or empty when there's no (valid) video. */
+function videoUrlOf(input: string): string {
+  const id = youtubeVideoId(input);
+  return id ? youtubeWatchUrl(id) : '';
 }

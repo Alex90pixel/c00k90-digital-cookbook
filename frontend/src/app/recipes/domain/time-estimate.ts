@@ -21,8 +21,9 @@ export interface TimeEstimate {
   cookTime: number;
   /** `null` when no ingredient has a usable quantity. */
   servings: number | null;
-  /** Shown under the difficulty buttons, e.g. "Estimated: 37-55 min total, ~4 servings". */
-  hint: string;
+  /** Likely range of the total time in minutes, shown as a hint in the form. */
+  minMinutes: number;
+  maxMinutes: number;
 }
 
 /**
@@ -59,6 +60,7 @@ export function estimateTimeAndServings(
     prepTime: Math.round(minutes * 0.35),
     cookTime: Math.round(minutes * 0.65),
     servings: totalGrams > 0 ? servings : null,
-    hint: `Estimated: ${low}-${high} min total` + (totalGrams > 0 ? `, ~${servings} servings` : ''),
+    minMinutes: low,
+    maxMinutes: high,
   };
 }
