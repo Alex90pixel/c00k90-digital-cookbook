@@ -15,6 +15,27 @@
   </div>
 
   <div class="form-body">
+    @if (!isEditing) {
+      <div class="form-group notebook-import">
+        <button
+          type="button"
+          class="btn-add-row"
+          [disabled]="transcribing()"
+          (click)="pickNotebookPhoto(notebookInput)"
+        >
+          📷 {{ (transcribing() ? 'form.transcribing' : 'form.fromNotebook') | t }}
+        </button>
+        <input
+          #notebookInput
+          type="file"
+          accept="image/*"
+          hidden
+          (change)="transcribeNotebook(notebookInput)"
+        />
+        <p class="hint" role="status">{{ transcribeStatus() ?? 'form.fromNotebookHint' | t }}</p>
+      </div>
+    }
+
     <div class="form-group">
       <label for="recipe-name">{{ 'form.name' | t }}</label>
       <input
