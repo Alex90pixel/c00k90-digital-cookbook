@@ -142,27 +142,39 @@
   .header-inner {
     position: relative;
     height: auto;
-    gap: 12px;
-    padding: 12px 0;
+    gap: 8px;
+    padding: 8px 0;
   }
   .search-bar {
     order: 3;
     width: 100%;
     max-width: 100%;
+
+    input {
+      padding: 7px 14px 7px 36px;
+    }
   }
   .header-nav {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 6px;
     width: 100%;
     margin-left: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
   .nav-btn {
-    padding: 7px 12px;
+    flex-shrink: 0;
+    padding: 6px 12px;
     font-size: 12px;
   }
   .account-menu {
     position: absolute;
-    top: 12px;
+    top: 8px;
     right: 0;
   }
   .btn-new {
