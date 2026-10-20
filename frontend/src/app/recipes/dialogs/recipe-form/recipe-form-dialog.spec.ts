@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { Subject } from 'rxjs';
 import { AppDialog } from '../../../shared/dialog/app-dialog.service';
 import { PhotoConsent } from '../../../shared/dialog/photo-consent.service';
+import { NotebookTranscribeService } from '../../data/notebook-transcribe.service';
 import { NutritionService } from '../../data/nutrition.service';
 import { RecipeImportService } from '../../data/recipe-import.service';
 import { RecipePhotoService } from '../../data/recipe-photo.service';
@@ -25,6 +26,7 @@ async function setup() {
       { provide: RecipeStore, useValue: { save } },
       { provide: RecipePhotoService, useValue: {} },
       { provide: RecipeImportService, useValue: {} },
+      { provide: NotebookTranscribeService, useValue: {} },
       { provide: NutritionService, useValue: { estimate: () => null } },
       { provide: AppDialog, useValue: { confirm: vi.fn().mockResolvedValue(true) } },
       { provide: PhotoConsent, useValue: { ask: vi.fn().mockResolvedValue(true) } },

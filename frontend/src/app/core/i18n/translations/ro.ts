@@ -239,6 +239,13 @@ export const ro: Translations = {
     discardMessage: 'Modificările făcute acestei rețete nu au fost salvate.',
     discardKeep: 'Continuă editarea',
     discardConfirm: 'Renunță',
+    fromNotebook: 'Din poza unui caiet',
+    fromNotebookHint:
+      'Fă o poză la o rețetă scrisă de mână și completăm noi formularul. Verifică-l înainte să salvezi.',
+    transcribing: 'Citim rețeta…',
+    transcribed: '✨ Gata! Verifică ingredientele și pașii înainte să salvezi.',
+    transcribeEmpty: 'N-am găsit o rețetă în poză. Încearcă o poză mai clară, de mai aproape.',
+    transcribeFailed: '⚠️ Nu am putut citi poza. Încearcă din nou.',
   },
   recipes: {
     favoriteAdded: '❤️ Adăugată la favorite!',
