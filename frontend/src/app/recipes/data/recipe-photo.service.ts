@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { deleteObject, getDownloadURL, listAll, ref, uploadBytes } from 'firebase/storage';
 import { FIREBASE_STORAGE } from '../../core/firebase/firebase-storage.token';
-import { resizeImage } from '../../core/images/image-processing';
+import { cropRegion, resizeImage } from '../../core/images/image-processing';
+import { ImageRegion } from '../../core/images/models/image-region.model';
 import { RecipeImage } from '../models/recipe.model';
 
 const PHOTO_MAX_SIZE = 1200;
@@ -19,6 +20,11 @@ export class RecipePhotoService {
   /** Shrinks a picked photo before upload (max 1200 px), so uploads stay small. */
   prepare(file: Blob): Promise<Blob> {
     return resizeImage(file, PHOTO_MAX_SIZE, PHOTO_QUALITY);
+  }
+
+  /** Cuts a region out of a photo (e.g. the dish on a magazine page), ready for upload. */
+  prepareRegion(file: Blob, region: ImageRegion): Promise<Blob> {
+    return cropRegion(file, region, PHOTO_MAX_SIZE, PHOTO_QUALITY);
   }
 
   /** Uploads a prepared photo plus a 480 px thumbnail for the recipe cards. */

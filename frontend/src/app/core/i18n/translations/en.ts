@@ -231,6 +231,15 @@ export const en = {
     discardMessage: "Your changes to this recipe haven't been saved.",
     discardKeep: 'Keep editing',
     discardConfirm: 'Discard',
+    fromNotebook: 'From a notebook photo',
+    fromNotebookHint:
+      "Take a photo of a handwritten recipe and we'll fill in the form. Check it before saving.",
+    transcribing: 'Reading the recipe…',
+    transcribed: '✨ Done! Check the ingredients and steps before saving.',
+    transcribedWithPhoto:
+      '✨ Done! We also added the dish photo. Check everything before saving, and if the photo is from a magazine, use your own before sharing it in Get Inspired.',
+    transcribeEmpty: "Couldn't find a recipe in this photo. Try a clearer, closer photo.",
+    transcribeFailed: "⚠️ Couldn't read the photo. Please try again.",
   },
   recipes: {
     favoriteAdded: '❤️ Added to favorites!',

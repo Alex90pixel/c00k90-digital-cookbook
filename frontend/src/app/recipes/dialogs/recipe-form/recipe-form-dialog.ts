@@ -3,6 +3,7 @@ import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormField, form, min, required, validate } from '@angular/forms/signals';
 import { filter, merge } from 'rxjs';
+import { ImageRegion } from '../../../core/images/models/image-region.model';
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { TranslationKey, TranslationParams } from '../../../core/i18n/i18n.types';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
@@ -16,6 +17,7 @@ import {
   isLink,
   videoPlatform,
 } from '../../data/recipe-import.service';
+import { NotebookTranscribeService } from '../../data/notebook-transcribe.service';
 import { RecipePhotoService } from '../../data/recipe-photo.service';
 import { RecipeStore } from '../../data/recipe.store';
 import { parseIngredientLines, parseStepLines } from '../../domain/ingredients';
@@ -49,6 +51,7 @@ export class RecipeFormDialog {
   private readonly store = inject(RecipeStore);
   private readonly photoService = inject(RecipePhotoService);
   private readonly importService = inject(RecipeImportService);
+  private readonly transcriber = inject(NotebookTranscribeService);
   private readonly nutrition = inject(NutritionService);
   private readonly dialog = inject(AppDialog);
   private readonly photoConsent = inject(PhotoConsent);
@@ -97,6 +100,10 @@ export class RecipeFormDialog {
   protected readonly importing = signal(false);
   protected readonly importStatus = signal<ImportStatus | null>(null);
   protected readonly importedFrom = signal<VideoPlatform | null>(null);
+
+  // Transcription from a photo of a recipe notebook.
+  protected readonly transcribing = signal(false);
+  protected readonly transcribeStatus = signal<TranslationKey | null>(null);
 
   protected readonly saving = signal(false);
 
@@ -197,6 +204,61 @@ export class RecipeFormDialog {
 
   private revokePreviews(photos: readonly FormPhoto[]): void {
     photos.filter((p) => p.file).forEach((p) => URL.revokeObjectURL(p.previewUrl));
+  }
+
+  // ----- Notebook transcription -----
+
+  protected async pickNotebookPhoto(input: HTMLInputElement): Promise<void> {
+    if (await this.photoConsent.ask()) input.click();
+  }
+
+  protected async transcribeNotebook(input: HTMLInputElement): Promise<void> {
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file || !file.type.startsWith('image/') || this.transcribing()) return;
+    this.transcribing.set(true);
+    this.transcribeStatus.set('form.transcribing');
+    try {
+      const photo = await this.photoService.prepare(file);
+      const recipe = await this.transcriber.transcribe(photo);
+      if (recipe.name && !this.model().name.trim()) {
+        this.recipeForm.name().value.set(recipe.name);
+        this.recipeForm.name().markAsDirty();
+      }
+      this.ingredientsPaste.set(recipe.ingredients.join('\n'));
+      this.stepsPaste.set(recipe.steps.join('\n'));
+      this.addPastedIngredients();
+      this.addPastedSteps();
+      const addedPhoto = await this.addDishPhoto(file, recipe.dishPhoto);
+      this.transcribeStatus.set(
+        !recipe.ingredients.length && !recipe.steps.length
+          ? 'form.transcribeEmpty'
+          : addedPhoto
+            ? 'form.transcribedWithPhoto'
+            : 'form.transcribed',
+      );
+    } catch (error) {
+      console.error('Notebook transcription failed', error);
+      this.transcribeStatus.set('form.transcribeFailed');
+    } finally {
+      this.transcribing.set(false);
+    }
+  }
+
+  /** Adds the dish photo found on the page (if any) to the recipe photos. */
+  private async addDishPhoto(file: Blob, region: ImageRegion | undefined): Promise<boolean> {
+    if (!region || this.photos().length >= MAX_PHOTOS_PER_RECIPE) return false;
+    try {
+      const photo = await this.photoService.prepareRegion(file, region);
+      this.photos.update((list) => [
+        ...list,
+        { file: photo, previewUrl: URL.createObjectURL(photo) },
+      ]);
+      this.photosChanged.set(true);
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   // ----- Source -----

@@ -1,18 +1,18 @@
-import { FirebaseOptions } from 'firebase/app';
+import { aiFirebase, aiRecaptchaSiteKey, firebase } from './firebase.config';
 
 /**
- * App-wide configuration. The Firebase web config is public by design: access is
- * controlled by the Firestore / Storage security rules, not by keeping these values secret.
+ * App-wide configuration. The Firebase values come from firebase.config.ts, which
+ * scripts/write-firebase-config.mjs generates from environment variables (GitHub secrets in CI).
+ * They still end up in the public bundle: access is controlled by the Firestore / Storage
+ * security rules and App Check, not by keeping these values secret.
  */
 export const environment = {
-  firebase: {
-    apiKey: 'AIzaSyDwZE0QIzeq6hzgO6F3HSi1DLZzcYoapYg',
-    authDomain: 'a-pinch-of-everything-e7101.firebaseapp.com',
-    projectId: 'a-pinch-of-everything-e7101',
-    storageBucket: 'a-pinch-of-everything-e7101.firebasestorage.app',
-    messagingSenderId: '559214365284',
-    appId: '1:559214365284:web:a793efbdaad3f30fbdad71',
-  } satisfies FirebaseOptions,
+  firebase,
+
+  /** Separate free project, used only for the AI notebook transcription (Gemini). */
+  aiFirebase,
+  /** reCAPTCHA Enterprise site key (public) for App Check on the AI project. */
+  aiRecaptchaSiteKey,
 
   /** Cloud Function that reads title/author/thumbnail of a YouTube or TikTok link (oEmbed). */
   importFunctionUrl:
