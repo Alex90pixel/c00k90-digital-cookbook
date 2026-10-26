@@ -5,7 +5,7 @@ import { AppDialog } from './app-dialog.service';
 
 /**
  * Before the first photo pick, explains that only the chosen photos are uploaded. The answer is
- * remembered (same key as the old app), so the question is asked once per device.
+ * remembered, so the question is asked once per device.
  */
 @Injectable({ providedIn: 'root' })
 export class PhotoConsent {

@@ -4,7 +4,7 @@ import { Injectable, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { ConfirmDialog, ConfirmDialogData } from './confirm-dialog';
 
-/** Width presets matching the old app's modals. */
+/** Width presets for the app's modals. */
 export const DIALOG_WIDTH = {
   detail: '820px',
   form: '680px',

@@ -19,11 +19,10 @@ export const safeLocalStorage = {
   },
 };
 
-/** Keys shared with the old app, so preferences carry over between the two. */
+/** Key names kept from the first version of the app, so saved preferences still apply. */
 export const STORAGE_KEYS = {
   theme: 'c00k90-theme',
   consent: 'c00k90-consent',
   photoConsent: 'c00k90-photo-ok',
-  /** New-app only: the old app is English-only. */
   language: 'c00k90-lang',
 } as const;

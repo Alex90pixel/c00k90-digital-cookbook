@@ -1,5 +1,5 @@
 # Builds the Angular app in frontend/ and uploads it to cookbook.antdevlabs.com (cPanel) over FTPS.
-# The old app in the repo root is still deployed by GitHub Pages and is not touched by this workflow.
+# The old GitHub Pages address is served from docs/ (a redirect to this site); not touched here.
 name: Deploy frontend
 
 on:

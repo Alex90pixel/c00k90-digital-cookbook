@@ -44,7 +44,7 @@ export class Header {
   protected readonly navItems = computed(() =>
     NAV_ITEMS.map((item) => {
       const active = this.path() === item.path;
-      // Clicking the active view again goes back home, like the old app.
+      // Clicking the active view again goes back home.
       return { ...item, active, link: active ? '/' : item.path };
     }),
   );

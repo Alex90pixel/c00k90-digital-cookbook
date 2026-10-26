@@ -15,8 +15,8 @@ interface FavoritesDocument {
  * Other cooks' shared recipes that the signed-in user saved as favorites (`favorites/{userId}`,
  * private to that user). The user's own recipes can't be favorites.
  *
- * Note: the old app keeps a `favorite` flag on the user's own recipe documents; this app
- * no longer uses it, but leaves it untouched so the old app keeps working.
+ * Note: recipe documents from the first version of the app may still have a `favorite` flag on
+ * the user's own recipes; it's no longer used.
  */
 @Injectable({ providedIn: 'root' })
 export class FavoritesService {

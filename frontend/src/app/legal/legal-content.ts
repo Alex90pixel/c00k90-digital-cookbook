@@ -60,7 +60,7 @@ export const LEGAL_CONTENT: Record<Language, LegalSection[]> = {
         {
           label: 'Hosting:',
           parts: [
-            "the app is hosted on GitHub Pages. GitHub may log visitors' IP addresses for security purposes, under its own privacy policy.",
+            "the app is hosted at cookbook.antdevlabs.com by our web hosting provider (Hosterion, Romania), whose servers may log visitors' IP addresses for security purposes. The old address on GitHub Pages only redirects here; GitHub may log visitors' IP addresses under its own privacy policy.",
           ],
         },
         {
@@ -167,7 +167,7 @@ export const LEGAL_CONTENT: Record<Language, LegalSection[]> = {
         {
           label: 'Găzduire:',
           parts: [
-            'aplicația este găzduită pe GitHub Pages. GitHub poate înregistra adresele IP ale vizitatorilor din motive de securitate, conform propriei politici de confidențialitate.',
+            'aplicația este găzduită la cookbook.antdevlabs.com de furnizorul nostru de găzduire web (Hosterion, România), ale cărui servere pot înregistra adresele IP ale vizitatorilor din motive de securitate. Vechea adresă de pe GitHub Pages doar redirecționează aici; GitHub poate înregistra adresele IP ale vizitatorilor conform propriei politici de confidențialitate.',
           ],
         },
         {

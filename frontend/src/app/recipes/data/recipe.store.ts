@@ -98,7 +98,7 @@ export class RecipeStore {
     return dietLabels(recipe, this.nutrition.estimate(recipe.ingredients, recipe.servings));
   }
 
-  /** Switching views starts from a clean search, like the old app. */
+  /** Switching views starts from a clean search. */
   setView(view: RecipeView): void {
     if (view === this.view()) return;
     this.view.set(view);

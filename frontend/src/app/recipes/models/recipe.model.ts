@@ -25,8 +25,8 @@ export interface RecipeImage {
 /**
  * A document in the Firestore `recipes` collection.
  *
- * The old app (repo root) reads and writes the same documents, so field names and types must
- * stay compatible with it. Most fields are optional because older documents may not have them.
+ * Documents created by the first version of the app are still in use, so field names and types
+ * must stay compatible. Most fields are optional because older documents may not have them.
  */
 export interface RecipeData {
   name: string;

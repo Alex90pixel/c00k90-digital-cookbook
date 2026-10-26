@@ -1,0 +1,106 @@
+<!doctype html>
+<!--
+  C00K90 moved to https://cookbook.antdevlabs.com.
+  GitHub Pages serves this folder at the old address, so old links, bookmarks and installed
+  copies of the old app end up on the new site. The same file is used as 404.html.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>C00K90 has moved</title>
+    <link rel="canonical" href="https://cookbook.antdevlabs.com/" />
+    <meta http-equiv="refresh" content="3; url=https://cookbook.antdevlabs.com/" />
+    <script>
+      (function () {
+        var base = 'https://cookbook.antdevlabs.com';
+        // The old app used #favorites / #inspired; the new one has real pages for them.
+        var pages = { '#favorites': '/favorites', '#inspired': '/inspired' };
+        var target = base + (pages[location.hash] || '/');
+
+        // Remove the old app's service worker and offline copy, if this device has them.
+        try {
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function (registrations) {
+              registrations.forEach(function (registration) {
+                registration.unregister();
+              });
+            });
+          }
+          if (window.caches) {
+            caches.keys().then(function (keys) {
+              keys.forEach(function (key) {
+                caches.delete(key);
+              });
+            });
+          }
+        } catch (e) {}
+
+        window.addEventListener('DOMContentLoaded', function () {
+          document.getElementById('link').href = target;
+        });
+        setTimeout(function () {
+          location.replace(target);
+        }, 800);
+      })();
+    </script>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 16px;
+        box-sizing: border-box;
+        background: #081716;
+        color: #c3d0c8;
+        font-family: system-ui, sans-serif;
+        text-align: center;
+      }
+      main {
+        max-width: 380px;
+        padding: 40px 32px;
+        border-radius: 28px;
+        background: #12211f;
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+      }
+      .icon {
+        font-size: 48px;
+      }
+      h1 {
+        margin: 12px 0 8px;
+        color: #c2d67a;
+        font-family: Georgia, serif;
+        font-size: 26px;
+      }
+      p {
+        margin: 0 0 8px;
+        line-height: 1.5;
+      }
+      a {
+        display: inline-block;
+        margin-top: 16px;
+        padding: 10px 24px;
+        border-radius: 50px;
+        background: linear-gradient(135deg, #9fb85a, #34c79a);
+        color: #fff;
+        font-weight: 700;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="icon" aria-hidden="true">🍳</div>
+      <h1>C00K90 has moved</h1>
+      <p>Your recipes are waiting at the new address.</p>
+      <p lang="ro">C00K90 s-a mutat. Rețetele tale te așteaptă la noua adresă.</p>
+      <a id="link" href="https://cookbook.antdevlabs.com/">cookbook.antdevlabs.com</a>
+    </main>
+  </body>
+</html>
