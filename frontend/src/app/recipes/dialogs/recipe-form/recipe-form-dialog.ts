@@ -3,7 +3,7 @@ import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormField, form, min, required, validate } from '@angular/forms/signals';
 import { filter, merge } from 'rxjs';
-import { ImageRegion } from '../../../core/images/image-processing';
+import { ImageRegion } from '../../../core/images/models/image-region.model';
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { TranslationKey, TranslationParams } from '../../../core/i18n/i18n.types';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';

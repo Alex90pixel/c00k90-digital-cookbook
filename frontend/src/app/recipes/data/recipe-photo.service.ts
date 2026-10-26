@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { deleteObject, getDownloadURL, listAll, ref, uploadBytes } from 'firebase/storage';
 import { FIREBASE_STORAGE } from '../../core/firebase/firebase-storage.token';
-import { ImageRegion, cropRegion, resizeImage } from '../../core/images/image-processing';
+import { cropRegion, resizeImage } from '../../core/images/image-processing';
+import { ImageRegion } from '../../core/images/models/image-region.model';
 import { RecipeImage } from '../models/recipe.model';
 
 const PHOTO_MAX_SIZE = 1200;

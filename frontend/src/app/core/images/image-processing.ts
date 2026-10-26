@@ -1,3 +1,5 @@
+import { ImageRegion } from './models/image-region.model';
+
 /** Shrinks an image so its longest side is at most `maxSize` px, as JPEG. */
 export async function resizeImage(file: Blob, maxSize: number, quality: number): Promise<Blob> {
   const image = await loadImage(file);
@@ -17,14 +19,6 @@ export async function cropToSquare(file: Blob, size: number, quality: number): P
   return draw(target, target, quality, (context) =>
     context.drawImage(image, x, y, side, side, 0, 0, target, target),
   );
-}
-
-/** A region of an image, each side as a fraction (0–1) of the image size. */
-export interface ImageRegion {
-  left: number;
-  top: number;
-  right: number;
-  bottom: number;
 }
 
 /** Cuts `region` out of an image and shrinks it to at most `maxSize` px, as JPEG. */
