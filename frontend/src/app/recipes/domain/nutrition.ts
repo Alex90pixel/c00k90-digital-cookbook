@@ -5,7 +5,7 @@ import {
   NutritionEstimate,
   NutritionPer100g,
 } from '../models/nutrition.model';
-import { parseQuantity } from './ingredients';
+import { parseQuantity, splitLeadingUnit } from './ingredients';
 import {
   DEFAULT_PIECE_WEIGHT,
   FALLBACK_NUTRITION,
@@ -106,6 +106,9 @@ export function pieceWeight(name: string): number {
 export function ingredientGrams(ingredient: Ingredient, translatePieceNames = true): number {
   const qty = parseQuantity(ingredient.qty);
   if (!qty) return 0;
+  // Older lines kept the unit in the name ("2" · "" · "tablespoons honey"): read it from there.
+  const leading = ingredient.unit ? null : splitLeadingUnit(ingredient.name ?? '');
+  if (leading) return ingredientGrams({ qty: ingredient.qty, ...leading }, translatePieceNames);
   const gramsPerUnit = UNIT_TO_GRAMS[(ingredient.unit ?? '').toLowerCase()];
   if (gramsPerUnit) return qty * gramsPerUnit;
   const name = translatePieceNames ? toEnglishPieceName(ingredient.name) : ingredient.name;

@@ -47,6 +47,16 @@ describe('scaleIngredients', () => {
   });
 });
 
+describe('parseIngredientLines with long unit names', () => {
+  it('shortens tablespoons, teaspoon and grams to known units', () => {
+    expect(parseIngredientLines('2 tablespoons honey\n1 teaspoon salt\n200 grams flour')).toEqual([
+      { qty: '2', unit: 'tbsp', name: 'honey' },
+      { qty: '1', unit: 'tsp', name: 'salt' },
+      { qty: '200', unit: 'g', name: 'flour' },
+    ]);
+  });
+});
+
 describe('parseIngredientLines', () => {
   it('splits quantity, known unit and name', () => {
     expect(parseIngredientLines('200g flour\n2 eggs\n\nSalt')).toEqual([

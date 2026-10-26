@@ -42,6 +42,12 @@ describe('ingredientGrams', () => {
     expect(ingredientGrams({ qty: '3', unit: '', name: 'oua' })).toBe(150);
     expect(ingredientGrams({ qty: '', unit: 'g', name: 'salt' })).toBe(0);
   });
+
+  it('reads a unit left at the start of the name by older recipes', () => {
+    // Was counted as 3 pieces of 100 g (300 g of oil) before.
+    expect(ingredientGrams({ qty: '3', unit: '', name: 'tablespoons olive oil' })).toBe(45);
+    expect(ingredientGrams({ qty: '1/4', unit: '', name: 'teaspoon ground ginger' })).toBe(1.25);
+  });
 });
 
 describe('estimateNutrition', () => {
