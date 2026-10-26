@@ -20,6 +20,9 @@ interface AliasRule {
   food: CiqualFood;
 }
 
+/** Words saying an ingredient is already cooked ("cooked rice", "orez fiert"). */
+const COOKED_WORDS = /\b(cooked|boiled|steamed|fiert|fiarta|fierte|fierti|gatit|gatita)\b/;
+
 const ROMANIAN_PIECE_RULES = Object.keys(ROMANIAN_PIECE_NAMES)
   .sort((a, b) => b.length - a.length)
   .map((key) => ({ pattern: wholeWordRegExp(key), english: ROMANIAN_PIECE_NAMES[key] }));
@@ -74,12 +77,37 @@ export class NutritionIndex {
     if (!name) return null;
     const singular = name.replace(/(\w{3,})s\b/g, '$1');
     const alias = this.aliases.find((a) => a.pattern.test(name) || a.pattern.test(singular));
-    if (alias) return alias.food;
+    if (alias)
+      return COOKED_WORDS.test(name) ? (this.cookedVariant(alias.food) ?? alias.food) : alias.food;
     const candidates = this.foodsByMainName.get(name) ?? this.foodsByMainName.get(singular);
     if (!candidates?.length) return null;
+    if (COOKED_WORDS.test(name)) {
+      const cooked = candidates.find((food) => /\bcooked\b/i.test(food.name));
+      if (cooked) return cooked;
+    }
     return (
       candidates.find((food) => /\braw\b/i.test(food.name)) ??
       [...candidates].sort((a, b) => a.name.length - b.name.length)[0]
+    );
+  }
+
+  /**
+   * The cooked version of a raw food, when Ciqual has one: "Rice, white, raw" →
+   * "Rice, white, cooked, no added salt". Cooked rice or pasta has about a third of the calories.
+   */
+  private cookedVariant(raw: CiqualFood): CiqualFood | null {
+    const [main, ...details] = raw.name
+      .toLowerCase()
+      .split(',')
+      .map((part) => part.trim());
+    const wanted = details.filter((part) => part !== 'raw');
+    const cooked = (this.foodsByMainName.get(main) ?? []).filter((food) =>
+      /\bcooked\b/i.test(food.name),
+    );
+    return (
+      cooked.find((food) => wanted.every((part) => food.name.toLowerCase().includes(part))) ??
+      cooked[0] ??
+      null
     );
   }
 }

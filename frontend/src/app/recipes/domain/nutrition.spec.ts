@@ -10,8 +10,11 @@ const ciqual: CiqualFile = {
     ['Wheat flour, type 55 (for bread)', 340, 10, 70, 1],
     ['Tomato, raw', 20, 1, 3, 0],
     ['Tomato, canned', 25, 1, 4, 0],
+    ['Rice, white, raw', 350, 7, 77.5, 0.8],
+    ['Rice, wholegrain, cooked, no added salt', 187, 3.9, 37.6, 1.8],
+    ['Rice, white, cooked, no added salt', 155, 3.2, 33.2, 0.7],
   ],
-  aliases: { flour: 'Wheat flour, type 55 (for bread)' },
+  aliases: { flour: 'Wheat flour, type 55 (for bread)', 'white rice': 'Rice, white, raw' },
 };
 
 describe('NutritionIndex', () => {
@@ -23,6 +26,11 @@ describe('NutritionIndex', () => {
 
   it('prefers the raw food when several share the main name', () => {
     expect(index.lookup('tomato')?.cal).toBe(20);
+  });
+
+  it('uses the cooked food for cooked ingredients', () => {
+    expect(index.lookup('white rice')?.cal).toBe(350);
+    expect(index.lookup('cooked white rice')?.cal).toBe(155);
   });
 
   it('falls back to the built-in table', () => {
