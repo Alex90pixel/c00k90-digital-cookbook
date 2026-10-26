@@ -3,9 +3,14 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "firebase-config": "node scripts/write-firebase-config.mjs",
+    "prestart": "npm run firebase-config",
     "start": "ng serve",
+    "prebuild": "npm run firebase-config",
     "build": "ng build",
+    "prewatch": "npm run firebase-config",
     "watch": "ng build --watch --configuration development",
+    "pretest": "npm run firebase-config",
     "test": "ng test"
   },
   "private": true,
