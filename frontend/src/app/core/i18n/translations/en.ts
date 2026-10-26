@@ -113,6 +113,16 @@ export const en = {
     minutes: '⏱ {count} min',
     video: '🎬 Video',
   },
+  shopping: {
+    open: 'Shopping list',
+    title: 'Shopping list',
+    hint: 'For {name}, {count} servings. Tick what you already have at home.',
+    listTitle: '🛒 {name} ({count} servings)',
+    share: 'Share list',
+    copy: 'Copy list',
+    copied: '📋 Shopping list copied',
+    failed: '⚠️ Could not share the list',
+  },
   detail: {
     prep: '🥄 Prep: {minutes} min',
     cook: '🔥 Cook: {minutes} min',

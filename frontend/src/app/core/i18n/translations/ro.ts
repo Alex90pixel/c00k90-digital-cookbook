@@ -119,6 +119,16 @@ export const ro: Translations = {
     minutes: '⏱ {count} min',
     video: '🎬 Video',
   },
+  shopping: {
+    open: 'Listă de cumpărături',
+    title: 'Listă de cumpărături',
+    hint: 'Pentru {name}, {count} porții. Bifează ce ai deja în casă.',
+    listTitle: '🛒 {name} ({count} porții)',
+    share: 'Trimite lista',
+    copy: 'Copiază lista',
+    copied: '📋 Lista de cumpărături a fost copiată',
+    failed: '⚠️ Nu am putut trimite lista',
+  },
   detail: {
     prep: '🥄 Preparare: {minutes} min',
     cook: '🔥 Gătire: {minutes} min',
