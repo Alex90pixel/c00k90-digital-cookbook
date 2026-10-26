@@ -9,6 +9,10 @@ export interface TranscribedRecipe {
   steps: string[];
   /** The magazine, book or website printed on the page, if any (e.g. "Bucătăria pentru toți, nr. 5"). */
   source: string;
+  /** Servings and times printed on the page ("Serves 4", "Prep 5 minutes"), when there are any. */
+  servings?: number;
+  prepTime?: number;
+  cookTime?: number;
   /** Where the photo of the finished dish is on the page, if there is one. */
   dishPhoto?: ImageRegion;
 }
@@ -19,5 +23,8 @@ export interface TranscriptionAnswer {
   ingredients?: string[];
   steps?: string[];
   source?: string;
+  servings?: number;
+  prepMinutes?: number;
+  cookMinutes?: number;
   dishPhotoBox?: number[];
 }
