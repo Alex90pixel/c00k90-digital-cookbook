@@ -9,7 +9,8 @@ Transcribe it faithfully, in the same language it is written in. Do not translat
 Return the recipe title (empty string if there is none), the ingredients (one per item, with quantity and unit as written)
 and the preparation steps (one per item, in order). If a word is unreadable, write your best guess followed by "(?)".
 If the page also shows a photo of the finished dish, return its bounding box as dishPhotoBox: [ymin, xmin, ymax, xmax],
-normalized to 0-1000. Leave dishPhotoBox out if there is no such photo (handwriting, drawings or text only).`;
+normalized to 0-1000. Leave dishPhotoBox out if there is no such photo (handwriting, drawings or text only).
+If the page shows where it comes from (magazine or book title, issue, website), return it as source; otherwise leave source out.`;
 
 /** Name of the second Firebase app, connected to the free `c00k90-ai` project. */
 const AI_APP_NAME = 'ai';
@@ -39,9 +40,10 @@ export class NotebookTranscribeService {
             name: Schema.string(),
             ingredients: Schema.array({ items: Schema.string() }),
             steps: Schema.array({ items: Schema.string() }),
+            source: Schema.string(),
             dishPhotoBox: Schema.array({ items: Schema.number() }),
           },
-          optionalProperties: ['dishPhotoBox'],
+          optionalProperties: ['source', 'dishPhotoBox'],
         }),
       },
     });
@@ -58,6 +60,7 @@ export class NotebookTranscribeService {
       name: (parsed.name ?? '').trim(),
       ingredients: (parsed.ingredients ?? []).map((line) => line.trim()).filter(Boolean),
       steps: (parsed.steps ?? []).map((line) => line.trim()).filter(Boolean),
+      source: (parsed.source ?? '').trim(),
       dishPhoto: toRegion(parsed.dishPhotoBox),
     };
   }

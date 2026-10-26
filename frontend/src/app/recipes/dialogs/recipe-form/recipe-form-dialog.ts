@@ -225,6 +225,10 @@ export class RecipeFormDialog {
         this.recipeForm.name().value.set(recipe.name);
         this.recipeForm.name().markAsDirty();
       }
+      if (recipe.source && !this.model().source.trim()) {
+        this.recipeForm.source().value.set(recipe.source);
+        this.recipeForm.source().markAsDirty();
+      }
       this.ingredientsPaste.set(recipe.ingredients.join('\n'));
       this.stepsPaste.set(recipe.steps.join('\n'));
       this.addPastedIngredients();
@@ -252,7 +256,7 @@ export class RecipeFormDialog {
       const photo = await this.photoService.prepareRegion(file, region);
       this.photos.update((list) => [
         ...list,
-        { file: photo, previewUrl: URL.createObjectURL(photo) },
+        { file: photo, previewUrl: URL.createObjectURL(photo), fromPrint: true },
       ]);
       this.photosChanged.set(true);
       return true;

@@ -256,7 +256,8 @@ export class RecipeStore {
         images.push(photo.image);
       } else if (photo.file) {
         this.toast.show(this.i18n.t('recipes.uploading', { number: ++uploaded }));
-        images.push(await this.photos.upload(userId, photo.file));
+        const image = await this.photos.upload(userId, photo.file);
+        images.push(photo.fromPrint ? { ...image, fromPrint: true } : image);
       }
     }
     return images;

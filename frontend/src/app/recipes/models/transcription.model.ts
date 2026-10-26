@@ -7,6 +7,8 @@ export interface TranscribedRecipe {
   ingredients: string[];
   /** One step per line. */
   steps: string[];
+  /** The magazine, book or website printed on the page, if any (e.g. "Bucătăria pentru toți, nr. 5"). */
+  source: string;
   /** Where the photo of the finished dish is on the page, if there is one. */
   dishPhoto?: ImageRegion;
 }
@@ -16,5 +18,6 @@ export interface TranscriptionAnswer {
   name?: string;
   ingredients?: string[];
   steps?: string[];
+  source?: string;
   dishPhotoBox?: number[];
 }

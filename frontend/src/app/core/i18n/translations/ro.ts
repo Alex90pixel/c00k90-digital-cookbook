@@ -120,6 +120,11 @@ export const ro: Translations = {
     video: '🎬 Video',
   },
   detail: {
+    printPhotoTitle: 'Poză dintr-o revistă sau carte',
+    printPhotoMessage:
+      'Poza acestei rețete e luată dintr-o pagină tipărită. În Inspirație o vede toată lumea, așa că e mai bine să pui întâi o poză cu mâncarea gătită de tine.',
+    printPhotoKeep: 'Schimb întâi poza',
+    printPhotoShare: 'Partajează oricum',
     prep: '🥄 Preparare: {minutes} min',
     cook: '🔥 Gătire: {minutes} min',
     total: '⏱ Total: {minutes} min',
@@ -245,7 +250,7 @@ export const ro: Translations = {
     transcribing: 'Citim rețeta…',
     transcribed: '✨ Gata! Verifică ingredientele și pașii înainte să salvezi.',
     transcribedWithPhoto:
-      '✨ Gata! Am adăugat și poza mâncării. Verifică tot înainte să salvezi, iar dacă poza e dintr-o revistă, pune una a ta înainte să o partajezi în Inspirație.',
+      '✨ Gata! Am adăugat și poza mâncării. Verifică totul înainte să salvezi.',
     transcribeEmpty: 'N-am găsit o rețetă în poză. Încearcă o poză mai clară, de mai aproape.',
     transcribeFailed: '⚠️ Nu am putut citi poza. Încearcă din nou.',
   },
