@@ -18,6 +18,8 @@ import { VideoPlayer } from '../../components/video-player';
 import { DIETS, difficultyIcon } from '../../models/recipe.constants';
 import { Recipe } from '../../models/recipe.model';
 import { RecipeDialogs } from '../../recipe-dialogs.service';
+import { CookModeData } from '../../models/cook-mode.model';
+import { CookModeDialog } from '../cook-mode-dialog';
 
 @Component({
   selector: 'app-recipe-detail-dialog',
@@ -94,6 +96,13 @@ export class RecipeDetailDialog {
 
   protected close(): void {
     this.ref.close();
+  }
+
+  protected openCookMode(recipe: Recipe): void {
+    this.dialog.open<CookModeDialog, CookModeData>(CookModeDialog, {
+      width: 'detail',
+      data: { recipeName: recipe.name, steps: recipe.steps ?? [], ingredients: this.ingredients() },
+    });
   }
 
   protected changeServings(step: number): void {

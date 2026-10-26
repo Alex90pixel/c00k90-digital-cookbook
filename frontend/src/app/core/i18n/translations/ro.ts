@@ -119,6 +119,17 @@ export const ro: Translations = {
     minutes: '⏱ {count} min',
     video: '🎬 Video',
   },
+  cookMode: {
+    open: 'Mod gătit',
+        hint: 'Ai mâinile pline de făină? Apasă aici și ecranul rămâne aprins cât gătești.',
+    progress: 'Pasul {current} din {total}',
+    previous: 'Înapoi',
+    next: 'Următorul',
+    finish: 'Gata',
+    done: '🎉 Ultimul pas! Poftă bună.',
+    ingredients: 'Ingrediente',
+    backToSteps: 'Înapoi la pași',
+  },
   detail: {
     prep: '🥄 Preparare: {minutes} min',
     cook: '🔥 Gătire: {minutes} min',

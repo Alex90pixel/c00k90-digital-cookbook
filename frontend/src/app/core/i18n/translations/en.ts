@@ -113,6 +113,17 @@ export const en = {
     minutes: '⏱ {count} min',
     video: '🎬 Video',
   },
+  cookMode: {
+    open: 'Cook mode',
+        hint: 'Hands covered in flour? Click here and your screen stays on while you cook.',
+    progress: 'Step {current} of {total}',
+    previous: 'Back',
+    next: 'Next',
+    finish: 'Done',
+    done: '🎉 Last step! Enjoy your meal.',
+    ingredients: 'Ingredients',
+    backToSteps: 'Back to steps',
+  },
   detail: {
     prep: '🥄 Prep: {minutes} min',
     cook: '🔥 Cook: {minutes} min',

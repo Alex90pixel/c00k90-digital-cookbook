@@ -160,6 +160,16 @@
 
       <section>
         <h3 class="section-heading">{{ 'detail.steps' | t }}</h3>
+        @if (r.steps?.length) {
+                    <button
+            type="button"
+            class="btn-action cook-mode-btn"
+            [title]="'cookMode.hint' | t"
+            (click)="openCookMode(r)"
+          >
+            👩‍🍳 {{ 'cookMode.open' | t }}
+          </button>
+        }
         <ol class="steps-list">
           @for (step of r.steps ?? []; track $index) {
             <li class="step-item">
