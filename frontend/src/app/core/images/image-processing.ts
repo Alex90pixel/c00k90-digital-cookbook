@@ -19,6 +19,34 @@ export async function cropToSquare(file: Blob, size: number, quality: number): P
   );
 }
 
+/** A region of an image, each side as a fraction (0–1) of the image size. */
+export interface ImageRegion {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+}
+
+/** Cuts `region` out of an image and shrinks it to at most `maxSize` px, as JPEG. */
+export async function cropRegion(
+  file: Blob,
+  region: ImageRegion,
+  maxSize: number,
+  quality: number,
+): Promise<Blob> {
+  const image = await loadImage(file);
+  const x = region.left * image.width;
+  const y = region.top * image.height;
+  const w = (region.right - region.left) * image.width;
+  const h = (region.bottom - region.top) * image.height;
+  const scale = Math.min(1, maxSize / Math.max(w, h));
+  const width = Math.max(1, Math.round(w * scale));
+  const height = Math.max(1, Math.round(h * scale));
+  return draw(width, height, quality, (context) =>
+    context.drawImage(image, x, y, w, h, 0, 0, width, height),
+  );
+}
+
 function loadImage(file: Blob): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(file);
