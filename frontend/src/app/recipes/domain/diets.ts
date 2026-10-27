@@ -2,6 +2,8 @@ import { NutritionEstimate } from '../models/nutrition.model';
 import { RecipeData } from '../models/recipe.model';
 
 export const QUICK_RECIPE_MAX_MINUTES = 30;
+/** Per serving. */
+export const LOW_CALORIE_MAX = 400;
 
 export function totalMinutes(recipe: Pick<RecipeData, 'prepTime' | 'cookTime'>): number {
   return (Number(recipe.prepTime) || 0) + (Number(recipe.cookTime) || 0);
@@ -21,6 +23,7 @@ export function dietLabels(
     if (nutrition.carbs <= 20) labels.push('low-carb');
     if (nutrition.fat <= 10) labels.push('low-fat');
     if (nutrition.carbs <= 10) labels.push('keto');
+    if (nutrition.calories <= LOW_CALORIE_MAX) labels.push('low-calorie');
   }
   const minutes = totalMinutes(recipe);
   if (minutes > 0 && minutes < QUICK_RECIPE_MAX_MINUTES) labels.push('quick');

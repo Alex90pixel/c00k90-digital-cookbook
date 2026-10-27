@@ -11,6 +11,7 @@ describe('dietLabels', () => {
       'low-carb',
       'low-fat',
       'keto',
+      'low-calorie',
     ]);
     expect(dietLabels({ diets: ['vegan'] }, { ...lean, unmatched: ['water'] })).toEqual(['vegan']);
   });
