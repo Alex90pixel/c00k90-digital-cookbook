@@ -24,6 +24,39 @@ const KNOWN_UNITS = new Set([
   'sticks',
 ]);
 
+/** Unit names written out in full, mapped to the short units above: "tablespoons" → "tbsp". */
+const UNIT_ALIASES: Readonly<Record<string, string>> = {
+  tablespoon: 'tbsp',
+  tablespoons: 'tbsp',
+  teaspoon: 'tsp',
+  teaspoons: 'tsp',
+  gram: 'g',
+  grams: 'g',
+  kilogram: 'kg',
+  kilograms: 'kg',
+  ounce: 'oz',
+  ounces: 'oz',
+  pound: 'lb',
+  pounds: 'lb',
+};
+
+/** The short unit for a unit word ("Tablespoons" → "tbsp", "g" → "g"), or `null` if it isn't one. */
+export function knownUnit(word: string): string | null {
+  const lower = word.toLowerCase();
+  if (KNOWN_UNITS.has(lower)) return lower;
+  return UNIT_ALIASES[lower] ?? null;
+}
+
+/**
+ * Splits a unit off the start of an ingredient name, for lines saved before long unit names were
+ * recognized: "tablespoons olive oil" → { unit: "tbsp", name: "olive oil" }.
+ */
+export function splitLeadingUnit(name: string): { unit: string; name: string } | null {
+  const match = name.trim().match(/^([a-zA-Z]+)\s+(.+)$/);
+  const unit = match ? knownUnit(match[1]) : null;
+  return match && unit ? { unit, name: match[2] } : null;
+}
+
 /**
  * Parses a quantity like "2", "0.5", "0,5", "1/2" or "1 1/2".
  * Returns `null` when the text doesn't start with a number.
@@ -90,9 +123,12 @@ export function parseIngredientLines(text: string): Ingredient[] {
     const qty = match[1];
     let unit = match[2];
     let name = match[3];
-    if (unit && !KNOWN_UNITS.has(unit.toLowerCase())) {
+    const short = unit ? knownUnit(unit) : '';
+    if (unit && !short) {
       name = `${unit} ${name}`.trim();
       unit = '';
+    } else if (short) {
+      unit = short;
     }
     return { qty, unit, name: (name || unit).trim() };
   });

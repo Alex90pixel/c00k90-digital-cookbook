@@ -5,7 +5,7 @@ import {
   NutritionEstimate,
   NutritionPer100g,
 } from '../models/nutrition.model';
-import { parseQuantity } from './ingredients';
+import { knownUnit, parseQuantity, splitLeadingUnit } from './ingredients';
 import {
   DEFAULT_PIECE_WEIGHT,
   FALLBACK_NUTRITION,
@@ -19,6 +19,9 @@ interface AliasRule {
   pattern: RegExp;
   food: CiqualFood;
 }
+
+/** Words saying an ingredient is already cooked ("cooked rice", "orez fiert"). */
+const COOKED_WORDS = /\b(cooked|boiled|steamed|fiert|fiarta|fierte|fierti|gatit|gatita)\b/;
 
 const ROMANIAN_PIECE_RULES = Object.keys(ROMANIAN_PIECE_NAMES)
   .sort((a, b) => b.length - a.length)
@@ -74,12 +77,37 @@ export class NutritionIndex {
     if (!name) return null;
     const singular = name.replace(/(\w{3,})s\b/g, '$1');
     const alias = this.aliases.find((a) => a.pattern.test(name) || a.pattern.test(singular));
-    if (alias) return alias.food;
+    if (alias)
+      return COOKED_WORDS.test(name) ? (this.cookedVariant(alias.food) ?? alias.food) : alias.food;
     const candidates = this.foodsByMainName.get(name) ?? this.foodsByMainName.get(singular);
     if (!candidates?.length) return null;
+    if (COOKED_WORDS.test(name)) {
+      const cooked = candidates.find((food) => /\bcooked\b/i.test(food.name));
+      if (cooked) return cooked;
+    }
     return (
       candidates.find((food) => /\braw\b/i.test(food.name)) ??
       [...candidates].sort((a, b) => a.name.length - b.name.length)[0]
+    );
+  }
+
+  /**
+   * The cooked version of a raw food, when Ciqual has one: "Rice, white, raw" →
+   * "Rice, white, cooked, no added salt". Cooked rice or pasta has about a third of the calories.
+   */
+  private cookedVariant(raw: CiqualFood): CiqualFood | null {
+    const [main, ...details] = raw.name
+      .toLowerCase()
+      .split(',')
+      .map((part) => part.trim());
+    const wanted = details.filter((part) => part !== 'raw');
+    const cooked = (this.foodsByMainName.get(main) ?? []).filter((food) =>
+      /\bcooked\b/i.test(food.name),
+    );
+    return (
+      cooked.find((food) => wanted.every((part) => food.name.toLowerCase().includes(part))) ??
+      cooked[0] ??
+      null
     );
   }
 }
@@ -106,10 +134,25 @@ export function pieceWeight(name: string): number {
 export function ingredientGrams(ingredient: Ingredient, translatePieceNames = true): number {
   const qty = parseQuantity(ingredient.qty);
   if (!qty) return 0;
+  // Older lines kept the unit in the name ("2" · "" · "tablespoons honey"): read it from there.
+  const leading = ingredient.unit ? null : splitLeadingUnit(ingredient.name ?? '');
+  if (leading) return ingredientGrams({ qty: ingredient.qty, ...leading }, translatePieceNames);
   const gramsPerUnit = UNIT_TO_GRAMS[(ingredient.unit ?? '').toLowerCase()];
   if (gramsPerUnit) return qty * gramsPerUnit;
+  // A piece with its size in parentheses: "1 (6-ounce) chicken breast" is one 170 g piece.
+  const size = pieceSizeGrams(ingredient.name ?? '');
+  if (size) return qty * size;
   const name = translatePieceNames ? toEnglishPieceName(ingredient.name) : ingredient.name;
   return qty * pieceWeight(name);
+}
+
+/** The weight of one piece when the name starts with its size: "(6-ounce) chicken breast" → 170. */
+export function pieceSizeGrams(name: string): number | null {
+  const match = name.trim().match(/^\(\s*(\d+(?:[.,]\d+)?)\s*-?\s*([a-zA-Z]+)\.?\s*\)/);
+  if (!match) return null;
+  const unit = knownUnit(match[2]);
+  const grams = unit ? UNIT_TO_GRAMS[unit] : undefined;
+  return grams ? Number(match[1].replace(',', '.')) * grams : null;
 }
 
 /** Estimates nutrition per serving. Returns `null` when no ingredient could be counted. */
