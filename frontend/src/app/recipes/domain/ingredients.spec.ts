@@ -10,6 +10,8 @@ describe('parseQuantity', () => {
   it('reads whole numbers, decimals and comma decimals', () => {
     expect(parseQuantity('2')).toBe(2);
     expect(parseQuantity('0.5')).toBe(0.5);
+    expect(parseQuantity('¼')).toBe(0.25);
+    expect(parseQuantity('1½')).toBe(1.5);
     expect(parseQuantity('0,5')).toBe(0.5);
   });
 
@@ -26,10 +28,18 @@ describe('parseQuantity', () => {
 });
 
 describe('formatQuantity', () => {
-  it('keeps at most two decimals without trailing zeros', () => {
+  it('shows whole numbers and kitchen fractions', () => {
     expect(formatQuantity(2)).toBe('2');
-    expect(formatQuantity(1.5)).toBe('1.5');
-    expect(formatQuantity(1 / 3)).toBe('0.33');
+    expect(formatQuantity(1.5)).toBe('1½');
+    expect(formatQuantity(0.25)).toBe('¼');
+    expect(formatQuantity(0.125)).toBe('⅛');
+    expect(formatQuantity(1 / 3)).toBe('⅓');
+    expect(formatQuantity(2.75)).toBe('2¾');
+  });
+
+  it('keeps at most two decimals for other values', () => {
+    expect(formatQuantity(0.08)).toBe('0.08');
+    expect(formatQuantity(1.4)).toBe('1.4');
   });
 });
 
@@ -44,6 +54,10 @@ describe('scaleIngredients', () => {
       2,
     );
     expect(scaled.map((i) => i.qty)).toEqual(['400', '1', '']);
+  });
+
+  it('shows halved quantities as fractions', () => {
+    expect(scaleIngredients([{ qty: '1/2', unit: 'cup', name: 'rice' }], 0.5)[0].qty).toBe('¼');
   });
 });
 

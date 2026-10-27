@@ -30,7 +30,13 @@ const KNOWN_UNITS = new Set([
  */
 export function parseQuantity(qty: string | number | undefined): number | null {
   if (typeof qty === 'number') return Number.isFinite(qty) ? qty : null;
-  const text = (qty ?? '').trim().replace(',', '.');
+  const text = (qty ?? '')
+    .trim()
+    .replace(',', '.')
+    .replace(/(\d)?\s*([⅛¼⅓⅜½⅝⅔¾⅞])/, (_, whole: string | undefined, symbol: string) => {
+      const fraction = FRACTIONS.find(([, glyph]) => glyph === symbol);
+      return String((whole ? Number(whole) : 0) + (fraction ? fraction[0] : 0));
+    });
   const mixed = text.match(/^(\d+)\s+(\d+)\/(\d+)/);
   if (mixed) return Number(mixed[1]) + Number(mixed[2]) / Number(mixed[3]);
   const fraction = text.match(/^(\d+)\/(\d+)/);
@@ -39,8 +45,29 @@ export function parseQuantity(qty: string | number | undefined): number | null {
   return Number.isNaN(value) ? null : value;
 }
 
-/** Formats a number with at most 2 decimals and no trailing zeros: 1.50 → "1.5". */
+/** Kitchen fractions shown instead of decimals: 0.25 → ¼, 1.5 → 1½. */
+const FRACTIONS: readonly (readonly [number, string])[] = [
+  [1 / 8, '⅛'],
+  [1 / 4, '¼'],
+  [1 / 3, '⅓'],
+  [3 / 8, '⅜'],
+  [1 / 2, '½'],
+  [5 / 8, '⅝'],
+  [2 / 3, '⅔'],
+  [3 / 4, '¾'],
+  [7 / 8, '⅞'],
+];
+
+/**
+ * Formats a quantity the way recipes write it: whole numbers as they are, common kitchen
+ * fractions as ¼ ½ ⅓ … (1.5 → "1½"), anything else with at most 2 decimals and no trailing zeros.
+ */
 export function formatQuantity(value: number): string {
+  const whole = Math.floor(value + 0.01);
+  const rest = value - whole;
+  if (Math.abs(rest) < 0.01) return String(whole);
+  const fraction = FRACTIONS.find(([amount]) => Math.abs(rest - amount) < 0.01);
+  if (fraction) return whole ? `${whole}${fraction[1]}` : fraction[1];
   const rounded = Math.round(value * 100) / 100;
   return Number.isInteger(rounded)
     ? String(rounded)
