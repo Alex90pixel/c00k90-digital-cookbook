@@ -129,6 +129,17 @@ export const ro: Translations = {
     copied: '📋 Lista de cumpărături a fost copiată',
     failed: '⚠️ Nu am putut trimite lista',
   },
+  cookMode: {
+    open: 'Mod gătit',
+    hint: 'Ai mâinile pline de făină? Apasă aici și ecranul rămâne aprins cât gătești.',
+    progress: 'Pasul {current} din {total}',
+    previous: 'Înapoi',
+    next: 'Următorul',
+    finish: 'Gata',
+    done: '🎉 Ultimul pas! Poftă bună.',
+    ingredients: 'Ingrediente',
+    backToSteps: 'Înapoi la pași',
+  },
   detail: {
     printPhotoTitle: 'Poză dintr-o revistă sau carte',
     printPhotoMessage:

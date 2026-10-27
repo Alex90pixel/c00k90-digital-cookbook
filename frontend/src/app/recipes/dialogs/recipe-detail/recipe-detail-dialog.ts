@@ -20,6 +20,8 @@ import { Recipe } from '../../models/recipe.model';
 import { RecipeDialogs } from '../../recipe-dialogs.service';
 import { ShoppingListData } from '../../models/shopping-list.model';
 import { ShoppingListDialog } from '../shopping-list-dialog';
+import { CookModeData } from '../../models/cook-mode.model';
+import { CookModeDialog } from '../cook-mode-dialog';
 
 @Component({
   selector: 'app-recipe-detail-dialog',
@@ -102,6 +104,13 @@ export class RecipeDetailDialog {
     this.dialog.open<ShoppingListDialog, ShoppingListData>(ShoppingListDialog, {
       width: 'wide',
       data: { recipeName: recipe.name, servings: this.servings(), ingredients: this.ingredients() },
+    });
+  }
+
+  protected openCookMode(recipe: Recipe): void {
+    this.dialog.open<CookModeDialog, CookModeData>(CookModeDialog, {
+      width: 'detail',
+      data: { recipeName: recipe.name, steps: recipe.steps ?? [], ingredients: this.ingredients() },
     });
   }
 

@@ -123,6 +123,17 @@ export const en = {
     copied: '📋 Shopping list copied',
     failed: '⚠️ Could not share the list',
   },
+  cookMode: {
+    open: 'Cook mode',
+    hint: 'Hands covered in flour? Click here and your screen stays on while you cook.',
+    progress: 'Step {current} of {total}',
+    previous: 'Back',
+    next: 'Next',
+    finish: 'Done',
+    done: '🎉 Last step! Enjoy your meal.',
+    ingredients: 'Ingredients',
+    backToSteps: 'Back to steps',
+  },
   detail: {
     printPhotoTitle: 'Photo from a magazine or book',
     printPhotoMessage:
