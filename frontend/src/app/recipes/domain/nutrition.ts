@@ -5,7 +5,7 @@ import {
   NutritionEstimate,
   NutritionPer100g,
 } from '../models/nutrition.model';
-import { parseQuantity, splitLeadingUnit } from './ingredients';
+import { knownUnit, parseQuantity, splitLeadingUnit } from './ingredients';
 import {
   DEFAULT_PIECE_WEIGHT,
   FALLBACK_NUTRITION,
@@ -139,8 +139,20 @@ export function ingredientGrams(ingredient: Ingredient, translatePieceNames = tr
   if (leading) return ingredientGrams({ qty: ingredient.qty, ...leading }, translatePieceNames);
   const gramsPerUnit = UNIT_TO_GRAMS[(ingredient.unit ?? '').toLowerCase()];
   if (gramsPerUnit) return qty * gramsPerUnit;
+  // A piece with its size in parentheses: "1 (6-ounce) chicken breast" is one 170 g piece.
+  const size = pieceSizeGrams(ingredient.name ?? '');
+  if (size) return qty * size;
   const name = translatePieceNames ? toEnglishPieceName(ingredient.name) : ingredient.name;
   return qty * pieceWeight(name);
+}
+
+/** The weight of one piece when the name starts with its size: "(6-ounce) chicken breast" → 170. */
+export function pieceSizeGrams(name: string): number | null {
+  const match = name.trim().match(/^\(\s*(\d+(?:[.,]\d+)?)\s*-?\s*([a-zA-Z]+)\.?\s*\)/);
+  if (!match) return null;
+  const unit = knownUnit(match[2]);
+  const grams = unit ? UNIT_TO_GRAMS[unit] : undefined;
+  return grams ? Number(match[1].replace(',', '.')) * grams : null;
 }
 
 /** Estimates nutrition per serving. Returns `null` when no ingredient could be counted. */

@@ -1,5 +1,5 @@
 import { CiqualFile } from '../models/nutrition.model';
-import { NutritionIndex, estimateNutrition, ingredientGrams } from './nutrition';
+import { NutritionIndex, estimateNutrition, ingredientGrams, pieceSizeGrams } from './nutrition';
 
 const ciqual: CiqualFile = {
   source: 'test',
@@ -40,6 +40,23 @@ describe('NutritionIndex', () => {
 
   it('returns null for unknown ingredients', () => {
     expect(index.lookup('unicorn dust')).toBeNull();
+  });
+});
+
+describe('pieceSizeGrams', () => {
+  it('reads a size in parentheses at the start of the name', () => {
+    expect(pieceSizeGrams('(6-ounce) chicken breast')).toBeCloseTo(170, 0);
+    expect(pieceSizeGrams('(400 g) can tomatoes')).toBe(400);
+    expect(pieceSizeGrams('(14.5-oz.) can tomatoes')).toBeCloseTo(411, 0);
+    expect(pieceSizeGrams('chicken breast')).toBeNull();
+    expect(pieceSizeGrams('(large) egg')).toBeNull();
+  });
+
+  it('counts sized pieces by their size', () => {
+    expect(ingredientGrams({ qty: '2', unit: '', name: '(6-ounce) chicken breasts' })).toBeCloseTo(
+      340,
+      0,
+    );
   });
 });
 
