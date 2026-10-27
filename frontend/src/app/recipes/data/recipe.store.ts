@@ -48,7 +48,7 @@ export class RecipeStore {
   private readonly loadingShared = signal(false);
   private sharedLoaded = false;
 
-  /** The signed-in user's own recipes (e.g. for the printable cookbook). */
+  /** The signed-in user's own recipes (the printable cookbook, the meal planner). */
   readonly myRecipes = this.mine.asReadonly();
 
   /** All recipes shared to "Get Inspired", newest first (loaded on demand). */

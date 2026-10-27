@@ -23,6 +23,7 @@ import { ShoppingListDialog } from '../shopping-list-dialog';
 import { CookModeData } from '../../models/cook-mode.model';
 import { CookModeDialog } from '../cook-mode-dialog';
 import { AddToCollectionDialog } from '../add-to-collection-dialog';
+import { AddToPlanDialog } from '../add-to-plan-dialog';
 
 @Component({
   selector: 'app-recipe-detail-dialog',
@@ -181,5 +182,9 @@ export class RecipeDetailDialog {
 
   protected addToCollection(recipe: Recipe): void {
     this.dialog.open(AddToCollectionDialog, { width: 'small', data: recipe.id });
+  }
+
+  protected addToPlan(recipe: Recipe): void {
+    this.dialog.open(AddToPlanDialog, { width: 'small', data: recipe.id });
   }
 }

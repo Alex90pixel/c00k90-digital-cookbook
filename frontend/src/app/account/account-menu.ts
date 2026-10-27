@@ -8,6 +8,7 @@ import { FeedbackInboxDialog } from '../moderation/dialogs/feedback-inbox-dialog
 import { ReportsDialog } from '../moderation/dialogs/reports-dialog';
 import { ModerationService } from '../moderation/moderation.service';
 import { AppDialog } from '../shared/dialog/app-dialog.service';
+import { MealPlanDialog } from '../recipes/dialogs/meal-plan-dialog';
 import { ProfileDialog } from './profile/profile-dialog';
 import { SettingsDialog } from './settings/settings-dialog';
 
@@ -74,6 +75,14 @@ import { SettingsDialog } from './settings/settings-dialog';
         >
           {{ 'menu.settings' | t }}
         </button>
+        <button
+          type="button"
+          cdkMenuItem
+          class="menu-item"
+          (cdkMenuItemTriggered)="open('mealPlan')"
+        >
+          {{ 'mealPlan.menu' | t }}
+        </button>
         <hr class="dropdown-divider" />
         <button type="button" cdkMenuItem class="menu-item" (cdkMenuItemTriggered)="signOut()">
           {{ 'menu.signOut' | t }}
@@ -94,7 +103,7 @@ export class AccountMenu {
     { originX: 'end', originY: 'bottom', overlayX: 'end', overlayY: 'top', offsetY: 8 },
   ];
 
-  protected open(dialog: 'reports' | 'feedbackInbox' | 'profile' | 'settings'): void {
+  protected open(dialog: 'reports' | 'feedbackInbox' | 'profile' | 'settings' | 'mealPlan'): void {
     switch (dialog) {
       case 'reports':
         this.dialog.open(ReportsDialog, { width: 'wide' });
@@ -107,6 +116,9 @@ export class AccountMenu {
         break;
       case 'settings':
         this.dialog.open(SettingsDialog, { width: 'wide' });
+        break;
+      case 'mealPlan':
+        this.dialog.open(MealPlanDialog, { width: 'wide' });
         break;
     }
   }
