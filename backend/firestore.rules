@@ -1,0 +1,79 @@
+rules_version = '2';
+
+// Firestore security rules for C00K90. This file is the source of truth: change the rules
+// here (in a PR), then publish them with `firebase deploy --only firestore:rules` from the
+// backend folder, or paste them into Firebase Console → Firestore Database → Rules.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null && request.auth.uid == '6uZpc802wDVjgA0SAjEdtZCCJem2';
+    }
+
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // Recipes: owners manage their own; shared recipes are readable by every signed-in user.
+    // Only the admin can hide a shared recipe (hiddenByModerator), and owners can't undo it.
+    match /recipes/{recipeId} {
+      allow read: if request.auth != null && (request.auth.uid == resource.data.userId || resource.data.shared == true);
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+      allow delete: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow update: if request.auth != null && request.auth.uid == resource.data.userId
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['hiddenByModerator'])
+        && (request.resource.data.get('hiddenByModerator', false) == false || request.resource.data.get('shared', false) == false);
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['shared', 'hiddenByModerator']);
+    }
+
+    // Feedback and reports: anyone signed in can send one; only the admin reads them.
+    match /feedback/{feedbackId} {
+      allow create: if request.auth != null
+        && request.auth.uid == request.resource.data.userId
+        && request.resource.data.text is string
+        && request.resource.data.text.size() > 0
+        && request.resource.data.text.size() <= 2000;
+      allow read, delete: if isAdmin();
+      allow update: if false;
+    }
+
+    match /reports/{reportId} {
+      allow create: if request.auth != null
+        && request.resource.data.text is string
+        && request.resource.data.text.size() <= 500;
+      allow read, delete: if isAdmin();
+      allow update: if false;
+    }
+
+    // Public chef profiles: readable by everyone signed in, written only by the chef.
+    match /chefs/{userId} {
+      allow read: if request.auth != null;
+      allow write: if isOwner(userId)
+        && request.resource.data.keys().hasOnly(
+          ['displayName', 'photoUrl', 'facebook', 'instagram', 'tiktok', 'youtube', 'updatedAt']);
+      allow delete: if isOwner(userId);
+    }
+
+    // Private, one document per user (document id = the user's id).
+    match /profiles/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    match /follows/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    match /favorites/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    match /collections/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    match /mealPlans/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+  }
+}
