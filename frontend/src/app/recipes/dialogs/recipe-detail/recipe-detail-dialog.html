@@ -146,6 +146,11 @@
     <div class="detail-body">
       <section>
         <h3 class="section-heading">{{ 'detail.ingredients' | t }}</h3>
+        @if (ingredients().length) {
+          <button type="button" class="btn-action shopping-btn" (click)="openShoppingList(r)">
+            🛒 {{ 'shopping.open' | t }}
+          </button>
+        }
         <ul class="ingredients-grid">
           @for (ingredient of ingredients(); track $index) {
             <li class="ingredient-item">

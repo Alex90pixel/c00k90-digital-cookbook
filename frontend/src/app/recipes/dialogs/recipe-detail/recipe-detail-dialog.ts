@@ -18,6 +18,8 @@ import { VideoPlayer } from '../../components/video-player';
 import { DIETS, difficultyIcon } from '../../models/recipe.constants';
 import { Recipe } from '../../models/recipe.model';
 import { RecipeDialogs } from '../../recipe-dialogs.service';
+import { ShoppingListData } from '../../models/shopping-list.model';
+import { ShoppingListDialog } from '../shopping-list-dialog';
 
 @Component({
   selector: 'app-recipe-detail-dialog',
@@ -94,6 +96,13 @@ export class RecipeDetailDialog {
 
   protected close(): void {
     this.ref.close();
+  }
+
+  protected openShoppingList(recipe: Recipe): void {
+    this.dialog.open<ShoppingListDialog, ShoppingListData>(ShoppingListDialog, {
+      width: 'wide',
+      data: { recipeName: recipe.name, servings: this.servings(), ingredients: this.ingredients() },
+    });
   }
 
   protected changeServings(step: number): void {
