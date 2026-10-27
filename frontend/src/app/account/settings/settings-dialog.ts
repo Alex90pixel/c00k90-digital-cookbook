@@ -7,6 +7,7 @@ import { THEME_OPTIONS, ThemeService } from '../../core/theme/theme.service';
 import { ToastService } from '../../core/toast/toast.service';
 import { AppDialog } from '../../shared/dialog/app-dialog.service';
 import { AccountService } from '../account.service';
+import { CollectionsDialog } from '../dialogs/collections-dialog';
 import { FeedbackDialog } from '../dialogs/feedback-dialog';
 import { LanguageDialog } from '../dialogs/language-dialog';
 import { ThemeDialog } from '../dialogs/theme-dialog';
@@ -42,6 +43,10 @@ export class SettingsDialog {
 
   protected openLanguage(): void {
     this.dialog.open(LanguageDialog, { width: 'small' });
+  }
+
+  protected openCollections(): void {
+    this.dialog.open(CollectionsDialog, { width: 'medium' });
   }
 
   protected openFeedback(): void {

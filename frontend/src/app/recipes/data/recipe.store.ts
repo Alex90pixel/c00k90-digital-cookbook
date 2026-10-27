@@ -19,6 +19,7 @@ import {
   RecipeView,
 } from '../models/recipe.model';
 import { NutritionService } from './nutrition.service';
+import { CollectionsService } from './collections.service';
 import { FavoritesService } from './favorites.service';
 import { RecipePhotoService } from './recipe-photo.service';
 import { RecipeRepository, newestFirst } from './recipe.repository';
@@ -38,6 +39,7 @@ export class RecipeStore {
   private readonly profiles = inject(ProfileService);
   private readonly chefs = inject(ChefService);
   private readonly favorites = inject(FavoritesService);
+  private readonly collections = inject(CollectionsService);
 
   private readonly mine = signal<Recipe[]>([]);
   private readonly shared = signal<Recipe[]>([]);
@@ -54,6 +56,8 @@ export class RecipeStore {
   readonly category = signal<Category | 'all'>('all');
   readonly diet = signal<DietId | null>(null);
   readonly sort = signal<RecipeSort>('recent');
+  /** Shows only the recipes of one of my collections (its id). */
+  readonly collection = signal<string | null>(null);
 
   /** Favorites and Get Inspired show shared recipes; My Recipes shows the user's own. */
   readonly loading = computed(() =>
@@ -71,6 +75,8 @@ export class RecipeStore {
     if (view === 'favorites') recipes = recipes.filter((r) => this.favorites.isFavorite(r.id));
     if (category !== 'all') recipes = recipes.filter((r) => r.category === category);
     if (diet) recipes = recipes.filter((r) => this.dietLabelsOf(r).includes(diet));
+    const collection = this.collection() ? this.collections.find(this.collection()!) : null;
+    if (collection) recipes = recipes.filter((r) => collection.recipeIds.includes(r.id));
     if (query) recipes = recipes.filter((r) => matchesSearch(r, query));
     return this.sorted(recipes, this.sort());
   });
@@ -274,6 +280,7 @@ export class RecipeStore {
     this.search.set('');
     this.category.set('all');
     this.diet.set(null);
+    this.collection.set(null);
   }
 
   private sorted(recipes: Recipe[], sort: RecipeSort): Recipe[] {

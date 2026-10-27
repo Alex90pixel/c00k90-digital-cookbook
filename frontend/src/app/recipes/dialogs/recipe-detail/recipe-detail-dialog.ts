@@ -18,6 +18,7 @@ import { VideoPlayer } from '../../components/video-player';
 import { DIETS, difficultyIcon } from '../../models/recipe.constants';
 import { Recipe } from '../../models/recipe.model';
 import { RecipeDialogs } from '../../recipe-dialogs.service';
+import { AddToCollectionDialog } from '../add-to-collection-dialog';
 
 @Component({
   selector: 'app-recipe-detail-dialog',
@@ -146,5 +147,9 @@ export class RecipeDetailDialog {
         t('detail.hideFailed', { error: error instanceof Error ? error.message : String(error) }),
       );
     }
+  }
+
+  protected addToCollection(recipe: Recipe): void {
+    this.dialog.open(AddToCollectionDialog, { width: 'small', data: recipe.id });
   }
 }
