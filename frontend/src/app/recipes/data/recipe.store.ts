@@ -47,6 +47,8 @@ export class RecipeStore {
 
   /** All recipes shared to "Get Inspired", newest first (loaded on demand). */
   readonly sharedRecipes = this.shared.asReadonly();
+  /** The signed-in user's own recipes. */
+  readonly myRecipes = this.mine.asReadonly();
   readonly sharedLoading = this.loadingShared.asReadonly();
 
   readonly view = signal<RecipeView>('all');

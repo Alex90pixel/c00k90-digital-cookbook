@@ -18,6 +18,7 @@ import { VideoPlayer } from '../../components/video-player';
 import { DIETS, difficultyIcon } from '../../models/recipe.constants';
 import { Recipe } from '../../models/recipe.model';
 import { RecipeDialogs } from '../../recipe-dialogs.service';
+import { AddToPlanDialog } from '../add-to-plan-dialog';
 
 @Component({
   selector: 'app-recipe-detail-dialog',
@@ -146,5 +147,9 @@ export class RecipeDetailDialog {
         t('detail.hideFailed', { error: error instanceof Error ? error.message : String(error) }),
       );
     }
+  }
+
+  protected addToPlan(recipe: Recipe): void {
+    this.dialog.open(AddToPlanDialog, { width: 'small', data: recipe.id });
   }
 }

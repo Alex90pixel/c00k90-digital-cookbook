@@ -3,6 +3,7 @@ import { ChefService } from '../chefs/chef.service';
 import { FollowService } from '../chefs/follow.service';
 import { AuthService } from '../core/auth/auth.service';
 import { FavoritesService } from '../recipes/data/favorites.service';
+import { MealPlanService } from '../recipes/data/meal-plan.service';
 import { RecipePhotoService } from '../recipes/data/recipe-photo.service';
 import { RecipeRepository } from '../recipes/data/recipe.repository';
 import { ProfileService } from './profile/profile.service';
@@ -19,6 +20,7 @@ export class AccountService {
   private readonly chefs = inject(ChefService);
   private readonly follows = inject(FollowService);
   private readonly favorites = inject(FavoritesService);
+  private readonly mealPlan = inject(MealPlanService);
   private readonly document = inject(DOCUMENT);
 
   /** Downloads the user's profile, followed chefs, favorites and recipes as a JSON file. */
@@ -34,6 +36,7 @@ export class AccountService {
       profile,
       followedChefIds: this.follows.followed(),
       favoriteRecipeIds: this.favorites.recipeIds(),
+      mealPlan: this.mealPlan.days(),
       recipes,
     };
     const url = URL.createObjectURL(
@@ -64,6 +67,7 @@ export class AccountService {
     await this.chefs.unpublish(userId);
     await this.follows.delete(userId);
     await this.favorites.delete(userId);
+    await this.mealPlan.delete(userId);
     await this.repository.deleteAllByOwner(userId);
     await this.auth.deleteAccount();
   }
