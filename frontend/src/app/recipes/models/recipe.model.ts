@@ -6,7 +6,7 @@ export type Difficulty = 'Easy' | 'Medium' | 'Hard';
 /** Diet labels the author picks in the form. */
 export type ManualDietId = 'vegetarian' | 'vegan' | 'gluten-free' | 'dairy-free' | 'kid-friendly';
 /** Diet labels the app adds by itself (from total time and the nutrition estimate). */
-export type AutoDietId = 'quick' | 'high-protein' | 'low-carb' | 'low-fat' | 'keto';
+export type AutoDietId = 'quick' | 'high-protein' | 'low-carb' | 'low-fat' | 'keto' | 'low-calorie';
 export type DietId = ManualDietId | AutoDietId;
 
 export interface Ingredient {
@@ -68,4 +68,4 @@ export interface Recipe extends RecipeData {
 }
 
 export type RecipeView = 'all' | 'favorites' | 'inspired';
-export type RecipeSort = 'recent' | 'alpha' | 'time' | 'protein' | 'kcal';
+export type RecipeSort = 'recent' | 'alpha' | 'time';

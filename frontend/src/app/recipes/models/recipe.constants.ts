@@ -41,6 +41,7 @@ export const DIETS: readonly DietOption[] = [
   { id: 'low-carb', manual: false },
   { id: 'low-fat', manual: false },
   { id: 'keto', manual: false },
+  { id: 'low-calorie', manual: false },
 ];
 
 /** The diets the author can tick in the recipe form. */
@@ -71,8 +72,6 @@ export const SORT_OPTIONS: readonly { id: RecipeSort; labelKey: TranslationKey }
   { id: 'recent', labelKey: 'sort.recent' },
   { id: 'alpha', labelKey: 'sort.alpha' },
   { id: 'time', labelKey: 'sort.time' },
-  { id: 'protein', labelKey: 'sort.protein' },
-  { id: 'kcal', labelKey: 'sort.kcal' },
 ];
 
 export const MAX_PHOTOS_PER_RECIPE = 3;

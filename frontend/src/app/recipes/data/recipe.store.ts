@@ -5,6 +5,7 @@ import { AuthService } from '../../core/auth/auth.service';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { ToastService } from '../../core/toast/toast.service';
 import { dietLabels, totalMinutes } from '../domain/diets';
+import { TimeLimit, ingredientTerms, matchesIngredients, withinTime } from '../domain/filters';
 import { formToRecipeData } from '../domain/recipe-form';
 import { recipeStoragePaths } from '../domain/recipe-images';
 import { matchesSearch } from '../domain/search';
@@ -61,6 +62,18 @@ export class RecipeStore {
   readonly sort = signal<RecipeSort>('recent');
   /** Shows only the recipes of one of my collections (its id). */
   readonly collection = signal<string | null>(null);
+  /** "More filters": ingredients the recipe must have / must not have, as typed. */
+  readonly withIngredients = signal('');
+  readonly withoutIngredients = signal('');
+  /** Only recipes ready within this many minutes. */
+  readonly timeLimit = signal<TimeLimit | null>(null);
+  /** How many of the "More filters" are in use, for the badge on the button. */
+  readonly moreFiltersCount = computed(
+    () =>
+      [this.withIngredients().trim(), this.withoutIngredients().trim(), this.timeLimit()].filter(
+        Boolean,
+      ).length,
+  );
 
   /** Favorites and Get Inspired show shared recipes; My Recipes shows the user's own. */
   readonly loading = computed(() =>
@@ -80,6 +93,13 @@ export class RecipeStore {
     if (diet) recipes = recipes.filter((r) => this.dietLabelsOf(r).includes(diet));
     const collection = this.collection() ? this.collections.find(this.collection()!) : null;
     if (collection) recipes = recipes.filter((r) => collection.recipeIds.includes(r.id));
+    const withTerms = ingredientTerms(this.withIngredients());
+    const withoutTerms = ingredientTerms(this.withoutIngredients());
+    if (withTerms.length || withoutTerms.length) {
+      recipes = recipes.filter((r) => matchesIngredients(r, withTerms, withoutTerms));
+    }
+    const limit = this.timeLimit();
+    if (limit) recipes = recipes.filter((r) => withinTime(r, limit));
     if (query) recipes = recipes.filter((r) => matchesSearch(r, query));
     return this.sorted(recipes, this.sort());
   });
@@ -136,6 +156,13 @@ export class RecipeStore {
 
   isFavorite(recipe: Recipe): boolean {
     return this.favorites.isFavorite(recipe.id);
+  }
+
+  /** Empties the "More filters" (ingredients and time limit). */
+  clearMoreFilters(): void {
+    this.withIngredients.set('');
+    this.withoutIngredients.set('');
+    this.timeLimit.set(null);
   }
 
   /** Saves or removes another cook's recipe from the user's favorites (own recipes can't be). */
@@ -285,6 +312,7 @@ export class RecipeStore {
     this.category.set('all');
     this.diet.set(null);
     this.collection.set(null);
+    this.clearMoreFilters();
   }
 
   private sorted(recipes: Recipe[], sort: RecipeSort): Recipe[] {
@@ -294,17 +322,6 @@ export class RecipeStore {
         return list.sort((a, b) => a.name.localeCompare(b.name));
       case 'time':
         return list.sort((a, b) => totalMinutes(a) - totalMinutes(b));
-      case 'protein': {
-        const protein = (r: Recipe) =>
-          this.nutrition.estimate(r.ingredients, r.servings)?.protein ?? -1;
-        return list.sort((a, b) => protein(b) - protein(a));
-      }
-      case 'kcal': {
-        // Recipes without an estimate go last.
-        const kcal = (r: Recipe) =>
-          this.nutrition.estimate(r.ingredients, r.servings)?.calories ?? Number.MAX_VALUE;
-        return list.sort((a, b) => kcal(a) - kcal(b));
-      }
       default:
         return list.sort(newestFirst);
     }
