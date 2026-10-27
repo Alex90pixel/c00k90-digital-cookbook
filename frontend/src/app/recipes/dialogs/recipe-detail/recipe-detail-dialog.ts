@@ -22,6 +22,7 @@ import { ShoppingListData } from '../../models/shopping-list.model';
 import { ShoppingListDialog } from '../shopping-list-dialog';
 import { CookModeData } from '../../models/cook-mode.model';
 import { CookModeDialog } from '../cook-mode-dialog';
+import { AddToCollectionDialog } from '../add-to-collection-dialog';
 
 @Component({
   selector: 'app-recipe-detail-dialog',
@@ -176,5 +177,9 @@ export class RecipeDetailDialog {
         t('detail.hideFailed', { error: error instanceof Error ? error.message : String(error) }),
       );
     }
+  }
+
+  protected addToCollection(recipe: Recipe): void {
+    this.dialog.open(AddToCollectionDialog, { width: 'small', data: recipe.id });
   }
 }

@@ -35,6 +35,16 @@
         </button>
       </li>
       <li>
+        <button type="button" class="settings-row" (click)="openCollections()">
+          <span class="row-icon" aria-hidden="true">📁</span>
+          <span class="row-text">
+            <span class="row-title">{{ 'collections.title' | t }}</span>
+            <span class="row-desc">{{ 'collections.settingsDescription' | t }}</span>
+          </span>
+          <span class="row-chevron" aria-hidden="true">›</span>
+        </button>
+      </li>
+      <li>
         <button type="button" class="settings-row" (click)="openFeedback()">
           <span class="row-icon" aria-hidden="true">💬</span>
           <span class="row-text">

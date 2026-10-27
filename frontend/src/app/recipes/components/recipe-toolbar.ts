@@ -1,6 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
+import { CollectionsService } from '../data/collections.service';
 import { RecipeStore } from '../data/recipe.store';
 import { CATEGORIES, DIETS, SORT_OPTIONS } from '../models/recipe.constants';
 import { Category, DietId, RecipeSort } from '../models/recipe.model';
@@ -12,6 +13,16 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
   template: `
     <div class="sort-row">
       <div class="filter-selects">
+        @if (collections.lists().length) {
+          <select [attr.aria-label]="'collections.label' | t" (change)="setCollection($event)">
+            <option value="" [selected]="!store.collection()">{{ 'collections.all' | t }}</option>
+            @for (list of collections.lists(); track list.id) {
+              <option [value]="list.id" [selected]="store.collection() === list.id">
+                📁 {{ list.name }}
+              </option>
+            }
+          </select>
+        }
         <select [attr.aria-label]="'categories.label' | t" (change)="setCategory($event)">
           <option value="all" [selected]="store.category() === 'all'">
             {{ 'categories.all' | t }}
@@ -35,6 +46,7 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
             </option>
           }
         </select>
+
         <select [attr.aria-label]="'sort.label' | t" (change)="setSort($event)">
           @for (s of sortOptions; track s.id) {
             <option [value]="s.id" [selected]="store.sort() === s.id">{{ s.labelKey | t }}</option>
@@ -83,6 +95,7 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
 })
 export class RecipeToolbar {
   protected readonly store = inject(RecipeStore);
+  protected readonly collections = inject(CollectionsService);
   protected readonly i18n = inject(I18nService);
   protected readonly categories = CATEGORIES;
   protected readonly diets = DIETS;
@@ -95,6 +108,10 @@ export class RecipeToolbar {
 
   protected setDiet(event: Event): void {
     this.store.diet.set((selectValue(event) as DietId) || null);
+  }
+
+  protected setCollection(event: Event): void {
+    this.store.collection.set(selectValue(event) || null);
   }
 
   protected setSort(event: Event): void {
