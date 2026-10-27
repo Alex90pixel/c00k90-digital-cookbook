@@ -104,8 +104,20 @@ export class RecipeDetailDialog {
     void this.store.toggleFavorite(recipe);
   }
 
-  protected toggleShared(recipe: Recipe): void {
-    void this.store.toggleShared(recipe);
+  protected async toggleShared(recipe: Recipe): Promise<void> {
+    // Photos cut out of a magazine or book are not ours to publish: ask before sharing.
+    if (!recipe.shared && recipeImages(recipe).some((image) => image.fromPrint)) {
+      const t = this.i18n.t;
+      const shareAnyway = await this.dialog.confirm({
+        icon: '📰',
+        title: t('detail.printPhotoTitle'),
+        message: t('detail.printPhotoMessage'),
+        cancelLabel: t('detail.printPhotoKeep'),
+        confirmLabel: t('detail.printPhotoShare'),
+      });
+      if (!shareAnyway) return;
+    }
+    await this.store.toggleShared(recipe);
   }
 
   protected edit(recipe: Recipe): void {

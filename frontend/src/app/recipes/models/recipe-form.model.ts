@@ -24,4 +24,6 @@ export interface FormPhoto {
   previewUrl: string;
   image?: RecipeImage;
   file?: Blob;
+  /** Cut out of a printed page by the notebook transcription. */
+  fromPrint?: boolean;
 }

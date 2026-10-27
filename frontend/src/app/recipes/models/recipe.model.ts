@@ -20,6 +20,8 @@ export interface RecipeImage {
   path: string;
   thumbUrl?: string;
   thumbPath?: string;
+  /** Cut out of a printed page (magazine, book) by the notebook transcription. */
+  fromPrint?: boolean;
 }
 
 /**

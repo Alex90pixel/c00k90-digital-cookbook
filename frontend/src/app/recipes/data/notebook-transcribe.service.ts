@@ -9,7 +9,10 @@ Transcribe it faithfully, in the same language it is written in. Do not translat
 Return the recipe title (empty string if there is none), the ingredients (one per item, with quantity and unit as written)
 and the preparation steps (one per item, in order). If a word is unreadable, write your best guess followed by "(?)".
 If the page also shows a photo of the finished dish, return its bounding box as dishPhotoBox: [ymin, xmin, ymax, xmax],
-normalized to 0-1000. Leave dishPhotoBox out if there is no such photo (handwriting, drawings or text only).`;
+normalized to 0-1000. Leave dishPhotoBox out if there is no such photo (handwriting, drawings or text only).
+If the page shows where it comes from (magazine or book title, issue, website), return it as source; otherwise leave source out.
+If the page states the number of servings ("Serves 4", "4 portii"), the preparation time or the cooking time, return them as
+servings, prepMinutes and cookMinutes (whole numbers, times in minutes). Leave out any that are not written on the page.`;
 
 /** Name of the second Firebase app, connected to the free `c00k90-ai` project. */
 const AI_APP_NAME = 'ai';
@@ -39,9 +42,13 @@ export class NotebookTranscribeService {
             name: Schema.string(),
             ingredients: Schema.array({ items: Schema.string() }),
             steps: Schema.array({ items: Schema.string() }),
+            source: Schema.string(),
+            servings: Schema.integer(),
+            prepMinutes: Schema.integer(),
+            cookMinutes: Schema.integer(),
             dishPhotoBox: Schema.array({ items: Schema.number() }),
           },
-          optionalProperties: ['dishPhotoBox'],
+          optionalProperties: ['source', 'servings', 'prepMinutes', 'cookMinutes', 'dishPhotoBox'],
         }),
       },
     });
@@ -56,8 +63,12 @@ export class NotebookTranscribeService {
     const parsed = JSON.parse(result.response.text()) as TranscriptionAnswer;
     return {
       name: (parsed.name ?? '').trim(),
-      ingredients: (parsed.ingredients ?? []).map((line) => line.trim()).filter(Boolean),
+      ingredients: (parsed.ingredients ?? []).map(normalizeIngredientLine).filter(Boolean),
       steps: (parsed.steps ?? []).map((line) => line.trim()).filter(Boolean),
+      source: (parsed.source ?? '').trim(),
+      servings: wholeNumber(parsed.servings, 1),
+      prepTime: wholeNumber(parsed.prepMinutes, 0),
+      cookTime: wholeNumber(parsed.cookMinutes, 0),
       dishPhoto: toRegion(parsed.dishPhotoBox),
     };
   }
@@ -79,6 +90,66 @@ async function connectAiApp(): Promise<FirebaseApp> {
     isTokenAutoRefreshEnabled: true,
   });
   return app;
+}
+
+const UNICODE_FRACTIONS: Record<string, string> = {
+  '½': '1/2',
+  '⅓': '1/3',
+  '⅔': '2/3',
+  '¼': '1/4',
+  '¾': '3/4',
+  '⅕': '1/5',
+  '⅙': '1/6',
+  '⅛': '1/8',
+  '⅜': '3/8',
+  '⅝': '5/8',
+  '⅞': '7/8',
+};
+
+/** Long unit names written on printed pages, shortened to the units the app recognizes. */
+const UNIT_ALIASES: Record<string, string> = {
+  tablespoon: 'tbsp',
+  tablespoons: 'tbsp',
+  teaspoon: 'tsp',
+  teaspoons: 'tsp',
+  gram: 'g',
+  grams: 'g',
+  kilogram: 'kg',
+  kilograms: 'kg',
+  ounce: 'oz',
+  ounces: 'oz',
+  pound: 'lb',
+  pounds: 'lb',
+};
+
+/**
+ * Makes a printed ingredient line easy for the app to read: "¼ cup onion" → "1/4 cup onion",
+ * "1½ cups rice" or "1 1/2 cups rice" → "1.5 cups rice", "2 tablespoons honey" → "2 tbsp honey".
+ */
+export function normalizeIngredientLine(line: string): string {
+  let text = line.trim();
+  for (const [symbol, fraction] of Object.entries(UNICODE_FRACTIONS)) {
+    text = text.replace(new RegExp(`(\\d)?\\s*${symbol}`, 'g'), (_, whole) =>
+      whole ? `${whole} ${fraction}` : fraction,
+    );
+  }
+  // A whole number plus a fraction ("1 1/2") becomes a decimal, which the ingredient parser reads.
+  text = text.replace(/^(\d+)\s+(\d+)\/(\d+)/, (match, whole, num, den) =>
+    Number(den)
+      ? String(Math.round((Number(whole) + Number(num) / Number(den)) * 100) / 100)
+      : match,
+  );
+  return text.replace(/^([\d./]+)\s+([a-zA-Z]+)\b/, (match, qty, unit) => {
+    const short = UNIT_ALIASES[unit.toLowerCase()];
+    return short ? `${qty} ${short}` : match;
+  });
+}
+
+/** A sensible whole number read from the page, or undefined (missing, odd or out of range). */
+export function wholeNumber(value: number | undefined, min: number): number | undefined {
+  if (typeof value !== 'number' || !Number.isFinite(value)) return undefined;
+  const rounded = Math.round(value);
+  return rounded >= min && rounded <= 1000 ? rounded : undefined;
 }
 
 /** Turns Gemini's 0–1000 box into fractions; ignores boxes that are missing, odd or tiny. */
