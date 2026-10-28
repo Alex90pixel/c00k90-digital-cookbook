@@ -18,6 +18,9 @@ export const environment = {
   importFunctionUrl:
     'https://us-central1-a-pinch-of-everything-e7101.cloudfunctions.net/getRecipeMetadata',
 
-  /** The moderator account: sees reports and the feedback inbox. */
-  adminUid: 'YNeChEaSuUYQMKxsuiJfA4CKp9J2',
+    /**
+   * The moderator accounts (Alexandra, Adrian): they see reports and the feedback inbox. Keep in
+   * sync with isAdmin() in backend/firestore.rules.
+   */
+  adminUids: ['YNeChEaSuUYQMKxsuiJfA4CKp9J2', 'E5UJm2sOUSRBDaeB5fEb47wRyva2'] as readonly string[],
 } as const;

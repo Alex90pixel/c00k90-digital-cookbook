@@ -5,15 +5,7 @@ rules_version = '2';
 // backend folder, or paste them into Firebase Console → Firestore Database → Rules.
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    function isAdmin() {
-      return request.auth != null && request.auth.uid == 'YNeChEaSuUYQMKxsuiJfA4CKp9J2';
-    }
-
-    function isOwner(userId) {
-      return request.auth != null && request.auth.uid == userId;
-    }
-
+git status
     // Recipes: owners manage their own; shared recipes are readable by every signed-in user.
     // Only the admin can hide a shared recipe (hiddenByModerator), and owners can't undo it.
     match /recipes/{recipeId} {
