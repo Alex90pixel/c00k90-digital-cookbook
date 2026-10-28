@@ -35,16 +35,6 @@
         </button>
       </li>
       <li>
-        <button type="button" class="settings-row" (click)="openCollections()">
-          <span class="row-icon" aria-hidden="true">📁</span>
-          <span class="row-text">
-            <span class="row-title">{{ 'collections.title' | t }}</span>
-            <span class="row-desc">{{ 'collections.settingsDescription' | t }}</span>
-          </span>
-          <span class="row-chevron" aria-hidden="true">›</span>
-        </button>
-      </li>
-      <li>
         <button type="button" class="settings-row" (click)="openFeedback()">
           <span class="row-icon" aria-hidden="true">💬</span>
           <span class="row-text">
@@ -58,16 +48,6 @@
 
     <h3 class="section-heading">{{ 'settings.data' | t }}</h3>
     <ul class="settings-list">
-      <li>
-        <button type="button" class="settings-row" (click)="openCookbook()">
-          <span class="row-icon" aria-hidden="true">📖</span>
-          <span class="row-text">
-            <span class="row-title">{{ 'cookbook.title' | t }}</span>
-            <span class="row-desc">{{ 'cookbook.description' | t }}</span>
-          </span>
-          <span class="row-chevron" aria-hidden="true">›</span>
-        </button>
-      </li>
       <li>
         <button type="button" class="settings-row" [disabled]="exporting()" (click)="exportData()">
           <span class="row-icon" aria-hidden="true">📦</span>

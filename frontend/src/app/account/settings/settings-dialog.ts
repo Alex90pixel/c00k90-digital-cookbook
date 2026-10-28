@@ -6,9 +6,7 @@ import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { THEME_OPTIONS, ThemeService } from '../../core/theme/theme.service';
 import { ToastService } from '../../core/toast/toast.service';
 import { AppDialog } from '../../shared/dialog/app-dialog.service';
-import { CookbookExportDialog } from '../../recipes/dialogs/cookbook-export-dialog';
 import { AccountService } from '../account.service';
-import { CollectionsDialog } from '../dialogs/collections-dialog';
 import { FeedbackDialog } from '../dialogs/feedback-dialog';
 import { LanguageDialog } from '../dialogs/language-dialog';
 import { ThemeDialog } from '../dialogs/theme-dialog';
@@ -44,14 +42,6 @@ export class SettingsDialog {
 
   protected openLanguage(): void {
     this.dialog.open(LanguageDialog, { width: 'small' });
-  }
-
-  protected openCookbook(): void {
-    this.dialog.open(CookbookExportDialog, { width: 'wide' });
-  }
-
-  protected openCollections(): void {
-    this.dialog.open(CollectionsDialog, { width: 'medium' });
   }
 
   protected openFeedback(): void {

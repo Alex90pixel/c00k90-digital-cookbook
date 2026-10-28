@@ -9,10 +9,15 @@ import { ReportsDialog } from '../moderation/dialogs/reports-dialog';
 import { ModerationService } from '../moderation/moderation.service';
 import { AppDialog } from '../shared/dialog/app-dialog.service';
 import { MealPlanDialog } from '../recipes/dialogs/meal-plan-dialog';
+import { CookbookExportDialog } from '../recipes/dialogs/cookbook-export-dialog';
+import { CollectionsDialog } from './dialogs/collections-dialog';
 import { ProfileDialog } from './profile/profile-dialog';
 import { SettingsDialog } from './settings/settings-dialog';
 
-/** Avatar button with the account menu (and, for the moderator, the inboxes). */
+/**
+ * Avatar button with the account menu: the moderator's inboxes, then the kitchen tools (meal
+ * plan, collections, printable cookbook), then the account (profile, settings, sign out).
+ */
 @Component({
   selector: 'app-account-menu',
   imports: [CdkMenuTrigger, CdkMenu, CdkMenuItem, TranslatePipe],
@@ -63,6 +68,31 @@ import { SettingsDialog } from './settings/settings-dialog';
           type="button"
           cdkMenuItem
           class="menu-item"
+          (cdkMenuItemTriggered)="open('mealPlan')"
+        >
+          {{ 'mealPlan.menu' | t }}
+        </button>
+        <button
+          type="button"
+          cdkMenuItem
+          class="menu-item"
+          (cdkMenuItemTriggered)="open('collections')"
+        >
+          {{ 'menu.collections' | t }}
+        </button>
+        <button
+          type="button"
+          cdkMenuItem
+          class="menu-item"
+          (cdkMenuItemTriggered)="open('cookbook')"
+        >
+          {{ 'menu.cookbook' | t }}
+        </button>
+        <hr class="dropdown-divider" />
+        <button
+          type="button"
+          cdkMenuItem
+          class="menu-item"
           (cdkMenuItemTriggered)="open('profile')"
         >
           {{ 'menu.profile' | t }}
@@ -74,14 +104,6 @@ import { SettingsDialog } from './settings/settings-dialog';
           (cdkMenuItemTriggered)="open('settings')"
         >
           {{ 'menu.settings' | t }}
-        </button>
-        <button
-          type="button"
-          cdkMenuItem
-          class="menu-item"
-          (cdkMenuItemTriggered)="open('mealPlan')"
-        >
-          {{ 'mealPlan.menu' | t }}
         </button>
         <hr class="dropdown-divider" />
         <button type="button" cdkMenuItem class="menu-item" (cdkMenuItemTriggered)="signOut()">
@@ -103,7 +125,16 @@ export class AccountMenu {
     { originX: 'end', originY: 'bottom', overlayX: 'end', overlayY: 'top', offsetY: 8 },
   ];
 
-  protected open(dialog: 'reports' | 'feedbackInbox' | 'profile' | 'settings' | 'mealPlan'): void {
+  protected open(
+    dialog:
+      | 'reports'
+      | 'feedbackInbox'
+      | 'profile'
+      | 'settings'
+      | 'mealPlan'
+      | 'collections'
+      | 'cookbook',
+  ): void {
     switch (dialog) {
       case 'reports':
         this.dialog.open(ReportsDialog, { width: 'wide' });
@@ -119,6 +150,12 @@ export class AccountMenu {
         break;
       case 'mealPlan':
         this.dialog.open(MealPlanDialog, { width: 'wide' });
+        break;
+      case 'collections':
+        this.dialog.open(CollectionsDialog, { width: 'medium' });
+        break;
+      case 'cookbook':
+        this.dialog.open(CookbookExportDialog, { width: 'wide' });
         break;
     }
   }
