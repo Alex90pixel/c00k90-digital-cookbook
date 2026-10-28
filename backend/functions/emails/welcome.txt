@@ -1,20 +1,25 @@
-Salut{{name}}!
+Salut{{name}}, bucătăria e a ta!
 
-Bine ai venit în C00K90, cartea ta de bucate digitală. Contul tău e gata. Iată ce poți face de acum:
+Din poză în rețetă, din rețetă în farfurie. Cum funcționează C00K90:
 
-- Salvează-ți rețetele: toate rețetele tale într-un singur loc, mereu la îndemână.
-- Transcrie caietul de rețete: fă o poză unei pagini scrise de mână și o transformăm într-o rețetă digitală.
-- Importă din YouTube și TikTok: lipește linkul unui video și păstrează rețeta.
-- Urmărește bucătari: descoperă rețete noi și inspirație de la alți pasionați de gătit.
+1. Adaugă: fotografiezi pagina din caiet sau revistă și rețeta apare singură.
+2. Organizează: grupează rețetele cum vrei și găsește ce poți găti cu ce ai.
+3. Planifică: rețete pe zile, plus lista de cumpărături pentru toată săptămâna.
+4. Gătește: un pas pe ecran, iar telefonul nu se stinge.
+5. Păstrează: toate rețetele într-o carte de bucate PDF, în stilul tău.
+6. Inspiră-te: descoperă rețete noi și salvează-le la Favorite.
+7. Fă-te cunoscut: adaugă Instagram, TikTok sau YouTube ca să te urmărească alții.
 
-Începe să gătești: https://cookbook.antdevlabs.com
+Primul tău pas: ai un caiet vechi de rețete prin casă? Fă poze paginilor preferate și le ai pe toate în telefon.
+
+Deschide C00K90: https://cookbook.antdevlabs.com
 
 Poftă bună!
 Echipa C00K90
 
 ---
 
-Hi{{name}}! Welcome to C00K90, your digital cookbook. Your account is ready: save your recipes, turn a photo of a handwritten notebook page into a recipe, import recipes from YouTube and TikTok, and follow other cooks.
+Hi{{name}}! Welcome to C00K90: snap a recipe, plan your week, cook step by step and share with other cooks.
 
 Start cooking: https://cookbook.antdevlabs.com
 

@@ -6,105 +6,191 @@
     <meta name="color-scheme" content="light" />
     <meta name="supported-color-schemes" content="light" />
     <title>Bine ai venit în C00K90</title>
+    <!-- The app's fonts. Gmail ignores web fonts and falls back to Trebuchet / Arial. -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Caveat:wght@700&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet" />
+    <style>
+      @media only screen and (max-width: 520px) {
+        .px { padding-left: 22px !important; padding-right: 22px !important; }
+        .hero-title { font-size: 32px !important; }
+        .stat { display: block !important; width: 100% !important; padding: 10px 6px !important; }
+      }
+    </style>
   </head>
-  <body style="margin:0; padding:0; background-color:#eef2ef;">
+  <body style="margin:0;padding:0;background-color:#f8f1de;">
     <!-- Preheader: the preview line shown next to the subject in the inbox. -->
-    <div style="display:none; max-height:0; overflow:hidden; opacity:0;">
-      Contul tău e gata. Salvează rețete, transcrie caietul de rețete și importă din YouTube sau TikTok.
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;">
+      Contul tău e gata. Din poză în rețetă, din rețetă în plan, din plan în farfurie.
     </div>
 
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#eef2ef;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f8f1de;">
       <tr>
-        <td align="center" style="padding:32px 16px;">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px; background-color:#ffffff; border-radius:16px; overflow:hidden; font-family:Arial, Helvetica, sans-serif;">
+        <td align="center" style="padding:28px 12px 36px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#ffffff;border-radius:28px;overflow:hidden;">
 
-            <!-- Header -->
+            <!-- Hero -->
             <tr>
-              <td align="center" style="background-color:#081716; padding:32px 24px 28px;">
-                <img src="https://cookbook.antdevlabs.com/icons/icon-192.png" width="64" height="64" alt="" style="display:block; border:0; border-radius:14px;" />
-                <div style="margin-top:14px; font-size:26px; font-weight:bold; letter-spacing:2px; color:#c2d67a;">C00K90</div>
-                <div style="margin-top:6px; font-size:14px; color:#8a9a92;">Gătit cu drag, rețetă cu rețetă.</div>
+              <td class="px" align="center" style="padding:30px 36px 34px;background:#2f6f63;">
+                <div style="font-family:'Fredoka','Trebuchet MS',Arial,sans-serif;font-size:30px;line-height:1;font-weight:600;letter-spacing:2px;color:#f3c33c;">C00K90</div>
+                <h1 class="hero-title" style="font-family:'Fredoka','Trebuchet MS',Arial,sans-serif;margin:22px 0 4px;font-size:36px;line-height:1.15;font-weight:600;color:#fffaf0;">Salut{{name}}!</h1>
+                <div style="font-family:'Caveat','Comic Sans MS',cursive;font-size:34px;line-height:1.1;font-weight:700;color:#f3c33c;">bucătăria e a ta</div>
+                <p style="font-family:'DM Sans',Arial,Helvetica,sans-serif;margin:12px 0 22px;font-size:15px;line-height:1.5;color:#e3efe9;">Contul tău e gata. Rețetele te așteaptă în aplicație.</p>
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+                  <td align="center" style="background-color:#f3c33c;border-radius:16px;box-shadow:0 4px 0 #c99a1f;">
+                    <a href="https://cookbook.antdevlabs.com" style="font-family:'Fredoka','Trebuchet MS',Arial,sans-serif;display:inline-block;padding:16px 34px;font-size:19px;font-weight:600;color:#1f3f39;text-decoration:none;">👉 Intră în aplicație</a>
+                  </td>
+                </tr></table>
+                <div style="font-family:'DM Sans',Arial,Helvetica,sans-serif;margin-top:10px;font-size:12px;color:#bcd6cd;">Apasă butonul și te duce direct în C00K90</div>
               </td>
             </tr>
 
-            <!-- Romanian -->
+            <!-- Timeline -->
             <tr>
-              <td style="padding:32px 32px 8px; color:#1d2b27;">
-                <h1 style="margin:0 0 12px; font-size:24px; line-height:1.3; color:#081716;">Salut{{name}}! 👋</h1>
-                <p style="margin:0 0 24px; font-size:16px; line-height:1.6; color:#3d4d47;">
-                  Bine ai venit în <strong>C00K90</strong>, cartea ta de bucate digitală. Contul tău e gata. Iată ce poți face de acum:
-                </p>
-
+              <td class="px" style="padding:38px 40px 10px;">
+                <div style="font-family:'Fredoka','Trebuchet MS',Arial,sans-serif;font-size:26px;line-height:1.2;font-weight:600;color:#1f3f39;">Cum funcționează</div>
+                <div style="margin:0 0 24px;"></div>
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                  <tr>
-                    <td width="44" valign="top" style="font-size:24px; padding:0 0 18px;">📖</td>
-                    <td valign="top" style="padding:0 0 18px; font-size:15px; line-height:1.5; color:#3d4d47;">
-                      <strong style="color:#081716;">Salvează-ți rețetele</strong><br />
-                      Toate rețetele tale într-un singur loc, mereu la îndemână.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td width="44" valign="top" style="font-size:24px; padding:0 0 18px;">📷</td>
-                    <td valign="top" style="padding:0 0 18px; font-size:15px; line-height:1.5; color:#3d4d47;">
-                      <strong style="color:#081716;">Transcrie caietul de rețete</strong><br />
-                      Fă o poză unei pagini scrise de mână și o transformăm într-o rețetă digitală.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td width="44" valign="top" style="font-size:24px; padding:0 0 18px;">🎬</td>
-                    <td valign="top" style="padding:0 0 18px; font-size:15px; line-height:1.5; color:#3d4d47;">
-                      <strong style="color:#081716;">Importă din YouTube și TikTok</strong><br />
-                      Lipește linkul unui video și păstrează rețeta.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td width="44" valign="top" style="font-size:24px; padding:0 0 18px;">👨‍🍳</td>
-                    <td valign="top" style="padding:0 0 18px; font-size:15px; line-height:1.5; color:#3d4d47;">
-                      <strong style="color:#081716;">Urmărește bucătari</strong><br />
-                      Descoperă rețete noi și inspirație de la alți pasionați de gătit.
-                    </td>
-                  </tr>
+<tr>
+  <td width="64" valign="top" align="center" style="padding:0;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td align="center" valign="middle" width="52" height="52" style="width:52px;height:52px;border-radius:16px;background:#2f6f63;font-size:24px;line-height:52px;">📷</td>
+    </tr></table>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" height="100%"><tr><td style="border-left:2px dashed #f3c33c;height:58px;width:1px;font-size:0;line-height:0;">&nbsp;</td></tr></table>
+  </td>
+  <td valign="top" style="padding:2px 0 22px 14px;">
+    <div style="font-family:'DM Sans',Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#d9472b;">01 · Adaugă</div>
+    <div style="font-family:'Fredoka','Trebuchet MS',Arial,sans-serif;margin-top:2px;font-size:21px;line-height:1.2;font-weight:600;color:#1f3f39;">Poză → rețetă</div>
+    <div style="font-family:'DM Sans',Arial,Helvetica,sans-serif;margin-top:6px;font-size:15px;line-height:1.55;color:#5f6f68;">Fotografiezi pagina din caiet sau revistă și rețeta apare singură.</div>
+  </td>
+</tr>
+<tr>
+  <td width="64" valign="top" align="center" style="padding:0;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td align="center" valign="middle" width="52" height="52" style="width:52px;height:52px;border-radius:16px;background:#2f6f63;font-size:24px;line-height:52px;">📁</td>
+    </tr></table>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" height="100%"><tr><td style="border-left:2px dashed #f3c33c;height:58px;width:1px;font-size:0;line-height:0;">&nbsp;</td></tr></table>
+  </td>
+  <td valign="top" style="padding:2px 0 22px 14px;">
+    <div style="font-family:'DM Sans',Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#d9472b;">02 · Organizează</div>
+    <div style="font-family:'Fredoka','Trebuchet MS',Arial,sans-serif;margin-top:2px;font-size:21px;line-height:1.2;font-weight:600;color:#1f3f39;">Colecții și filtre</div>
+    <div style="font-family:'DM Sans',Arial,Helvetica,sans-serif;margin-top:6px;font-size:15px;line-height:1.55;color:#5f6f68;">Grupează rețetele cum vrei și găsește ce poți găti cu ce ai.</div>
+  </td>
+</tr>
+<tr>
+  <td width="64" valign="top" align="center" style="padding:0;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td align="center" valign="middle" width="52" height="52" style="width:52px;height:52px;border-radius:16px;background:#2f6f63;font-size:24px;line-height:52px;">📅</td>
+    </tr></table>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" height="100%"><tr><td style="border-left:2px dashed #f3c33c;height:58px;width:1px;font-size:0;line-height:0;">&nbsp;</td></tr></table>
+  </td>
+  <td valign="top" style="padding:2px 0 22px 14px;">
+    <div style="font-family:'DM Sans',Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#d9472b;">03 · Planifică</div>
+    <div style="font-family:'Fredoka','Trebuchet MS',Arial,sans-serif;margin-top:2px;font-size:21px;line-height:1.2;font-weight:600;color:#1f3f39;">Meal plan</div>
+    <div style="font-family:'DM Sans',Arial,Helvetica,sans-serif;margin-top:6px;font-size:15px;line-height:1.55;color:#5f6f68;">Rețete pe zile, plus lista de cumpărături pentru toată săptămâna.</div>
+  </td>
+</tr>
+<tr>
+  <td width="64" valign="top" align="center" style="padding:0;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td align="center" valign="middle" width="52" height="52" style="width:52px;height:52px;border-radius:16px;background:#2f6f63;font-size:24px;line-height:52px;">🍝</td>
+    </tr></table>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" height="100%"><tr><td style="border-left:2px dashed #f3c33c;height:58px;width:1px;font-size:0;line-height:0;">&nbsp;</td></tr></table>
+  </td>
+  <td valign="top" style="padding:2px 0 22px 14px;">
+    <div style="font-family:'DM Sans',Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#d9472b;">04 · Gătește</div>
+    <div style="font-family:'Fredoka','Trebuchet MS',Arial,sans-serif;margin-top:2px;font-size:21px;line-height:1.2;font-weight:600;color:#1f3f39;">Cook mode</div>
+    <div style="font-family:'DM Sans',Arial,Helvetica,sans-serif;margin-top:6px;font-size:15px;line-height:1.55;color:#5f6f68;">Un pas pe ecran, iar telefonul nu se stinge.</div>
+  </td>
+</tr>
+<tr>
+  <td width="64" valign="top" align="center" style="padding:0;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td align="center" valign="middle" width="52" height="52" style="width:52px;height:52px;border-radius:16px;background:#2f6f63;font-size:24px;line-height:52px;">📖</td>
+    </tr></table>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" height="100%"><tr><td style="border-left:2px dashed #f3c33c;height:58px;width:1px;font-size:0;line-height:0;">&nbsp;</td></tr></table>
+  </td>
+  <td valign="top" style="padding:2px 0 22px 14px;">
+    <div style="font-family:'DM Sans',Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#d9472b;">05 · Păstrează</div>
+    <div style="font-family:'Fredoka','Trebuchet MS',Arial,sans-serif;margin-top:2px;font-size:21px;line-height:1.2;font-weight:600;color:#1f3f39;">Cartea ta PDF</div>
+    <div style="font-family:'DM Sans',Arial,Helvetica,sans-serif;margin-top:6px;font-size:15px;line-height:1.55;color:#5f6f68;">Toate rețetele într-o carte de bucate, în stilul tău.</div>
+  </td>
+</tr>
+<tr>
+  <td width="64" valign="top" align="center" style="padding:0;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td align="center" valign="middle" width="52" height="52" style="width:52px;height:52px;border-radius:16px;background:#2f6f63;font-size:24px;line-height:52px;">✨</td>
+    </tr></table>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" height="100%"><tr><td style="border-left:2px dashed #f3c33c;height:58px;width:1px;font-size:0;line-height:0;">&nbsp;</td></tr></table>
+  </td>
+  <td valign="top" style="padding:2px 0 22px 14px;">
+    <div style="font-family:'DM Sans',Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#d9472b;">06 · Inspiră-te</div>
+    <div style="font-family:'Fredoka','Trebuchet MS',Arial,sans-serif;margin-top:2px;font-size:21px;line-height:1.2;font-weight:600;color:#1f3f39;">Bucătari de urmărit</div>
+    <div style="font-family:'DM Sans',Arial,Helvetica,sans-serif;margin-top:6px;font-size:15px;line-height:1.55;color:#5f6f68;">Descoperă rețete noi și salvează-le la Favorite.</div>
+  </td>
+</tr>
+<tr>
+  <td width="64" valign="top" align="center" style="padding:0;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td align="center" valign="middle" width="52" height="52" style="width:52px;height:52px;border-radius:16px;background:#2f6f63;font-size:24px;line-height:52px;">👩‍🍳</td>
+    </tr></table>
+    
+  </td>
+  <td valign="top" style="padding:2px 0 22px 14px;">
+    <div style="font-family:'DM Sans',Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#d9472b;">07 · Fă-te cunoscut</div>
+    <div style="font-family:'Fredoka','Trebuchet MS',Arial,sans-serif;margin-top:2px;font-size:21px;line-height:1.2;font-weight:600;color:#1f3f39;">Profilul tău</div>
+    <div style="font-family:'DM Sans',Arial,Helvetica,sans-serif;margin-top:6px;font-size:15px;line-height:1.55;color:#5f6f68;">Adaugă Instagram, TikTok sau YouTube ca să te urmărească alții.</div>
+  </td>
+</tr>
                 </table>
               </td>
             </tr>
 
-            <!-- Button -->
+            <!-- Tip -->
             <tr>
-              <td align="center" style="padding:8px 32px 32px;">
-                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-                  <tr>
-                    <td align="center" style="background-color:#34c79a; border-radius:999px;">
-                      <a href="https://cookbook.antdevlabs.com" style="display:inline-block; padding:14px 32px; font-size:16px; font-weight:bold; color:#081716; text-decoration:none;">Începe să gătești</a>
-                    </td>
-                  </tr>
-                </table>
-                <p style="margin:24px 0 0; font-size:15px; line-height:1.6; color:#3d4d47;">
-                  Poftă bună!<br />
-                  <strong style="color:#081716;">Echipa C00K90</strong>
-                </p>
+              <td class="px" style="padding:6px 40px 34px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+                  <td style="background:#f8f1de;border-radius:20px;padding:22px 24px;">
+                    <div style="font-family:'DM Sans',Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#d9472b;">Primul tău pas</div>
+                    <div style="font-family:'Fredoka','Trebuchet MS',Arial,sans-serif;margin-top:6px;font-size:19px;line-height:1.35;font-weight:500;color:#1f3f39;">Ai un caiet vechi de rețete prin casă? <span style="font-family:'Caveat','Comic Sans MS',cursive;font-size:24px;font-weight:700;color:#d9472b;">Începe cu el!</span></div>
+                    <div style="font-family:'DM Sans',Arial,Helvetica,sans-serif;margin-top:6px;font-size:14px;line-height:1.6;color:#5f6f68;">Fă poze paginilor preferate și le ai pe toate în telefon.</div>
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:16px;"><tr>
+                      <td align="center" style="background-color:#d9472b;border-radius:999px;">
+                        <a href="https://cookbook.antdevlabs.com" style="font-family:'DM Sans',Arial,Helvetica,sans-serif;display:inline-block;padding:12px 24px;font-size:14px;font-weight:700;color:#ffffff;text-decoration:none;">Adaugă prima rețetă</a>
+                      </td>
+                    </tr></table>
+                  </td>
+                </tr></table>
+              </td>
+            </tr>
+
+            <!-- Sign-off -->
+            <tr>
+              <td class="px" align="center" style="padding:0 40px 32px;">
+                <div style="font-family:'Caveat','Comic Sans MS',cursive;font-size:32px;font-weight:700;color:#d9472b;">Poftă bună!</div>
+                <div style="font-family:'DM Sans',Arial,Helvetica,sans-serif;margin-top:4px;font-size:13px;color:#5f6f68;">Echipa C00K90</div>
               </td>
             </tr>
 
             <!-- English -->
             <tr>
-              <td style="padding:24px 32px 28px; background-color:#f5f8f4; border-top:1px solid #e1e8e3;">
-                <p style="margin:0 0 8px; font-size:12px; font-weight:bold; letter-spacing:1px; text-transform:uppercase; color:#7a8a82;">In English</p>
-                <p style="margin:0; font-size:14px; line-height:1.6; color:#3d4d47;">
-                  Hi{{name}}! Welcome to <strong>C00K90</strong>, your digital cookbook. Your account is ready: save your recipes, turn a photo of a handwritten notebook page into a recipe, import recipes from YouTube and TikTok, and follow other cooks.
-                  <a href="https://cookbook.antdevlabs.com" style="color:#2a9d78; font-weight:bold;">Start cooking →</a>
+              <td class="px" style="padding:24px 40px 28px;background:#2f6f63;">
+                <div style="font-family:'DM Sans',Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#f3c33c;">In English</div>
+                <p style="font-family:'DM Sans',Arial,Helvetica,sans-serif;margin:8px 0 0;font-size:14px;line-height:1.6;color:#e3efe9;">
+                  Hi{{name}}! Welcome to <strong style="color:#fff6f0;">C00K90</strong>: snap a recipe, plan your week, cook step by step and share with other cooks.
+                  <a href="https://cookbook.antdevlabs.com" style="color:#f3c33c;font-weight:700;">Start cooking →</a>
                 </p>
               </td>
             </tr>
+          </table>
 
-            <!-- Footer -->
+          <!-- Footer -->
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;">
             <tr>
-              <td align="center" style="padding:20px 32px 28px; font-size:12px; line-height:1.6; color:#8a9a92;">
+              <td align="center" style="font-family:'DM Sans',Arial,Helvetica,sans-serif;padding:18px 28px 0;font-size:12px;line-height:1.6;color:#5f6f68;">
                 Primești acest email pentru că ți-ai creat un cont pe
-                <a href="https://cookbook.antdevlabs.com" style="color:#8a9a92;">cookbook.antdevlabs.com</a>.<br />
+                <a href="https://cookbook.antdevlabs.com" style="color:#5f6f68;">cookbook.antdevlabs.com</a>.<br />
                 You're receiving this because you created an account on C00K90.
               </td>
             </tr>
-
           </table>
         </td>
       </tr>
