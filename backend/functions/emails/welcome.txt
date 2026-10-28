@@ -1,28 +1,23 @@
-Salut{{name}}, bucătăria e a ta!
+Hi{{name}}! The kitchen is yours.
 
-Din poză în rețetă, din rețetă în farfurie. Cum funcționează C00K90:
+Your account is ready. Here's how C00K90 works:
 
-1. Adaugă: fotografiezi pagina din caiet sau revistă și rețeta apare singură.
-2. Organizează: grupează rețetele cum vrei și găsește ce poți găti cu ce ai.
-3. Planifică: rețete pe zile, plus lista de cumpărături pentru toată săptămâna.
-4. Gătește: un pas pe ecran, iar telefonul nu se stinge.
-5. Păstrează: toate rețetele într-o carte de bucate PDF, în stilul tău.
-6. Inspiră-te: descoperă rețete noi și salvează-le la Favorite.
-7. Fă-te cunoscut: adaugă Instagram, TikTok sau YouTube ca să te urmărească alții.
+1. Add: snap a notebook or magazine page and the recipe fills itself in.
+2. Organize: group recipes your way and find what you can cook with what you have.
+3. Plan: recipes by day, plus a shopping list for the whole week.
+4. Cook: one step on screen, and your phone stays awake.
+5. Keep: all your recipes in a printable PDF cookbook, in your style.
+6. Get inspired: discover new recipes and save them to Favorites.
+7. Get known: add your Instagram, TikTok or YouTube so others can follow you.
 
-Primul tău pas: ai un caiet vechi de rețete prin casă? Fă poze paginilor preferate și le ai pe toate în telefon.
+Your first step: got an old recipe notebook at home? Snap your favorite pages and keep them all on your phone.
 
-Deschide C00K90: https://cookbook.antdevlabs.com
+Open the app: https://cookbook.antdevlabs.com
 
-Poftă bună!
-Echipa C00K90
+Enjoy your meal!
+The C00K90 team
 
----
-
-Hi{{name}}! Welcome to C00K90: snap a recipe, plan your week, cook step by step and share with other cooks.
-
-Start cooking: https://cookbook.antdevlabs.com
+Citește în română: https://cookbook.antdevlabs.com/emails/welcome-ro.html
 
 ---
-Primești acest email pentru că ți-ai creat un cont pe cookbook.antdevlabs.com.
-You're receiving this because you created an account on C00K90.
+You're receiving this because you created an account on cookbook.antdevlabs.com.

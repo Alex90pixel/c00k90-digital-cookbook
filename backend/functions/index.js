@@ -10,7 +10,7 @@ const brevoApiKey = defineSecret("BREVO_API_KEY");
 
 // Expeditorul trebuie să fie verificat în Brevo (Senders).
 const WELCOME_SENDER = {name: "C00K90", email: "adrian@antdevlabs.com"};
-const WELCOME_SUBJECT = "Bine ai venit în C00K90! 🍳";
+const WELCOME_SUBJECT = "Welcome to C00K90! 🍳";
 const readEmail = (file) =>
   fs.readFileSync(path.join(__dirname, "emails", file), "utf8");
 const welcomeHtml = readEmail("welcome.html");
