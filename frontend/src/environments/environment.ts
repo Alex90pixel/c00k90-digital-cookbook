@@ -19,5 +19,5 @@ export const environment = {
     'https://us-central1-a-pinch-of-everything-e7101.cloudfunctions.net/getRecipeMetadata',
 
   /** The moderator account: sees reports and the feedback inbox. */
-  adminUid: '6uZpc802wDVjgA0SAjEdtZCCJem2',
+  adminUid: 'YNeChEaSuUYQMKxsuiJfA4CKp9J2',
 } as const;
