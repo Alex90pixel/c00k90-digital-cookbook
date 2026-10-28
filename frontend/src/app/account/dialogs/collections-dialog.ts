@@ -14,7 +14,7 @@ import { AppDialog } from '../../shared/dialog/app-dialog.service';
   imports: [TranslatePipe],
   template: `
     <div class="confirm-dialog text-left" role="dialog" aria-labelledby="collections-title">
-      <h2 id="collections-title">{{ 'collections.title' | t }}</h2>
+            <h2 id="collections-title">📁 {{ 'collections.title' | t }}</h2>
       <p>{{ 'collections.hint' | t }}</p>
 
       <form class="row" (submit)="$event.preventDefault(); create(newName)">

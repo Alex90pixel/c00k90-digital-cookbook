@@ -170,7 +170,7 @@ export const en = {
   collections: {
     label: 'Collections',
     all: 'All collections',
-    title: '📁 My collections',
+    title: 'My collections',
     settingsDescription: 'Group recipes your way: Christmas, Quick dinners...',
     hint: 'Group recipes your way, yours and the ones you saved from other chefs. Only you see your collections.',
     addButton: '📁 Add to collection',

@@ -180,7 +180,7 @@ export const ro: Translations = {
   collections: {
     label: 'Colecții',
     all: 'Toate colecțiile',
-    title: '📁 Colecțiile mele',
+    title: 'Colecțiile mele',
     settingsDescription: 'Grupează rețetele cum vrei: Crăciun, Cine rapide...',
     hint: 'Grupează rețetele cum vrei tu, și pe ale tale, și pe cele salvate de la alți bucătari. Doar tu îți vezi colecțiile.',
     addButton: '📁 Adaugă în colecție',
