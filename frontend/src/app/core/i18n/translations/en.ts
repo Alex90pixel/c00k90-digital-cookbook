@@ -446,6 +446,7 @@ export const en = {
     deleteConfirm: 'Delete everything',
     deleted: 'Account deleted',
     recentLoginNeeded: '⚠️ Please sign out and sign in again, then retry deleting your account',
+    wrongAccount: '⚠️ Choose the Google account you are signed in with',
     deleteFailed: '⚠️ Error deleting account: {error}',
   },
   profile: {

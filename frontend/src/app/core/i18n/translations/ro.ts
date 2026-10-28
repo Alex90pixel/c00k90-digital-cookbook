@@ -460,6 +460,7 @@ export const ro: Translations = {
     deleted: 'Cont șters',
     recentLoginNeeded:
       '⚠️ Te rugăm să te deconectezi și să te autentifici din nou, apoi încearcă iar să-ți ștergi contul',
+    wrongAccount: '⚠️ Alege contul Google cu care ești autentificat',
     deleteFailed: '⚠️ Eroare la ștergerea contului: {error}',
   },
   profile: {

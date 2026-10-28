@@ -4,6 +4,7 @@ import {
   User,
   deleteUser,
   onAuthStateChanged,
+  reauthenticateWithPopup,
   signInWithPopup,
   signOut,
   updateProfile,
@@ -81,6 +82,17 @@ export class AuthService {
       changes.photoUrl === undefined ? undefined : changes.photoUrl || googlePhotoUrl(user);
     await updateProfile(user, { displayName: changes.displayName, photoURL });
     this.appearance.set({ name: user.displayName, photoUrl: user.photoURL });
+  }
+
+  /**
+   * Asks the user to confirm their Google account in a popup, which counts as a recent sign-in
+   * (Firebase requires one before deleting the account). Accounts without Google are left as is.
+   * Fails with `auth/popup-closed-by-user` if the user closes the popup.
+   */
+  async reauthenticate(): Promise<void> {
+    const user = this.requireUser();
+    if (!user.providerData.some((p) => p.providerId === 'google.com')) return;
+    await reauthenticateWithPopup(user, new GoogleAuthProvider());
   }
 
   /** Deletes the Firebase account. Fails with `auth/requires-recent-login` on old sessions. */

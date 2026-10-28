@@ -54,12 +54,14 @@ export class AccountService {
 
   /**
    * Deletes the user's photos, profiles (private and public), followed chefs, favorites, collections,
-   * recipes
-   * and account.
-   * Throws `auth/requires-recent-login` when the session is too old; the user must sign in again
-   * and retry.
+   * recipes and account.
+   * Asks the user to confirm their Google account first, so the account can be deleted at the end:
+   * otherwise an old session would fail only after the data is gone. Nothing is deleted if they
+   * close the popup.
    */
   async deleteAccount(): Promise<void> {
+    // First, while the click still allows the browser to open a popup.
+    await this.auth.reauthenticate();
     const userId = this.auth.requireUser().uid;
     try {
       await this.photos.deleteAllOf(userId);

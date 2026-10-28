@@ -88,14 +88,18 @@ export class SettingsDialog {
       this.toast.show(t('settings.deleted'));
       await this.router.navigateByUrl('/login');
     } catch (error) {
-      console.error('Delete account failed', error);
       const code = (error as { code?: string }).code;
+      // Closing the Google popup cancels the deletion; nothing was deleted.
+      if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') return;
+      console.error('Delete account failed', error);
       this.toast.show(
         code === 'auth/requires-recent-login'
           ? t('settings.recentLoginNeeded')
-          : t('settings.deleteFailed', {
-              error: error instanceof Error ? error.message : String(error),
-            }),
+          : code === 'auth/user-mismatch'
+            ? t('settings.wrongAccount')
+            : t('settings.deleteFailed', {
+                error: error instanceof Error ? error.message : String(error),
+              }),
       );
     } finally {
       this.deleting.set(false);
