@@ -213,6 +213,9 @@ export const en = {
     failed: '⚠️ Could not save the meal plan. Please try again.',
   },
   detail: {
+    showMetric: '📏 Show in metric',
+    originalUnits: '↩ Original units',
+    metricHint: 'Cups, ounces and pounds in grams and millilitres; °F in °C',
     printPhotoTitle: 'Photo from a magazine or book',
     printPhotoMessage:
       "This recipe's photo was taken from a printed page. In Get Inspired everyone can see it, so it's best to use a photo of your own dish first.",

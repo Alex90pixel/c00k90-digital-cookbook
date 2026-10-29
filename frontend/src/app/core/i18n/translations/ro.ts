@@ -223,6 +223,9 @@ export const ro: Translations = {
     failed: '⚠️ Nu am putut salva planul de mese. Încearcă din nou.',
   },
   detail: {
+    showMetric: '📏 Arată în sistem metric',
+    originalUnits: '↩ Unitățile originale',
+    metricHint: 'Căni, uncii și livre în grame și mililitri; °F în °C',
     printPhotoTitle: 'Poză dintr-o revistă sau carte',
     printPhotoMessage:
       'Poza acestei rețete e luată dintr-o pagină tipărită. În Inspirație o vede toată lumea, așa că e mai bine să pui întâi o poză cu mâncarea gătită de tine.',

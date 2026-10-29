@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { FirebaseApp, getApp, getApps, initializeApp } from 'firebase/app';
 import { environment } from '../../../environments/environment';
 import { ImageRegion } from '../../core/images/models/image-region.model';
@@ -8,8 +8,11 @@ const PROMPT = `This is a photo of a handwritten or printed recipe, often from a
 Transcribe it faithfully, in the same language it is written in. Do not translate and do not invent anything.
 Return the recipe title (empty string if there is none), the ingredients (one per item, with quantity and unit as written)
 and the preparation steps (one per item, in order). If a word is unreadable, write your best guess followed by "(?)".
-If the page also shows a photo of the finished dish, return its bounding box as dishPhotoBox: [ymin, xmin, ymax, xmax],
-normalized to 0-1000. Leave dishPhotoBox out if there is no such photo (handwriting, drawings or text only).
+Always answer hasDishPhoto: true if the page shows a photo of the finished dish (a plate, bowl, pan or tray with the cooked
+food), which is common in magazines, cookbooks and Pinterest-style recipe cards, even when raw ingredients, cloths, cutlery or
+text are around it; false only for handwriting, drawings, raw ingredients or text without such a photo.
+When hasDishPhoto is true, return dishPhotoBox: the bounding box of that photo as [ymin, xmin, ymax, xmax], normalized to
+0-1000, boxing the whole photo area with the dish in it (the largest such photo if there are several). When false, return [].
 If the page shows where it comes from (magazine or book title, issue, website), return it as source; otherwise leave source out.
 If the page states the number of servings ("Serves 4", "4 portii"), the preparation time or the cooking time, return them as
 servings, prepMinutes and cookMinutes (whole numbers, times in minutes). Leave out any that are not written on the page.`;
@@ -46,9 +49,10 @@ export class NotebookTranscribeService {
             servings: Schema.integer(),
             prepMinutes: Schema.integer(),
             cookMinutes: Schema.integer(),
+            hasDishPhoto: Schema.boolean(),
             dishPhotoBox: Schema.array({ items: Schema.number() }),
           },
-          optionalProperties: ['source', 'servings', 'prepMinutes', 'cookMinutes', 'dishPhotoBox'],
+          optionalProperties: ['source', 'servings', 'prepMinutes', 'cookMinutes'],
         }),
       },
     });
@@ -61,6 +65,10 @@ export class NotebookTranscribeService {
       },
     ]);
     const parsed = JSON.parse(result.response.text()) as TranscriptionAnswer;
+    // While developing, shows what the model found, to check the dish photo crop.
+    if (isDevMode()) {
+      console.info('Transcription: dish photo', parsed.hasDishPhoto, parsed.dishPhotoBox ?? 'none');
+    }
     return {
       name: (parsed.name ?? '').trim(),
       ingredients: (parsed.ingredients ?? []).map(normalizeIngredientLine).filter(Boolean),
@@ -69,7 +77,7 @@ export class NotebookTranscribeService {
       servings: wholeNumber(parsed.servings, 1),
       prepTime: wholeNumber(parsed.prepMinutes, 0),
       cookTime: wholeNumber(parsed.cookMinutes, 0),
-      dishPhoto: toRegion(parsed.dishPhotoBox),
+      dishPhoto: parsed.hasDishPhoto ? toRegion(parsed.dishPhotoBox) : undefined,
     };
   }
 }
@@ -155,7 +163,9 @@ export function wholeNumber(value: number | undefined, min: number): number | un
 /** Turns Gemini's 0–1000 box into fractions; ignores boxes that are missing, odd or tiny. */
 export function toRegion(box: number[] | undefined): ImageRegion | undefined {
   if (!box || box.length !== 4 || box.some((n) => !Number.isFinite(n))) return undefined;
-  const clamp = (n: number) => Math.min(1, Math.max(0, n / 1000));
+  // Asked for 0-1000, but the model sometimes answers in fractions (0-1).
+  const scale = box.every((n) => n <= 1) ? 1 : 1000;
+  const clamp = (n: number) => Math.min(1, Math.max(0, n / scale));
   const [top, left, bottom, right] = box.map(clamp);
   // A real dish photo covers a fair part of the page; skip slivers and icons.
   if (right - left < 0.1 || bottom - top < 0.1) return undefined;

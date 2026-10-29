@@ -26,5 +26,7 @@ export interface TranscriptionAnswer {
   servings?: number;
   prepMinutes?: number;
   cookMinutes?: number;
+  /** Whether the page shows a photo of the finished dish (asked explicitly, so the model checks). */
+  hasDishPhoto?: boolean;
   dishPhotoBox?: number[];
 }

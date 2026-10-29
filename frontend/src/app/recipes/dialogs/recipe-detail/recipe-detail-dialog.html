@@ -163,6 +163,17 @@
             🛒 {{ 'shopping.open' | t }}
           </button>
         }
+        @if (hasUsUnits()) {
+          <button
+            type="button"
+            class="btn-action shopping-btn metric-btn"
+            [attr.aria-pressed]="metric()"
+            [title]="'detail.metricHint' | t"
+            (click)="metric.set(!metric())"
+          >
+            {{ (metric() ? 'detail.originalUnits' : 'detail.showMetric') | t }}
+          </button>
+        }
         <ul class="ingredients-grid">
           @for (ingredient of ingredients(); track $index) {
             <li class="ingredient-item">
@@ -188,7 +199,7 @@
           </button>
         }
         <ol class="steps-list">
-          @for (step of r.steps ?? []; track $index) {
+          @for (step of steps(); track $index) {
             <li class="step-item">
               <span class="step-num" aria-hidden="true">{{ $index + 1 }}</span>
               <span class="step-text">{{ step }}</span>

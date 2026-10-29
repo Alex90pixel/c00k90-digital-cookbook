@@ -15,6 +15,7 @@ describe('toRegion', () => {
   });
 
   it('ignores missing, malformed or tiny boxes', () => {
+    expect(toRegion([0, 0, 0.45, 1])).toEqual({ top: 0, left: 0, bottom: 0.45, right: 1 });
     expect(toRegion(undefined)).toBeUndefined();
     expect(toRegion([1, 2, 3])).toBeUndefined();
     expect(toRegion([0, 0, 50, 500])).toBeUndefined();
