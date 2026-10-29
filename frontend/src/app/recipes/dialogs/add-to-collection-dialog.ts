@@ -20,6 +20,7 @@ import { MAX_COLLECTION_NAME, nameTaken } from '../domain/collections';
             <li>
               <label>
                 <input
+                  name="collections"
                   type="checkbox"
                   [checked]="selected().has(list.id)"
                   [disabled]="busy()"
@@ -36,6 +37,7 @@ import { MAX_COLLECTION_NAME, nameTaken } from '../domain/collections';
 
       <form class="new-row" (submit)="$event.preventDefault(); createAndAdd(newName)">
         <input
+          name="new-collection"
           #newName
           class="field"
           type="text"

@@ -14,10 +14,12 @@ import { TranslatePipe } from '../core/i18n/translate.pipe';
           @if (customizing()) {
             <div class="cookie-options">
               <label
-                ><input type="checkbox" checked disabled /> {{ 'cookies.necessary' | t }}</label
+                ><input name="cookies-necessary" type="checkbox" checked disabled />
+                {{ 'cookies.necessary' | t }}</label
               >
               <label>
                 <input
+                  name="cookies-analytics"
                   type="checkbox"
                   [checked]="analytics()"
                   (change)="analytics.set(!analytics())"
@@ -25,7 +27,12 @@ import { TranslatePipe } from '../core/i18n/translate.pipe';
                 {{ 'cookies.analytics' | t }}
               </label>
               <label>
-                <input type="checkbox" [checked]="ads()" (change)="ads.set(!ads())" />
+                <input
+                  name="cookies-ads"
+                  type="checkbox"
+                  [checked]="ads()"
+                  (change)="ads.set(!ads())"
+                />
                 {{ 'cookies.ads' | t }}
               </label>
             </div>

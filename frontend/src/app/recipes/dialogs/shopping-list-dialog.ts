@@ -22,7 +22,7 @@ import { ShoppingListData } from '../models/shopping-list.model';
         @for (ingredient of data.ingredients; track $index; let i = $index) {
           <li>
             <label [class.have]="have().has(i)">
-              <input type="checkbox" [checked]="have().has(i)" (change)="toggle(i)" />
+              <input name="have" type="checkbox" [checked]="have().has(i)" (change)="toggle(i)" />
               <span>{{ line(ingredient) }}</span>
             </label>
           </li>

@@ -26,6 +26,7 @@
           📷 {{ (transcribing() ? 'form.transcribing' : 'form.fromNotebook') | t }}
         </button>
         <input
+          name="notebook-photo"
           #notebookInput
           type="file"
           accept="image/*"
@@ -96,6 +97,7 @@
         </button>
       }
       <input
+        name="recipe-photos"
         #fileInput
         type="file"
         accept="image/*"

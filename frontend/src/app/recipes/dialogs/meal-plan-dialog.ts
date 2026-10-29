@@ -98,6 +98,7 @@ import { RecipeDialogs } from '../recipe-dialogs.service';
                   </span>
                 }
                 <select
+                  name="add-recipe"
                   class="add"
                   [attr.aria-label]="'mealPlan.addTo' | t: { day: day.weekday }"
                   (change)="add(day.date, $event)"

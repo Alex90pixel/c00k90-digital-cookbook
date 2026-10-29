@@ -50,7 +50,14 @@
         </div>
         <p class="hint">{{ 'profile.photoHint' | t }}</p>
       </div>
-      <input #photoInput type="file" accept="image/*" hidden (change)="photoPicked(photoInput)" />
+      <input
+        name="profile-photo"
+        #photoInput
+        type="file"
+        accept="image/*"
+        hidden
+        (change)="photoPicked(photoInput)"
+      />
     </div>
 
     <div class="form-group">

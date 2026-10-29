@@ -19,6 +19,7 @@ import { AppDialog } from '../../shared/dialog/app-dialog.service';
 
       <form class="row" (submit)="$event.preventDefault(); create(newName)">
         <input
+          name="new-collection"
           #newName
           class="field"
           type="text"
@@ -37,6 +38,7 @@ import { AppDialog } from '../../shared/dialog/app-dialog.service';
             @if (editing() === list.id) {
               <form class="row" (submit)="$event.preventDefault(); rename(list, renameInput)">
                 <input
+                  name="collection-name"
                   #renameInput
                   class="field"
                   type="text"

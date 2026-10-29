@@ -71,6 +71,7 @@ const STYLES: readonly StyleOption[] = [
           <li>
             <label>
               <input
+                name="recipes"
                 type="checkbox"
                 [checked]="selected().has(recipe.id)"
                 (change)="toggle(recipe.id)"

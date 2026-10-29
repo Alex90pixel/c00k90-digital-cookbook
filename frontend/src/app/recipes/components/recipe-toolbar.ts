@@ -18,7 +18,11 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
     <div class="sort-row">
       <div class="filter-selects">
         @if (collections.lists().length) {
-          <select [attr.aria-label]="'collections.label' | t" (change)="setCollection($event)">
+          <select
+            name="collection"
+            [attr.aria-label]="'collections.label' | t"
+            (change)="setCollection($event)"
+          >
             <option value="" [selected]="!store.collection()">{{ 'collections.all' | t }}</option>
             @for (list of collections.lists(); track list.id) {
               <option [value]="list.id" [selected]="store.collection() === list.id">
@@ -27,7 +31,11 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
             }
           </select>
         }
-        <select [attr.aria-label]="'categories.label' | t" (change)="setCategory($event)">
+        <select
+          name="category"
+          [attr.aria-label]="'categories.label' | t"
+          (change)="setCategory($event)"
+        >
           <option value="all" [selected]="store.category() === 'all'">
             {{ 'categories.all' | t }}
           </option>
@@ -39,6 +47,7 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
         </select>
         <!-- The tooltip explains how the automatic diet labels are estimated. -->
         <select
+          name="diet"
           [attr.aria-label]="'diets.label' | t"
           [title]="'diets.legend' | t"
           (change)="setDiet($event)"
@@ -51,7 +60,7 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
           }
         </select>
 
-        <select [attr.aria-label]="'sort.label' | t" (change)="setSort($event)">
+        <select name="sort" [attr.aria-label]="'sort.label' | t" (change)="setSort($event)">
           @for (s of sortOptions; track s.id) {
             <option [value]="s.id" [selected]="store.sort() === s.id">{{ s.labelKey | t }}</option>
           }
@@ -79,6 +88,7 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
         <label>
           <span>{{ 'filters.with' | t }}</span>
           <input
+            name="with-ingredients"
             type="search"
             [placeholder]="'filters.withPlaceholder' | t"
             [value]="store.withIngredients()"
@@ -88,6 +98,7 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
         <label>
           <span>{{ 'filters.without' | t }}</span>
           <input
+            name="without-ingredients"
             type="search"
             [placeholder]="'filters.withoutPlaceholder' | t"
             [value]="store.withoutIngredients()"
@@ -96,7 +107,7 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
         </label>
         <label>
           <span>{{ 'filters.time' | t }}</span>
-          <select (change)="setTimeLimit($event)">
+          <select name="time-limit" (change)="setTimeLimit($event)">
             <option value="" [selected]="!store.timeLimit()">{{ 'filters.anyTime' | t }}</option>
             @for (limit of timeLimits; track limit) {
               <option [value]="limit" [selected]="store.timeLimit() === limit">
@@ -253,7 +264,7 @@ export class RecipeToolbar {
     this.store.collection.set(selectValue(event) || null);
   }
 
-    /** Opens "More filters"; closing it also clears them, so the list is back to how it was. */
+  /** Opens "More filters"; closing it also clears them, so the list is back to how it was. */
   protected toggleMore(): void {
     if (this.moreOpen()) this.store.clearMoreFilters();
     this.moreOpen.set(!this.moreOpen());
