@@ -1,7 +1,7 @@
 import { Recipe } from './recipe.model';
 
-/** The three looks of the printable cookbook. */
-export type CookbookStyle = 'classic' | 'notebook' | 'minimal';
+/** The looks of the printable cookbook. */
+export type CookbookStyle = 'classic' | 'notebook' | 'minimal' | 'moody';
 
 /** Words printed in the cookbook, in the user's language. */
 export interface CookbookLabels {

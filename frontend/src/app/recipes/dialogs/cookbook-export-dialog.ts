@@ -6,7 +6,7 @@ import { TranslationKey } from '../../core/i18n/i18n.types';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { ToastService } from '../../core/toast/toast.service';
 import { RecipeStore } from '../data/recipe.store';
-import { buildCookbookHtml } from '../domain/cookbook-html';
+import { buildCookbookHtml, fitPagesToA4 } from '../domain/cookbook-html';
 import { CookbookLabels, CookbookStyle } from '../models/cookbook-export.model';
 
 interface StyleOption {
@@ -16,9 +16,10 @@ interface StyleOption {
 }
 
 const STYLES: readonly StyleOption[] = [
-  { id: 'classic', label: 'cookbook.styles.classic', emoji: '🌿' },
+  { id: 'classic', label: 'cookbook.styles.classic', emoji: '🥣' },
   { id: 'notebook', label: 'cookbook.styles.notebook', emoji: '📒' },
-  { id: 'minimal', label: 'cookbook.styles.minimal', emoji: '🖤' },
+  { id: 'minimal', label: 'cookbook.styles.minimal', emoji: '🐚' },
+  { id: 'moody', label: 'cookbook.styles.moody', emoji: '🕯️' },
 ];
 
 /**
@@ -102,7 +103,7 @@ const STYLES: readonly StyleOption[] = [
   styles: `
     .styles {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 8px;
       margin: 0 0 14px;
       padding: 0;
@@ -195,7 +196,7 @@ const STYLES: readonly StyleOption[] = [
     }
     @media (max-width: 420px) {
       .styles {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
   `,
@@ -288,6 +289,7 @@ function printHtml(html: string): Promise<void> {
             img.complete ? null : new Promise((done) => (img.onload = img.onerror = done)),
           ),
         );
+        fitPagesToA4(doc);
         frame.contentWindow!.focus();
         frame.contentWindow!.print();
         resolve();

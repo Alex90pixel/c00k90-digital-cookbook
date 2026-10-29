@@ -148,9 +148,14 @@ export const en = {
   },
   cookbook: {
     title: 'Download my cookbook',
-    hint: 'Pick a style and the recipes. Your browser opens a print window: choose "Save as PDF" to download the book.',
+    hint: 'Pick a style and the recipes. Your browser opens a print window: choose "Save as PDF", set Margins to "None" and tick "Background graphics", so the pages print edge to edge.',
     style: 'Style',
-    styles: { classic: 'C00K90 Classic', notebook: "Grandma's Notebook", minimal: 'Minimal' },
+    styles: {
+      classic: 'Recipe card',
+      notebook: "Grandma's Notebook",
+      minimal: 'Golden coast',
+      moody: 'Moody',
+    },
     bookTitle: 'Book title',
     defaultTitle: 'My Cookbook',
     recipes: { one: '{count} recipe selected', other: '{count} recipes selected' },

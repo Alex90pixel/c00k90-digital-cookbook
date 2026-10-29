@@ -154,9 +154,14 @@ export const ro: Translations = {
   },
   cookbook: {
     title: 'Descarcă cartea mea de bucate',
-    hint: 'Alege stilul și rețetele. Browserul deschide fereastra de printare: alege „Salvează ca PDF” ca să descarci cartea.',
+    hint: 'Alege stilul și rețetele. Browserul deschide fereastra de printare: alege „Salvează ca PDF”, la Margini pune „Niciuna” și bifează „Grafică de fundal”, ca paginile să fie colorate până la margine.',
     style: 'Stil',
-    styles: { classic: 'C00K90 Clasic', notebook: 'Caietul bunicii', minimal: 'Minimal' },
+    styles: {
+      classic: 'Fișă de rețetă',
+      notebook: 'Caietul bunicii',
+      minimal: 'Golden coast',
+      moody: 'Moody',
+    },
     bookTitle: 'Titlul cărții',
     defaultTitle: 'Cartea mea de bucate',
     recipes: {

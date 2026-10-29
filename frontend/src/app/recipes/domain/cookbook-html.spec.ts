@@ -1,5 +1,5 @@
 import { Recipe } from '../models/recipe.model';
-import { buildCookbookHtml, escapeHtml, groupByCategory } from './cookbook-html';
+import { buildCookbookHtml, escapeHtml, groupByCategory, paginateContents } from './cookbook-html';
 
 const recipe = (
   id: string,
@@ -75,5 +75,24 @@ describe('cookbook html', () => {
     expect(html).toContain('20 min');
     expect(html).toContain('Source: Food magazine');
     expect(html.match(/class="page recipe"/g)?.length).toBe(2);
+  });
+});
+
+describe('paginateContents', () => {
+  const many = (category: string, n: number) =>
+    Array.from({ length: n }, (_, i) => recipe(`${category}${i}`, `${category} ${i}`, category));
+
+  it('keeps short contents on one page', () => {
+    const pages = paginateContents(groupByCategory([...many('Soups', 3), ...many('Mains', 2)]), 30);
+    expect(pages.length).toBe(1);
+    expect(pages[0].map((g) => g.recipes.length)).toEqual([2, 3]);
+  });
+
+  it('continues a long category on the next page under its heading', () => {
+    const pages = paginateContents(groupByCategory(many('Soups', 40)), 30);
+    expect(pages.length).toBe(2);
+    expect(pages[0][0].recipes.length).toBe(24);
+    expect(pages[1][0].category).toBe('Soups');
+    expect(pages[1][0].recipes.length).toBe(16);
   });
 });
