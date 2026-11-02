@@ -125,6 +125,9 @@ export const it: Translations = {
     time: 'Le più veloci',
     timeDesc: 'Più tempo prima',
     easy: 'Le più facili',
+    ingredients: '🥕 Meno ingredienti',
+    calories: '🔥 Meno calorie',
+    protein: '💪 Più proteine',
   },
   filters: {
     more: 'Altri filtri',

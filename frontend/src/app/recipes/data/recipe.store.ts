@@ -113,7 +113,9 @@ export class RecipeStore {
     const freeFrom = this.freeFrom();
     if (freeFrom.length) recipes = recipes.filter((r) => isFreeFrom(r, freeFrom));
     if (query) recipes = recipes.filter((r) => matchesSearch(r, query));
-    return sortRecipes(recipes, this.sort());
+    return sortRecipes(recipes, this.sort(), (r) =>
+      this.nutrition.estimate(r.ingredients, r.servings),
+    );
   });
 
   constructor() {

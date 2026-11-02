@@ -132,6 +132,9 @@ export const ro: Translations = {
     time: 'Cele mai rapide',
     timeDesc: 'Cel mai mult timp întâi',
     easy: 'Cele mai ușoare',
+    ingredients: '🥕 Cele mai puține ingrediente',
+    calories: '🔥 Cele mai puține calorii',
+    protein: '💪 Cele mai multe proteine',
   },
   filters: {
     more: 'Mai multe filtre',

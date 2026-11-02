@@ -93,6 +93,9 @@ export const SORT_OPTIONS: readonly { id: RecipeSort; labelKey: TranslationKey }
   { id: 'time', labelKey: 'sort.time' },
   { id: 'time-desc', labelKey: 'sort.timeDesc' },
   { id: 'easy', labelKey: 'sort.easy' },
+  { id: 'ingredients', labelKey: 'sort.ingredients' },
+  { id: 'calories', labelKey: 'sort.calories' },
+  { id: 'protein', labelKey: 'sort.protein' },
 ];
 
 export const MAX_PHOTOS_PER_RECIPE = 3;

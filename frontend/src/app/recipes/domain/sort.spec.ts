@@ -39,4 +39,25 @@ describe('sortRecipes', () => {
     ];
     expect(names(sortRecipes(mixed, 'easy'))).toEqual(['Easy one', 'Medium one', 'Hard one']);
   });
+
+  it('puts the fewest ingredients first and recipes without ingredients last', () => {
+    const one = { qty: '1', unit: '', name: 'x' };
+    const mixed = [
+      recipe('Three', 1, { ingredients: [one, one, one] }),
+      recipe('None', 1, { ingredients: [] }),
+      recipe('One', 1, { ingredients: [one] }),
+    ];
+    expect(names(sortRecipes(mixed, 'ingredients'))).toEqual(['One', 'Three', 'None']);
+  });
+
+  it('sorts by calories (lowest first) and protein (highest first) from the estimate', () => {
+    const nutrition: Record<string, { calories: number; protein: number }> = {
+      Light: { calories: 200, protein: 5 },
+      Rich: { calories: 800, protein: 40 },
+    };
+    const mixed = [recipe('Rich', 1), recipe('Unknown', 1), recipe('Light', 1)];
+    const of = (r: Recipe) => (nutrition[r.name] as never) ?? null;
+    expect(names(sortRecipes(mixed, 'calories', of))).toEqual(['Light', 'Rich', 'Unknown']);
+    expect(names(sortRecipes(mixed, 'protein', of))).toEqual(['Rich', 'Light', 'Unknown']);
+  });
 });

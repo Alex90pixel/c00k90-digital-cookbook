@@ -125,6 +125,9 @@ export const en = {
     time: 'Quickest first',
     timeDesc: 'Longest time first',
     easy: 'Easiest first',
+    ingredients: '🥕 Fewest ingredients',
+    calories: '🔥 Fewest calories',
+    protein: '💪 Most protein',
   },
   filters: {
     more: 'More filters',

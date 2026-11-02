@@ -125,6 +125,9 @@ export const fr: Translations = {
     time: 'Les plus rapides',
     timeDesc: 'Les plus longues à préparer',
     easy: 'Les plus faciles',
+    ingredients: "🥕 Le moins d'ingrédients",
+    calories: '🔥 Le moins de calories',
+    protein: '💪 Le plus de protéines',
   },
   filters: {
     more: 'Plus de filtres',

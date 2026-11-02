@@ -1,3 +1,4 @@
+import { NutritionEstimate } from '../models/nutrition.model';
 import { Recipe, RecipeSort } from '../models/recipe.model';
 import { totalMinutes } from './diets';
 
@@ -10,9 +11,20 @@ const newest = (a: Recipe, b: Recipe) => (b.createdAt ?? 0) - (a.createdAt ?? 0)
  * The recipes in the chosen order (a sorted copy). Recipes without a time always go last when
  * sorting by time, so "quickest first" really starts with the quickest ones.
  */
-export function sortRecipes(recipes: readonly Recipe[], sort: RecipeSort): Recipe[] {
+export function sortRecipes(
+  recipes: readonly Recipe[],
+  sort: RecipeSort,
+  nutritionOf: (recipe: Recipe) => NutritionEstimate | null = () => null,
+): Recipe[] {
   const list = [...recipes];
   switch (sort) {
+    case 'ingredients':
+      // Recipes without ingredients go last.
+      return byNumber(list, (r) => r.ingredients?.length || null, 1);
+    case 'calories':
+      return byNumber(list, (r) => nutritionOf(r)?.calories || null, 1);
+    case 'protein':
+      return byNumber(list, (r) => nutritionOf(r)?.protein || null, -1);
     case 'alpha':
       return list.sort(byName);
     case 'alpha-desc':
@@ -35,4 +47,19 @@ export function sortRecipes(recipes: readonly Recipe[], sort: RecipeSort): Recip
     default:
       return list.sort(newest);
   }
+}
+
+/** Sorts by a number (ascending or descending); recipes without one go last, by name. */
+function byNumber(
+  list: Recipe[],
+  valueOf: (recipe: Recipe) => number | null,
+  direction: 1 | -1,
+): Recipe[] {
+  const values = new Map(list.map((r) => [r.id, valueOf(r)]));
+  return list.sort((a, b) => {
+    const [va, vb] = [values.get(a.id), values.get(b.id)];
+    if (va == null || vb == null)
+      return (va == null ? 1 : 0) - (vb == null ? 1 : 0) || byName(a, b);
+    return (va - vb) * direction || byName(a, b);
+  });
 }
