@@ -10,6 +10,7 @@ import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { ToastService } from '../../../core/toast/toast.service';
 import { AppDialog } from '../../../shared/dialog/app-dialog.service';
 import { PhotoConsent } from '../../../shared/dialog/photo-consent.service';
+import { AllergenDetectService } from '../../data/allergen-detect.service';
 import { NutritionService } from '../../data/nutrition.service';
 import {
   RecipeImportService,
@@ -33,7 +34,7 @@ import {
   ALLERGEN_IDS,
   MANUAL_DIET_IDS,
 } from '../../models/recipe.constants';
-import { Difficulty, Recipe } from '../../models/recipe.model';
+import { AllergenId, Difficulty, Recipe } from '../../models/recipe.model';
 
 interface ImportStatus {
   key: TranslationKey;
@@ -54,6 +55,7 @@ export class RecipeFormDialog {
   private readonly importService = inject(RecipeImportService);
   private readonly transcriber = inject(NotebookTranscribeService);
   private readonly nutrition = inject(NutritionService);
+  private readonly allergenDetect = inject(AllergenDetectService);
   private readonly dialog = inject(AppDialog);
   private readonly photoConsent = inject(PhotoConsent);
   private readonly toast = inject(ToastService);
@@ -107,6 +109,14 @@ export class RecipeFormDialog {
   protected readonly transcribing = signal(false);
   protected readonly transcribeStatus = signal<TranslationKey | null>(null);
 
+  // Allergen suggestions from the ingredients.
+  protected readonly detectingAllergens = signal(false);
+  protected readonly allergenStatus = signal<ImportStatus | null>(null);
+  protected readonly showAllAllergens = signal(false);
+  protected readonly tickedAllergens = computed(() =>
+    ALLERGEN_IDS.filter((id) => this.model().allergens[id]),
+  );
+
   protected readonly saving = signal(false);
 
   constructor() {
@@ -126,6 +136,46 @@ export class RecipeFormDialog {
     this.recipeForm().markAsDirty();
     this.ingredientsPaste.set('');
     this.fillEstimates();
+  }
+
+  /** Ticks the allergens the AI finds in the ingredients; it never unticks the author's choices. */
+  protected async detectAllergens(): Promise<void> {
+    const lines = [
+      ...this.model().ingredients.map((i) => [i.qty, i.unit, i.name].join(' ').trim()),
+      ...this.ingredientsPaste().split('\n'),
+    ].filter((line) => line.trim());
+    if (!lines.length) {
+      this.allergenStatus.set({ key: 'form.allergensNoIngredients' });
+      return;
+    }
+    this.detectingAllergens.set(true);
+    this.allergenStatus.set({ key: 'form.allergensDetecting' });
+    try {
+      const found = await this.allergenDetect.detect(lines);
+      this.model.update((v) => ({
+        ...v,
+        allergens: { ...v.allergens, ...Object.fromEntries(found.map((id) => [id, true])) },
+      }));
+      this.recipeForm().markAsDirty();
+      this.allergenStatus.set(
+        found.length
+          ? {
+              key: 'form.allergensFound',
+              params: { list: found.map((id) => this.i18n.label('allergens', id)).join(', ') },
+            }
+          : { key: 'form.allergensNoneFound' },
+      );
+    } catch (error) {
+      console.error('Allergen detection failed', error);
+      this.allergenStatus.set({ key: 'form.allergensFailed' });
+    } finally {
+      this.detectingAllergens.set(false);
+    }
+  }
+
+  protected removeAllergen(id: AllergenId): void {
+    this.model.update((v) => ({ ...v, allergens: { ...v.allergens, [id]: false } }));
+    this.recipeForm().markAsDirty();
   }
 
   protected removeIngredient(index: number): void {

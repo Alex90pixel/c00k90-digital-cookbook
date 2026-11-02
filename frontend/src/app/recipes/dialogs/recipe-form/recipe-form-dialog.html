@@ -75,19 +75,6 @@
       <p class="hint">{{ 'form.dietHint' | t }}</p>
     </fieldset>
 
-    <fieldset class="form-group">
-      <legend>{{ 'form.allergens' | t }}</legend>
-      <div class="diet-checks">
-        @for (allergenId of allergenIds; track allergenId) {
-          <label>
-            <input type="checkbox" [formField]="recipeForm.allergens[allergenId]" />
-            {{ i18n.label('allergens', allergenId) }}
-          </label>
-        }
-      </div>
-      <p class="hint">{{ 'form.allergensHint' | t }}</p>
-    </fieldset>
-
     <div class="form-group">
       <span class="label" id="photos-label">{{ 'form.photos' | t }}</span>
       @if (photos().length < maxPhotos) {
@@ -275,6 +262,58 @@
         />
       </div>
     </div>
+
+    <fieldset class="form-group">
+      <legend>{{ 'form.allergens' | t }}</legend>
+      @if (tickedAllergens().length) {
+        <div class="allergen-chips">
+          @for (id of tickedAllergens(); track id) {
+            <span class="allergen-chip">
+              {{ i18n.label('allergens', id) }}
+              <button
+                type="button"
+                [attr.aria-label]="'form.allergenRemove' | t: { name: i18n.label('allergens', id) }"
+                (click)="removeAllergen(id)"
+              >
+                ✕
+              </button>
+            </span>
+          }
+        </div>
+      }
+      <div class="allergen-actions">
+        <button
+          type="button"
+          class="btn-add-row"
+          [disabled]="detectingAllergens()"
+          (click)="detectAllergens()"
+        >
+          {{ 'form.allergensDetect' | t }}
+        </button>
+        <button
+          type="button"
+          class="link-btn"
+          [attr.aria-expanded]="showAllAllergens()"
+          (click)="showAllAllergens.set(!showAllAllergens())"
+        >
+          {{ (showAllAllergens() ? 'form.allergensHideAll' : 'form.allergensEdit') | t }}
+        </button>
+      </div>
+      @if (allergenStatus(); as status) {
+        <p class="import-status" role="status">{{ status.key | t: status.params }}</p>
+      }
+      @if (showAllAllergens()) {
+        <div class="diet-checks all-allergens">
+          @for (allergenId of allergenIds; track allergenId) {
+            <label>
+              <input type="checkbox" [formField]="recipeForm.allergens[allergenId]" />
+              {{ i18n.label('allergens', allergenId) }}
+            </label>
+          }
+        </div>
+      }
+      <p class="hint">{{ 'form.allergensHint' | t }}</p>
+    </fieldset>
 
     <div class="form-group">
       <label for="recipe-source">{{ 'form.source' | t }}</label>

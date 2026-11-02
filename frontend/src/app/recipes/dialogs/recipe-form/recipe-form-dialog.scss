@@ -240,3 +240,60 @@ fieldset {
   color: var(--danger);
   font-size: 12px;
 }
+
+// ----- Allergens -----
+.allergen-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.allergen-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px 4px 12px;
+  border-radius: 50px;
+  background: var(--magenta-pale);
+  color: var(--magenta-deep);
+  font-size: 13px;
+  font-weight: 600;
+
+  button {
+    width: 22px;
+    height: 22px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    font-size: 11px;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.08);
+    }
+  }
+}
+
+.allergen-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.link-btn {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--teal);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.all-allergens {
+  margin-top: 10px;
+}
