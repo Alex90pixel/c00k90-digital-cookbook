@@ -11,6 +11,7 @@ import { AppDialog } from '../shared/dialog/app-dialog.service';
 import { MealPlanDialog } from '../recipes/dialogs/meal-plan-dialog';
 import { CookbookExportDialog } from '../recipes/dialogs/cookbook-export-dialog';
 import { CollectionsDialog } from './dialogs/collections-dialog';
+import { RecipeIdeasDialog } from '../recipes/dialogs/recipe-ideas-dialog';
 import { ProfileDialog } from './profile/profile-dialog';
 import { SettingsDialog } from './settings/settings-dialog';
 
@@ -64,6 +65,9 @@ import { SettingsDialog } from './settings/settings-dialog';
           </button>
           <hr class="dropdown-divider" />
         }
+        <button type="button" cdkMenuItem class="menu-item" (cdkMenuItemTriggered)="open('ideas')">
+          {{ 'ideas.menu' | t }}
+        </button>
         <button
           type="button"
           cdkMenuItem
@@ -132,6 +136,7 @@ export class AccountMenu {
       | 'profile'
       | 'settings'
       | 'mealPlan'
+      | 'ideas'
       | 'collections'
       | 'cookbook',
   ): void {
@@ -150,6 +155,9 @@ export class AccountMenu {
         break;
       case 'mealPlan':
         this.dialog.open(MealPlanDialog, { width: 'wide' });
+        break;
+      case 'ideas':
+        this.dialog.open(RecipeIdeasDialog, { width: 'wide' });
         break;
       case 'collections':
         this.dialog.open(CollectionsDialog, { width: 'medium' });

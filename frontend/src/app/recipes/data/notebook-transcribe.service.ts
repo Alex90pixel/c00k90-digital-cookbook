@@ -82,8 +82,8 @@ export class NotebookTranscribeService {
   }
 }
 
-/** Starts the second Firebase app and its App Check once. */
-async function connectAiApp(): Promise<FirebaseApp> {
+/** Starts the second Firebase app and its App Check once (also used for recipe ideas). */
+export async function connectAiApp(): Promise<FirebaseApp> {
   if (getApps().some((a) => a.name === AI_APP_NAME)) return getApp(AI_APP_NAME);
   const app = initializeApp(environment.aiFirebase, AI_APP_NAME);
   const { initializeAppCheck, ReCaptchaEnterpriseProvider } = await import('firebase/app-check');
