@@ -35,6 +35,16 @@
         </button>
       </li>
       <li>
+        <button type="button" class="settings-row" (click)="openAllergies()">
+          <span class="row-icon" aria-hidden="true">🌾</span>
+          <span class="row-text">
+            <span class="row-title">{{ 'myAllergies.title' | t }}</span>
+            <span class="row-desc">{{ allergiesSummary() || ('myAllergies.none' | t) }}</span>
+          </span>
+          <span class="row-chevron" aria-hidden="true">›</span>
+        </button>
+      </li>
+      <li>
         <button type="button" class="settings-row" (click)="openFeedback()">
           <span class="row-icon" aria-hidden="true">💬</span>
           <span class="row-text">

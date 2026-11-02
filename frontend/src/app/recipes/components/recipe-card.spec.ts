@@ -1,4 +1,6 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { MyAllergiesService } from '../../account/allergies/my-allergies.service';
 import { Recipe } from '../models/recipe.model';
 import { RecipeCard } from './recipe-card';
 
@@ -30,6 +32,28 @@ function render(inputs: { recipe: Recipe; showFavorite?: boolean; favorite?: boo
 }
 
 describe('RecipeCard', () => {
+  beforeEach(() => {
+    const allergies = signal(['milk']);
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: MyAllergiesService,
+          useValue: {
+            allergies,
+            foundIn: (list?: readonly string[]) => allergies().filter((id) => list?.includes(id)),
+          },
+        },
+      ],
+    });
+  });
+
+  it('warns when the recipe contains one of my allergens', () => {
+    const { element } = render({ recipe: { ...recipe, allergens: ['milk', 'eggs'] } });
+    expect(element.querySelector('.meta-pill.allergy')).not.toBeNull();
+    const safe = render({ recipe: { ...recipe, allergens: ['eggs'] } });
+    expect(safe.element.querySelector('.meta-pill.allergy')).toBeNull();
+  });
+
   it('shows the name, total time, difficulty and the first ingredients', () => {
     const { element } = render({ recipe });
     expect(element.querySelector('.card-title')?.textContent).toContain('Tomato soup');

@@ -160,3 +160,8 @@
   display: flex;
   margin-top: 12px;
 }
+
+.meta-pill.allergy {
+  background: var(--magenta-pale);
+  color: var(--magenta-deep);
+}

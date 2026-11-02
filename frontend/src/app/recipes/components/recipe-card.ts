@@ -1,4 +1,5 @@
 import { Component, computed, inject, input, output } from '@angular/core';
+import { MyAllergiesService } from '../../account/allergies/my-allergies.service';
 import { ChefBadge } from '../../chefs/components/chef-badge';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
@@ -47,6 +48,13 @@ import { Recipe } from '../models/recipe.model';
           <span class="meta-pill"
             >{{ difficultyIcon() }} {{ i18n.label('difficulty', difficulty()) }}</span
           >
+          @if (myAllergensHere().length) {
+            <span
+              class="meta-pill allergy"
+              [title]="'myAllergies.warning' | t: { list: myAllergensHere().join(', ') }"
+              >{{ 'myAllergies.badge' | t }}</span
+            >
+          }
           @if (hasVideo()) {
             <span class="meta-pill">{{ 'card.video' | t }}</span>
           }
@@ -72,6 +80,10 @@ export class RecipeCard {
   readonly open = output();
   readonly toggleFavorite = output();
 
+  private readonly myAllergies = inject(MyAllergiesService);
+  protected readonly myAllergensHere = computed(() =>
+    this.myAllergies.foundIn(this.recipe().allergens).map((id) => this.i18n.label('allergens', id)),
+  );
   protected readonly imageUrl = computed(() => cardImageUrl(this.recipe()));
   protected readonly minutes = computed(() => totalMinutes(this.recipe()));
   protected readonly hasVideo = computed(() => !!youtubeVideoId(this.recipe().videoUrl));

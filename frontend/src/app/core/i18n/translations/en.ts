@@ -104,6 +104,19 @@ export const en = {
     lupin: '🌼 Lupin',
     molluscs: '🦪 Molluscs',
   },
+  myAllergies: {
+    title: 'My allergies',
+    intro:
+      'Pick what you need to avoid. Recipes that contain it get a warning, and you can filter them out in one tap.',
+    none: 'None set',
+    note: "Saved privately to your account. Allergens are set by each recipe's author (or AI): always read the ingredients too.",
+    save: 'Save',
+    saved: '✅ Your allergies are saved',
+    saveFailed: '⚠️ Could not save. Please try again.',
+    warning: '⚠️ Contains your allergens: {list}',
+    badge: '⚠️ Allergens',
+    useInFilter: '✨ My allergies',
+  },
   sort: {
     label: 'Sort',
     recent: 'Recently added',

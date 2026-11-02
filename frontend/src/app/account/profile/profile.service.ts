@@ -58,7 +58,7 @@ export class ProfileService {
     }
 
     const document: ProfileDocument = { ...profile, photoUrl, photoPath, updatedAt: Date.now() };
-    await setDoc(doc(this.db, PROFILES, user.uid), document);
+    await setDoc(doc(this.db, PROFILES, user.uid), document, { merge: true });
 
     const nameChanged = profile.displayName !== (user.displayName ?? '');
     if (nameChanged || photo.kind !== 'keep') {

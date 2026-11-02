@@ -30,7 +30,7 @@ export const LEGAL_CONTENT: Record<Language, LegalSection[]> = {
         {
           label: 'What we collect:',
           parts: [
-            'when you sign in with Google, we receive your display name, email address and profile picture (if any). We also store what you enter directly in the app: recipes, ingredients, notes, photos you upload, categories, and tags. If you fill in your profile, we also store the names, profile photo and social media links you enter there; all of them are optional. We also store the list of chefs you follow, the recipes you save as favorites, your recipe collections and your meal plan, which only you can see.',
+            'when you sign in with Google, we receive your display name, email address and profile picture (if any). We also store what you enter directly in the app: recipes, ingredients, notes, photos you upload, categories, and tags. If you fill in your profile, we also store the names, profile photo and social media links you enter there; all of them are optional. We also store the list of chefs you follow, the recipes you save as favorites, your recipe collections, your meal plan and, if you set them, your allergies (used only to warn you about recipes), which only you can see.',
           ],
         },
         {
@@ -157,7 +157,7 @@ export const LEGAL_CONTENT: Record<Language, LegalSection[]> = {
         {
           label: 'Ce date colectăm:',
           parts: [
-            'când te autentifici cu Google, primim numele afișat, adresa de e-mail și fotografia de profil (dacă există). Stocăm și ce introduci direct în aplicație: rețete, ingrediente, notițe, fotografiile pe care le încarci, categorii și etichete. Dacă îți completezi profilul, stocăm și numele, fotografia de profil și linkurile către rețelele sociale introduse acolo; toate sunt opționale. Stocăm și lista bucătarilor pe care îi urmărești, rețetele salvate la favorite, colecțiile tale de rețete și planul de mese, vizibile doar pentru tine.',
+            'când te autentifici cu Google, primim numele afișat, adresa de e-mail și fotografia de profil (dacă există). Stocăm și ce introduci direct în aplicație: rețete, ingrediente, notițe, fotografiile pe care le încarci, categorii și etichete. Dacă îți completezi profilul, stocăm și numele, fotografia de profil și linkurile către rețelele sociale introduse acolo; toate sunt opționale. Stocăm și lista bucătarilor pe care îi urmărești, rețetele salvate la favorite, colecțiile tale de rețete, planul de mese și, dacă le setezi, alergiile tale (folosite doar ca să te avertizăm la rețete), vizibile doar pentru tine.',
           ],
         },
         {

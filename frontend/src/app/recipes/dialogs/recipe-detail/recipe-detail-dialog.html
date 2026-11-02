@@ -156,6 +156,11 @@
     </header>
 
     <div class="detail-body">
+      @if (myAllergensHere().length) {
+        <p class="allergy-warning" role="alert">
+          {{ 'myAllergies.warning' | t: { list: myAllergensHere().join(', ') } }}
+        </p>
+      }
       @if (allergens().length) {
         <p class="allergens" role="note">
           <span class="allergens-title">{{ 'allergens.contains' | t }}</span>

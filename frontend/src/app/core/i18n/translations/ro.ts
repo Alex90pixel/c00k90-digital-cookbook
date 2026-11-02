@@ -111,6 +111,19 @@ export const ro: Translations = {
     lupin: '🌼 Lupin',
     molluscs: '🦪 Moluște',
   },
+  myAllergies: {
+    title: 'Alergiile mele',
+    intro:
+      'Alege ce trebuie să eviți. Rețetele care conțin asta primesc un avertisment și le poți ascunde dintr-o atingere.',
+    none: 'Nesetate',
+    note: 'Se salvează privat în contul tău. Alergenii sunt setați de autorul fiecărei rețete (sau de AI): citește mereu și ingredientele.',
+    save: 'Salvează',
+    saved: '✅ Alergiile tale au fost salvate',
+    saveFailed: '⚠️ Nu am putut salva. Încearcă din nou.',
+    warning: '⚠️ Conține alergenii tăi: {list}',
+    badge: '⚠️ Alergeni',
+    useInFilter: '✨ Alergiile mele',
+  },
   sort: {
     label: 'Sortare',
     recent: 'Adăugate recent',

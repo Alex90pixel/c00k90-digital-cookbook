@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { MyAllergiesService } from '../../account/allergies/my-allergies.service';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { CollectionsService } from '../data/collections.service';
@@ -119,6 +120,11 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
         <fieldset class="free-from">
           <legend>{{ 'filters.freeFrom' | t }}</legend>
           <div class="chips">
+            @if (myAllergies.allergies().length) {
+              <button type="button" class="chip mine" (click)="useMyAllergies()">
+                {{ 'myAllergies.useInFilter' | t }}
+              </button>
+            }
             @for (id of allergenIds; track id) {
               <button
                 type="button"
@@ -277,6 +283,12 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
         text-decoration: line-through;
       }
     }
+    .chip.mine {
+      border-style: dashed;
+      border-color: var(--teal);
+      color: var(--teal);
+      font-weight: 600;
+    }
     .free-note {
       margin: 8px 0 0;
       color: var(--text-light);
@@ -313,6 +325,11 @@ export class RecipeToolbar {
   protected readonly sortOptions = SORT_OPTIONS;
   protected readonly timeLimits = TIME_LIMITS;
   protected readonly allergenIds = ALLERGEN_IDS;
+  protected readonly myAllergies = inject(MyAllergiesService);
+
+  protected useMyAllergies(): void {
+    this.store.freeFrom.set([...this.myAllergies.allergies()]);
+  }
   /** Opens by itself when filters are already in use (e.g. after leaving the page). */
   protected readonly moreOpen = signal(this.store.moreFiltersCount() > 0);
   protected readonly count = computed(() => this.store.visible().length);

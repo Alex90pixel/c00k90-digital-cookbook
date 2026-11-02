@@ -413,3 +413,14 @@
   letter-spacing: 1px;
   text-transform: uppercase;
 }
+
+.allergy-warning {
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  border-left: 3px solid var(--magenta-deep);
+  border-radius: 8px;
+  background: var(--magenta-pale);
+  color: var(--magenta-deep);
+  font-size: 13px;
+  font-weight: 600;
+}

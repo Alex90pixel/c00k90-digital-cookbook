@@ -7,6 +7,8 @@ import { THEME_OPTIONS, ThemeService } from '../../core/theme/theme.service';
 import { ToastService } from '../../core/toast/toast.service';
 import { AppDialog } from '../../shared/dialog/app-dialog.service';
 import { AccountService } from '../account.service';
+import { MyAllergiesDialog } from '../allergies/my-allergies-dialog';
+import { MyAllergiesService } from '../allergies/my-allergies.service';
 import { FeedbackDialog } from '../dialogs/feedback-dialog';
 import { LanguageDialog } from '../dialogs/language-dialog';
 import { ThemeDialog } from '../dialogs/theme-dialog';
@@ -30,6 +32,14 @@ export class SettingsDialog {
   protected readonly i18n = inject(I18nService);
   protected readonly ref = inject(DialogRef);
 
+  private readonly myAllergies = inject(MyAllergiesService);
+  protected readonly allergiesSummary = computed(() =>
+    this.myAllergies
+      .allergies()
+      .map((id) => this.i18n.label('allergens', id))
+      .join(', '),
+  );
+
   protected readonly exporting = signal(false);
   protected readonly deleting = signal(false);
   protected readonly themeKey = computed(
@@ -42,6 +52,10 @@ export class SettingsDialog {
 
   protected openLanguage(): void {
     this.dialog.open(LanguageDialog, { width: 'small' });
+  }
+
+  protected openAllergies(): void {
+    this.dialog.open(MyAllergiesDialog, { width: 'medium' });
   }
 
   protected openFeedback(): void {

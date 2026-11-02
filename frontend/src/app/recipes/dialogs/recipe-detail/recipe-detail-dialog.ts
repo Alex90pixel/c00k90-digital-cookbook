@@ -17,6 +17,7 @@ import { recipeImages, safeImageUrl } from '../../domain/recipe-images';
 import { youtubeVideoId } from '../../domain/video';
 import { VideoPlayer } from '../../components/video-player';
 import { ALLERGEN_IDS, DIETS, difficultyIcon } from '../../models/recipe.constants';
+import { MyAllergiesService } from '../../../account/allergies/my-allergies.service';
 import { Recipe } from '../../models/recipe.model';
 import { RecipeDialogs } from '../../recipe-dialogs.service';
 import { ShoppingListData } from '../../models/shopping-list.model';
@@ -63,6 +64,13 @@ export class RecipeDetailDialog {
     this.allergens()
       .map((id) => this.i18n.label('allergens', id))
       .join(' · '),
+  );
+  private readonly myAllergies = inject(MyAllergiesService);
+  /** The reader's own allergens that this recipe contains (Settings → My allergies). */
+  protected readonly myAllergensHere = computed(() =>
+    this.myAllergies
+      .foundIn(this.recipe()?.allergens)
+      .map((id) => this.i18n.label('allergens', id)),
   );
   protected readonly dietPills = computed(() => {
     const recipe = this.recipe();
