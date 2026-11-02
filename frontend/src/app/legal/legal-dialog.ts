@@ -76,7 +76,9 @@ import { LEGAL_CONTENT, LegalPart } from './legal-content';
 export class LegalDialog {
   private readonly i18n = inject(I18nService);
   protected readonly ref = inject(DialogRef);
-  protected readonly sections = computed(() => LEGAL_CONTENT[this.i18n.language()]);
+  protected readonly sections = computed(
+    () => LEGAL_CONTENT[this.i18n.language()] ?? LEGAL_CONTENT.en,
+  );
 
   protected isText(part: LegalPart): part is string {
     return typeof part === 'string';

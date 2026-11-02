@@ -21,7 +21,8 @@ const CONTACT_EMAIL = 'c00k90.contact@gmail.com';
  * Privacy policy, terms and nutrition disclaimer. Long legal text lives here rather than in the
  * translation dictionaries, so each language reads as one document.
  */
-export const LEGAL_CONTENT: Record<Language, LegalSection[]> = {
+/** Privacy Policy and Terms; languages without their own version show the English one. */
+export const LEGAL_CONTENT: Partial<Record<Language, LegalSection[]>> & { en: LegalSection[] } = {
   en: [
     {
       title: 'Privacy Policy',

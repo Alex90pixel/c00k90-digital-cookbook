@@ -2,9 +2,13 @@ import { DOCUMENT, Injectable, computed, effect, inject, signal } from '@angular
 import { STORAGE_KEYS, safeLocalStorage } from '../storage/local-storage';
 import { PluralText, TranslationKey, TranslationParams, Translations } from './i18n.types';
 import { en } from './translations/en';
+import { de } from './translations/de';
+import { es } from './translations/es';
+import { fr } from './translations/fr';
+import { it } from './translations/it';
 import { ro } from './translations/ro';
 
-export type Language = 'en' | 'ro';
+export type Language = 'en' | 'ro' | 'es' | 'fr' | 'it' | 'de';
 
 export interface LanguageOption {
   id: Language;
@@ -18,9 +22,13 @@ export interface LanguageOption {
 export const LANGUAGES: readonly LanguageOption[] = [
   { id: 'en', label: 'English', code: 'EN', locale: 'en-GB' },
   { id: 'ro', label: 'Română', code: 'RO', locale: 'ro-RO' },
+  { id: 'es', label: 'Español', code: 'ES', locale: 'es-ES' },
+  { id: 'fr', label: 'Français', code: 'FR', locale: 'fr-FR' },
+  { id: 'it', label: 'Italiano', code: 'IT', locale: 'it-IT' },
+  { id: 'de', label: 'Deutsch', code: 'DE', locale: 'de-DE' },
 ];
 
-const DICTIONARIES: Record<Language, Translations> = { en, ro };
+const DICTIONARIES: Record<Language, Translations> = { en, ro, es, fr, it, de };
 
 /**
  * The app's language. Texts come from typed dictionaries, so every screen switches instantly,
@@ -100,10 +108,12 @@ function fill(text: string, params: TranslationParams): string {
   );
 }
 
-/** The saved choice, otherwise Romanian for Romanian browsers and English for everyone else. */
+/** The saved choice, otherwise the browser's language when we have it, otherwise English. */
 function initialLanguage(document: Document): Language {
+  const isLanguage = (value: string | null | undefined): value is Language =>
+    LANGUAGES.some((l) => l.id === value);
   const saved = safeLocalStorage.get(STORAGE_KEYS.language);
-  if (saved === 'en' || saved === 'ro') return saved;
-  const browser = document.defaultView?.navigator.language ?? 'en';
-  return browser.toLowerCase().startsWith('ro') ? 'ro' : 'en';
+  if (isLanguage(saved)) return saved;
+  const browser = (document.defaultView?.navigator.language ?? 'en').slice(0, 2).toLowerCase();
+  return isLanguage(browser) ? browser : 'en';
 }

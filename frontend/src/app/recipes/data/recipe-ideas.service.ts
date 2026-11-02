@@ -5,7 +5,14 @@ import { Category } from '../models/recipe.model';
 import { RecipeIdea } from '../models/recipe-idea.model';
 import { connectAiApp } from './notebook-transcribe.service';
 
-const LANGUAGE_NAMES: Record<string, string> = { en: 'English', ro: 'Romanian' };
+const LANGUAGE_NAMES: Record<string, string> = {
+  en: 'English',
+  ro: 'Romanian',
+  es: 'Spanish',
+  fr: 'French',
+  it: 'Italian',
+  de: 'German',
+};
 
 /**
  * Suggests a few recipes from the ingredients the user has at home, with Gemini through the
