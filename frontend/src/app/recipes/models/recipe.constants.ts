@@ -1,5 +1,5 @@
 import { TranslationKey } from '../../core/i18n/i18n.types';
-import { Category, DietId, Difficulty, ManualDietId, RecipeSort } from './recipe.model';
+import { AllergenId, Category, DietId, Difficulty, ManualDietId, RecipeSort } from './recipe.model';
 
 export interface CategoryOption {
   id: Category;
@@ -51,6 +51,24 @@ export const MANUAL_DIET_IDS: readonly ManualDietId[] = [
   'gluten-free',
   'dairy-free',
   'kid-friendly',
+];
+
+/** Allergen labels are translated with `I18nService.label('allergens', id)`. */
+export const ALLERGEN_IDS: readonly AllergenId[] = [
+  'gluten',
+  'crustaceans',
+  'eggs',
+  'fish',
+  'peanuts',
+  'soy',
+  'milk',
+  'nuts',
+  'celery',
+  'mustard',
+  'sesame',
+  'sulphites',
+  'lupin',
+  'molluscs',
 ];
 
 export interface DifficultyOption {

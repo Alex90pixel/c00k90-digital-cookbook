@@ -63,7 +63,10 @@ export class I18nService {
    * Label of a value stored in English in Firestore (category, difficulty, diet). Unknown values,
    * e.g. from older app versions, are shown as they are.
    */
-  label(group: 'categories' | 'difficulty' | 'diets', id: string | undefined): string {
+  label(
+    group: 'categories' | 'difficulty' | 'diets' | 'allergens',
+    id: string | undefined,
+  ): string {
     if (!id) return '';
     const value = lookup(this.dictionary(), `${group}.${id}`);
     return typeof value === 'string' ? value : id;

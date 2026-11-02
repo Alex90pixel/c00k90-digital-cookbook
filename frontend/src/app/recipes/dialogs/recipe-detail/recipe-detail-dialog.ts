@@ -16,7 +16,7 @@ import { stepToMetric, toMetric, usesUsUnits } from '../../domain/metric';
 import { recipeImages, safeImageUrl } from '../../domain/recipe-images';
 import { youtubeVideoId } from '../../domain/video';
 import { VideoPlayer } from '../../components/video-player';
-import { DIETS, difficultyIcon } from '../../models/recipe.constants';
+import { ALLERGEN_IDS, DIETS, difficultyIcon } from '../../models/recipe.constants';
 import { Recipe } from '../../models/recipe.model';
 import { RecipeDialogs } from '../../recipe-dialogs.service';
 import { ShoppingListData } from '../../models/shopping-list.model';
@@ -56,6 +56,9 @@ export class RecipeDetailDialog {
   protected readonly totalMinutes = computed(() => totalMinutes(this.recipe() ?? {}));
   protected readonly difficulty = computed(() => this.recipe()?.difficulty ?? 'Easy');
   protected readonly difficultyIcon = computed(() => difficultyIcon(this.difficulty()));
+  protected readonly allergens = computed(() =>
+    ALLERGEN_IDS.filter((id) => this.recipe()?.allergens?.includes(id)),
+  );
   protected readonly dietPills = computed(() => {
     const recipe = this.recipe();
     if (!recipe) return [];

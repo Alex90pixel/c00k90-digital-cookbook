@@ -1,4 +1,4 @@
-import { MANUAL_DIET_IDS, categoryEmoji } from '../models/recipe.constants';
+import { ALLERGEN_IDS, MANUAL_DIET_IDS, categoryEmoji } from '../models/recipe.constants';
 import { RecipeFormValue } from '../models/recipe-form.model';
 import { Category, Recipe, RecipeData, RecipeImage } from '../models/recipe.model';
 import { youtubeVideoId, youtubeWatchUrl } from './video';
@@ -14,6 +14,9 @@ export function emptyRecipeForm(): RecipeFormValue {
       'dairy-free': false,
       'kid-friendly': false,
     },
+    allergens: Object.fromEntries(
+      ALLERGEN_IDS.map((id) => [id, false]),
+    ) as RecipeFormValue['allergens'],
     difficulty: 'Easy',
     prepTime: null,
     cookTime: null,
@@ -37,6 +40,9 @@ export function recipeToForm(recipe: Recipe): RecipeFormValue {
     diets: Object.fromEntries(
       MANUAL_DIET_IDS.map((id) => [id, !!recipe.diets?.includes(id)]),
     ) as RecipeFormValue['diets'],
+    allergens: Object.fromEntries(
+      ALLERGEN_IDS.map((id) => [id, !!recipe.allergens?.includes(id)]),
+    ) as RecipeFormValue['allergens'],
     difficulty: recipe.difficulty ?? 'Easy',
     prepTime: recipe.prepTime || null,
     cookTime: recipe.cookTime || null,
@@ -84,6 +90,7 @@ export function formToRecipeData(
     steps: value.steps.map((step) => step.trim()).filter(Boolean),
     tags: [...(existing?.tags ?? [])],
     diets: MANUAL_DIET_IDS.filter((id) => value.diets[id]),
+    allergens: ALLERGEN_IDS.filter((id) => value.allergens[id]),
     source: value.source.trim(),
     notes: value.notes.trim(),
     pairing: value.pairing.trim(),

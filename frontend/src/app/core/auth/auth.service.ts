@@ -28,7 +28,7 @@ export class AuthService {
   readonly user = computed(() => this.state() ?? null);
   readonly displayName = computed(() => this.appearance().name);
   readonly isSignedIn = computed(() => !!this.state());
-    readonly isAdmin = computed(() => environment.adminUids.includes(this.user()?.uid ?? ''));
+  readonly isAdmin = computed(() => environment.adminUids.includes(this.user()?.uid ?? ''));
   /** The avatar without a chosen photo: the Google photo, or the first letter of the name. */
   readonly defaultAvatarUrl = computed(() => {
     const user = this.user();

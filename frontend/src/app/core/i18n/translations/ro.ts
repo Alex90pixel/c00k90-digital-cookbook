@@ -94,6 +94,23 @@ export const ro: Translations = {
     legend:
       '💪 Bogat în proteine ≥20g proteine · 🥦 Puțini carbohidrați ≤20g carbohidrați · 🫒 Puține grăsimi ≤10g grăsimi · 🥑 Keto ≤10g carbohidrați · 🍃 Puține calorii ≤400 kcal — pe porție, estimat din ingredientele recunoscute. ⚡ Rapid = sub 30 de minute în total. Celelalte etichete sunt alese de autorul rețetei.',
   },
+  allergens: {
+    contains: '⚠️ Conține:',
+    gluten: '🌾 Gluten',
+    crustaceans: '🦐 Crustacee',
+    eggs: '🥚 Ouă',
+    fish: '🐟 Pește',
+    peanuts: '🥜 Arahide',
+    soy: '🫘 Soia',
+    milk: '🥛 Lapte',
+    nuts: '🌰 Fructe cu coajă',
+    celery: '🥬 Țelină',
+    mustard: '🟡 Muștar',
+    sesame: '⚪ Susan',
+    sulphites: '🍷 Sulfiți',
+    lupin: '🌼 Lupin',
+    molluscs: '🦪 Moluște',
+  },
   sort: {
     label: 'Sortare',
     recent: 'Adăugate recent',
@@ -313,6 +330,9 @@ export const ro: Translations = {
     diet: 'Dietă',
     dietHint:
       'Adăugate automat: Bogat în proteine, Puțini carbohidrați, Puține grăsimi și Keto (din estimarea nutrițională) și Rapid (din timpul total).',
+    allergens: 'Alergeni',
+    allergensHint:
+      'Bifează tot ce conține rețeta, inclusiv din produsele cumpărate (de ex. muștar în maioneză). Persoanele cu alergii se bazează pe asta, dar trebuie să verifice și ingredientele.',
     photos: 'Fotografia rețetei',
     addPhotos: 'Apasă ca să adaugi fotografii (maximum {max})',
     photosNote: 'Se încarcă doar fotografiile alese de tine. Nu îți accesăm niciodată galeria.',

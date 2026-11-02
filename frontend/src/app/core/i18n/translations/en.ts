@@ -87,6 +87,23 @@ export const en = {
     legend:
       "💪 High protein ≥20g protein · 🥦 Low carb ≤20g carbs · 🫒 Low fat ≤10g fat · 🥑 Keto ≤10g carbs · 🍃 Low calorie ≤400 kcal — per serving, estimated from recognized ingredients. ⚡ Quick = under 30 min total. Other labels are set by the recipe's author.",
   },
+  allergens: {
+    contains: '⚠️ Contains:',
+    gluten: '🌾 Gluten',
+    crustaceans: '🦐 Crustaceans',
+    eggs: '🥚 Eggs',
+    fish: '🐟 Fish',
+    peanuts: '🥜 Peanuts',
+    soy: '🫘 Soy',
+    milk: '🥛 Milk',
+    nuts: '🌰 Tree nuts',
+    celery: '🥬 Celery',
+    mustard: '🟡 Mustard',
+    sesame: '⚪ Sesame',
+    sulphites: '🍷 Sulphites',
+    lupin: '🌼 Lupin',
+    molluscs: '🦪 Molluscs',
+  },
   sort: {
     label: 'Sort',
     recent: 'Recently added',
@@ -303,6 +320,9 @@ export const en = {
     diet: 'Diet',
     dietHint:
       'Added automatically: High protein, Low carb, Low fat and Keto (from the nutrition estimate) and Quick (from the total time).',
+    allergens: 'Allergens',
+    allergensHint:
+      'Tick everything this recipe contains, including traces in store-bought products (e.g. mustard in mayonnaise). People with allergies rely on it, but should still check the ingredients.',
     photos: 'Recipe Photo',
     addPhotos: 'Click to add photos (up to {max})',
     photosNote: 'Only the photos you choose are uploaded. We never access your gallery.',

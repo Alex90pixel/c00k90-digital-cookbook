@@ -1,10 +1,18 @@
-import { Category, Difficulty, Ingredient, ManualDietId, RecipeImage } from './recipe.model';
+import {
+  AllergenId,
+  Category,
+  Difficulty,
+  Ingredient,
+  ManualDietId,
+  RecipeImage,
+} from './recipe.model';
 
 /** The values edited in the recipe form. */
 export interface RecipeFormValue {
   name: string;
   category: Category | '';
   diets: Record<ManualDietId, boolean>;
+  allergens: Record<AllergenId, boolean>;
   difficulty: Difficulty;
   prepTime: number | null;
   cookTime: number | null;

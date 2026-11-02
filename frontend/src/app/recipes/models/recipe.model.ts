@@ -9,6 +9,23 @@ export type ManualDietId = 'vegetarian' | 'vegan' | 'gluten-free' | 'dairy-free'
 export type AutoDietId = 'quick' | 'high-protein' | 'low-carb' | 'low-fat' | 'keto' | 'low-calorie';
 export type DietId = ManualDietId | AutoDietId;
 
+/** The 14 allergens that EU food labels must declare (Regulation 1169/2011, Annex II). */
+export type AllergenId =
+  | 'gluten'
+  | 'crustaceans'
+  | 'eggs'
+  | 'fish'
+  | 'peanuts'
+  | 'soy'
+  | 'milk'
+  | 'nuts'
+  | 'celery'
+  | 'mustard'
+  | 'sesame'
+  | 'sulphites'
+  | 'lupin'
+  | 'molluscs';
+
 export interface Ingredient {
   qty: string;
   unit: string;
@@ -46,6 +63,8 @@ export interface RecipeData {
   steps?: string[];
   tags?: string[];
   diets?: string[];
+  /** Allergens declared by the author (`AllergenId`s). */
+  allergens?: string[];
   source?: string;
   notes?: string;
   pairing?: string;

@@ -75,6 +75,19 @@
       <p class="hint">{{ 'form.dietHint' | t }}</p>
     </fieldset>
 
+    <fieldset class="form-group">
+      <legend>{{ 'form.allergens' | t }}</legend>
+      <div class="diet-checks">
+        @for (allergenId of allergenIds; track allergenId) {
+          <label>
+            <input type="checkbox" [formField]="recipeForm.allergens[allergenId]" />
+            {{ i18n.label('allergens', allergenId) }}
+          </label>
+        }
+      </div>
+      <p class="hint">{{ 'form.allergensHint' | t }}</p>
+    </fieldset>
+
     <div class="form-group">
       <span class="label" id="photos-label">{{ 'form.photos' | t }}</span>
       @if (photos().length < maxPhotos) {

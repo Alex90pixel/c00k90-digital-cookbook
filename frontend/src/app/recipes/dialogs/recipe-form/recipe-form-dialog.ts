@@ -30,6 +30,7 @@ import {
   CATEGORIES,
   DIFFICULTIES,
   MAX_PHOTOS_PER_RECIPE,
+  ALLERGEN_IDS,
   MANUAL_DIET_IDS,
 } from '../../models/recipe.constants';
 import { Difficulty, Recipe } from '../../models/recipe.model';
@@ -61,6 +62,7 @@ export class RecipeFormDialog {
   protected readonly categories = CATEGORIES;
   protected readonly difficulties = DIFFICULTIES;
   protected readonly manualDietIds = MANUAL_DIET_IDS;
+  protected readonly allergenIds = ALLERGEN_IDS;
   protected readonly maxPhotos = MAX_PHOTOS_PER_RECIPE;
   protected readonly isEditing = !!this.existing;
 
