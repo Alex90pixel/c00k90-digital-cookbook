@@ -119,7 +119,7 @@ export const en = {
   },
   sort: {
     label: 'Sort',
-    recent: '🆕 Newest first',
+    recent: '🕒 Newest first',
     alpha: '🔤 A → Z',
     alphaDesc: '🔤 Z → A',
     time: '⚡ Quickest first',

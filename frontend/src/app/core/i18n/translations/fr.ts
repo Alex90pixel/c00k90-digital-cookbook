@@ -119,7 +119,7 @@ export const fr: Translations = {
   },
   sort: {
     label: 'Trier',
-    recent: '🆕 Les plus récentes',
+    recent: '🕒 Les plus récentes',
     alpha: '🔤 A → Z',
     alphaDesc: '🔤 Z → A',
     time: '⚡ Les plus rapides',

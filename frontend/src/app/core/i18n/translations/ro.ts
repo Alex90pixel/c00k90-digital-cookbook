@@ -126,7 +126,7 @@ export const ro: Translations = {
   },
   sort: {
     label: 'Sortare',
-    recent: '🆕 Cele mai noi',
+    recent: '🕒 Cele mai noi',
     alpha: '🔤 A → Z',
     alphaDesc: '🔤 Z → A',
     time: '⚡ Cele mai rapide',
