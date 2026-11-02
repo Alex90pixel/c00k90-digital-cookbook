@@ -12,6 +12,7 @@ import { MealPlanDialog } from '../recipes/dialogs/meal-plan-dialog';
 import { CookbookExportDialog } from '../recipes/dialogs/cookbook-export-dialog';
 import { CollectionsDialog } from './dialogs/collections-dialog';
 import { RecipeIdeasDialog } from '../recipes/dialogs/recipe-ideas-dialog';
+import { AllergenBatchDialog } from '../recipes/dialogs/allergen-batch-dialog';
 import { ProfileDialog } from './profile/profile-dialog';
 import { SettingsDialog } from './settings/settings-dialog';
 
@@ -92,6 +93,14 @@ import { SettingsDialog } from './settings/settings-dialog';
         >
           {{ 'menu.cookbook' | t }}
         </button>
+        <button
+          type="button"
+          cdkMenuItem
+          class="menu-item"
+          (cdkMenuItemTriggered)="open('allergens')"
+        >
+          {{ 'allergenBatch.menu' | t }}
+        </button>
         <hr class="dropdown-divider" />
         <button
           type="button"
@@ -137,6 +146,7 @@ export class AccountMenu {
       | 'settings'
       | 'mealPlan'
       | 'ideas'
+      | 'allergens'
       | 'collections'
       | 'cookbook',
   ): void {
@@ -155,6 +165,9 @@ export class AccountMenu {
         break;
       case 'mealPlan':
         this.dialog.open(MealPlanDialog, { width: 'wide' });
+        break;
+      case 'allergens':
+        this.dialog.open(AllergenBatchDialog, { width: 'confirm' });
         break;
       case 'ideas':
         this.dialog.open(RecipeIdeasDialog, { width: 'wide' });

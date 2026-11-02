@@ -1,4 +1,4 @@
-import { RecipeData } from '../models/recipe.model';
+import { AllergenId, RecipeData } from '../models/recipe.model';
 import { totalMinutes } from './diets';
 
 /** The time limits offered in the filter, in minutes. */
@@ -39,4 +39,17 @@ export function withinTime(
 ): boolean {
   const minutes = totalMinutes(recipe);
   return minutes > 0 && minutes <= limit;
+}
+
+/**
+ * True when the recipe declares none of these allergens. Recipes whose allergens were never
+ * set (saved before allergens existed) are left out too: for people with allergies, unknown
+ * is not safe.
+ */
+export function isFreeFrom(
+  recipe: Pick<RecipeData, 'allergens'>,
+  allergens: readonly AllergenId[],
+): boolean {
+  if (!recipe.allergens) return false;
+  return !allergens.some((id) => recipe.allergens!.includes(id));
 }

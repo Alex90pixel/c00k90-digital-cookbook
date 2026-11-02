@@ -111,6 +111,29 @@ export const ro: Translations = {
     lupin: '🌼 Lupin',
     molluscs: '🦪 Moluște',
   },
+  allergenBatch: {
+    menu: '✨ Detectează alergenii la toate rețetele',
+    title: '✨ Detectează alergenii la toate rețetele',
+    intro: {
+      one: '{count} rețetă nu are încă alergeni. AI-ul îi poate citi ingredientele și îi poate adăuga.',
+      few: '{count} rețete nu au încă alergeni. AI-ul le poate citi ingredientele și îi poate adăuga.',
+      other:
+        '{count} de rețete nu au încă alergeni. AI-ul le poate citi ingredientele și îi poate adăuga.',
+    },
+    nothing: 'Toate rețetele tale au deja alergeni. 🎉',
+    start: 'Începe',
+    running: 'Lucrez…',
+    progress: 'Am verificat {done} din {total}…',
+    finished: 'Gata! Am verificat {done} din {total} rețete.',
+    failed: {
+      one: '{count} rețetă nu a putut fi verificată; încearcă din nou mai târziu.',
+      few: '{count} rețete nu au putut fi verificate; încearcă din nou mai târziu.',
+      other: '{count} de rețete nu au putut fi verificate; încearcă din nou mai târziu.',
+    },
+    note: 'Se trimit doar listele de ingrediente către Google Gemini. AI-ul poate greși: deschide rețeta și Editează ca să corectezi alergenii.',
+    stop: 'Oprește',
+    close: 'Închide',
+  },
   sort: {
     label: 'Sortare',
     recent: 'Adăugate recent',
@@ -126,6 +149,9 @@ export const ro: Translations = {
     time: 'Gata în',
     anyTime: 'Oricât',
     upTo: 'Până la {count} min',
+    freeFrom: 'Fără alergenii',
+    freeFromNote:
+      'Rețetele salvate înainte de alergeni sunt ascunse până le adaugi (Editează → ✨ Detectează). Alergenii sunt setați de fiecare autor: citește mereu și ingredientele.',
     clear: 'Șterge',
   },
   list: {

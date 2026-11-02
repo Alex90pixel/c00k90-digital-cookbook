@@ -1,4 +1,4 @@
-import { ingredientTerms, matchesIngredients, withinTime } from './filters';
+import { ingredientTerms, isFreeFrom, matchesIngredients, withinTime } from './filters';
 
 const recipe = {
   ingredients: [
@@ -32,5 +32,20 @@ describe('recipe filters', () => {
     expect(withinTime({ prepTime: 10, cookTime: 15 }, 30)).toBe(true);
     expect(withinTime({ prepTime: 10, cookTime: 25 }, 30)).toBe(false);
     expect(withinTime({}, 30)).toBe(false);
+  });
+});
+
+describe('isFreeFrom', () => {
+  it('keeps recipes without the chosen allergens', () => {
+    expect(isFreeFrom({ allergens: ['milk'] }, ['nuts'])).toBe(true);
+    expect(isFreeFrom({ allergens: [] }, ['nuts'])).toBe(true);
+  });
+
+  it('hides recipes with any of the chosen allergens', () => {
+    expect(isFreeFrom({ allergens: ['milk', 'nuts'] }, ['gluten', 'nuts'])).toBe(false);
+  });
+
+  it('hides recipes whose allergens were never set', () => {
+    expect(isFreeFrom({}, ['nuts'])).toBe(false);
   });
 });

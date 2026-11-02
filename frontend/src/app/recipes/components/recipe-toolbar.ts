@@ -4,7 +4,7 @@ import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { CollectionsService } from '../data/collections.service';
 import { RecipeStore } from '../data/recipe.store';
 import { TIME_LIMITS, TimeLimit } from '../domain/filters';
-import { CATEGORIES, DIETS, SORT_OPTIONS } from '../models/recipe.constants';
+import { ALLERGEN_IDS, CATEGORIES, DIETS, SORT_OPTIONS } from '../models/recipe.constants';
 import { Category, DietId, RecipeSort } from '../models/recipe.model';
 
 /**
@@ -116,6 +116,25 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
             }
           </select>
         </label>
+        <fieldset class="free-from">
+          <legend>{{ 'filters.freeFrom' | t }}</legend>
+          <div class="chips">
+            @for (id of allergenIds; track id) {
+              <button
+                type="button"
+                class="chip"
+                [class.on]="store.freeFrom().includes(id)"
+                [attr.aria-pressed]="store.freeFrom().includes(id)"
+                (click)="store.toggleFreeFrom(id)"
+              >
+                {{ i18n.label('allergens', id) }}
+              </button>
+            }
+          </div>
+          @if (store.freeFrom().length) {
+            <p class="free-note">{{ 'filters.freeFromNote' | t }}</p>
+          }
+        </fieldset>
         @if (store.moreFiltersCount()) {
           <button type="button" class="clear-btn" (click)="store.clearMoreFilters()">
             {{ 'filters.clear' | t }}
@@ -219,6 +238,51 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
         }
       }
     }
+    .free-from {
+      flex-basis: 100%;
+      min-width: 0;
+      margin: 0;
+      padding: 0;
+      border: 0;
+
+      legend {
+        margin-bottom: 6px;
+        padding: 0;
+        color: var(--text-light);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .chip {
+      padding: 4px 10px;
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      background: transparent;
+      color: var(--text-mid);
+      font-size: 12px;
+      cursor: pointer;
+
+      &.on {
+        border-color: var(--magenta-deep);
+        background: var(--magenta-pale);
+        color: var(--magenta-deep);
+        font-weight: 600;
+        text-decoration: line-through;
+      }
+    }
+    .free-note {
+      margin: 8px 0 0;
+      color: var(--text-light);
+      font-size: 11px;
+      line-height: 1.5;
+    }
     .clear-btn {
       padding: 6px 10px;
       border: 0;
@@ -248,6 +312,7 @@ export class RecipeToolbar {
   protected readonly diets = DIETS;
   protected readonly sortOptions = SORT_OPTIONS;
   protected readonly timeLimits = TIME_LIMITS;
+  protected readonly allergenIds = ALLERGEN_IDS;
   /** Opens by itself when filters are already in use (e.g. after leaving the page). */
   protected readonly moreOpen = signal(this.store.moreFiltersCount() > 0);
   protected readonly count = computed(() => this.store.visible().length);

@@ -104,6 +104,27 @@ export const en = {
     lupin: '🌼 Lupin',
     molluscs: '🦪 Molluscs',
   },
+  allergenBatch: {
+    menu: '✨ Detect allergens for all recipes',
+    title: '✨ Detect allergens for all recipes',
+    intro: {
+      one: '{count} of your recipes has no allergens yet. AI can read its ingredients and add them.',
+      other:
+        '{count} of your recipes have no allergens yet. AI can read their ingredients and add them.',
+    },
+    nothing: 'All your recipes already have allergens. 🎉',
+    start: 'Start',
+    running: 'Working…',
+    progress: 'Checked {done} of {total}…',
+    finished: 'Done! Checked {done} of {total} recipes.',
+    failed: {
+      one: '{count} recipe could not be checked; try again later.',
+      other: '{count} recipes could not be checked; try again later.',
+    },
+    note: 'Only the ingredient lists are sent to Google Gemini. AI can make mistakes: open a recipe and Edit to fix its allergens.',
+    stop: 'Stop',
+    close: 'Close',
+  },
   sort: {
     label: 'Sort',
     recent: 'Recently added',
@@ -119,6 +140,9 @@ export const en = {
     time: 'Ready in',
     anyTime: 'Any time',
     upTo: 'Up to {count} min',
+    freeFrom: 'Free from',
+    freeFromNote:
+      'Recipes saved before allergens existed are hidden until you add them (Edit → ✨ Detect). Allergens are set by each author: always read the ingredients too.',
     clear: 'Clear',
   },
   list: {

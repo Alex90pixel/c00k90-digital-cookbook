@@ -5,12 +5,19 @@ import { AuthService } from '../../core/auth/auth.service';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { ToastService } from '../../core/toast/toast.service';
 import { dietLabels, totalMinutes } from '../domain/diets';
-import { TimeLimit, ingredientTerms, matchesIngredients, withinTime } from '../domain/filters';
+import {
+  TimeLimit,
+  ingredientTerms,
+  isFreeFrom,
+  matchesIngredients,
+  withinTime,
+} from '../domain/filters';
 import { formToRecipeData } from '../domain/recipe-form';
 import { recipeStoragePaths } from '../domain/recipe-images';
 import { matchesSearch } from '../domain/search';
 import { FormPhoto, RecipeFormValue } from '../models/recipe-form.model';
 import {
+  AllergenId,
   Category,
   DietId,
   Recipe,
@@ -67,12 +74,14 @@ export class RecipeStore {
   readonly withoutIngredients = signal('');
   /** Only recipes ready within this many minutes. */
   readonly timeLimit = signal<TimeLimit | null>(null);
+  /** "Free from": hides recipes that contain any of these allergens. */
+  readonly freeFrom = signal<readonly AllergenId[]>([]);
   /** How many of the "More filters" are in use, for the badge on the button. */
   readonly moreFiltersCount = computed(
     () =>
       [this.withIngredients().trim(), this.withoutIngredients().trim(), this.timeLimit()].filter(
         Boolean,
-      ).length,
+      ).length + this.freeFrom().length,
   );
 
   /** Favorites and Get Inspired show shared recipes; My Recipes shows the user's own. */
@@ -100,6 +109,8 @@ export class RecipeStore {
     }
     const limit = this.timeLimit();
     if (limit) recipes = recipes.filter((r) => withinTime(r, limit));
+    const freeFrom = this.freeFrom();
+    if (freeFrom.length) recipes = recipes.filter((r) => isFreeFrom(r, freeFrom));
     if (query) recipes = recipes.filter((r) => matchesSearch(r, query));
     return this.sorted(recipes, this.sort());
   });
@@ -163,6 +174,13 @@ export class RecipeStore {
     this.withIngredients.set('');
     this.withoutIngredients.set('');
     this.timeLimit.set(null);
+    this.freeFrom.set([]);
+  }
+
+  toggleFreeFrom(id: AllergenId): void {
+    this.freeFrom.update((list) =>
+      list.includes(id) ? list.filter((a) => a !== id) : [...list, id],
+    );
   }
 
   /** Saves or removes another cook's recipe from the user's favorites (own recipes can't be). */
@@ -176,6 +194,12 @@ export class RecipeStore {
     } catch {
       this.toast.show(this.i18n.t('recipes.favoriteFailed'));
     }
+  }
+
+  /** Saves only the allergens of one of my recipes (used by the one-time "detect for all"). */
+  async setAllergens(id: string, allergens: AllergenId[]): Promise<void> {
+    await this.repository.update(id, { allergens });
+    this.patchMine(id, { allergens });
   }
 
   async toggleShared(recipe: Recipe): Promise<void> {
