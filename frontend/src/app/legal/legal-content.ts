@@ -117,7 +117,15 @@ export const LEGAL_CONTENT: Record<Language, LegalSection[]> = {
         },
         {
           parts: [
-            "You're solely responsible for the recipes, notes, and photos you upload. Don't post content that infringes on someone else's copyright. Don't post offensive, explicit, violent or hateful content. We may hide or remove content that breaks these rules, and suspend accounts that repeatedly do so.",
+            "You're solely responsible for the recipes, notes, and photos you upload. Only share photos you took yourself or have the right to use, and don't post content that infringes on someone else's copyright. Don't post offensive, explicit, violent or hateful content. We may hide or remove content that breaks these rules, and suspend accounts that repeatedly do so.",
+          ],
+        },
+        {
+          label: 'Removal requests:',
+          parts: [
+            'if you believe a recipe or photo shared in C00K90 uses your content without permission, write to ',
+            { email: CONTACT_EMAIL },
+            ' with a link to it or the recipe name, and we will review it and remove it if needed. You can also use "Report" on any shared recipe.',
           ],
         },
         {
@@ -236,7 +244,15 @@ export const LEGAL_CONTENT: Record<Language, LegalSection[]> = {
         },
         {
           parts: [
-            'Ești singurul responsabil pentru rețetele, notițele și fotografiile pe care le încarci. Nu publica conținut care încalcă drepturile de autor ale altcuiva. Nu publica conținut ofensator, explicit, violent sau care incită la ură. Putem ascunde sau șterge conținutul care încalcă aceste reguli și putem suspenda conturile care le încalcă în mod repetat.',
+            'Ești singurul responsabil pentru rețetele, notițele și fotografiile pe care le încarci. Distribuie doar fotografii făcute de tine sau pe care ai dreptul să le folosești și nu publica conținut care încalcă drepturile de autor ale altcuiva. Nu publica conținut ofensator, explicit, violent sau care incită la ură. Putem ascunde sau șterge conținutul care încalcă aceste reguli și putem suspenda conturile care le încalcă în mod repetat.',
+          ],
+        },
+        {
+          label: 'Cereri de eliminare:',
+          parts: [
+            'dacă o rețetă sau o fotografie distribuită în C00K90 îți folosește conținutul fără permisiune, scrie-ne la ',
+            { email: CONTACT_EMAIL },
+            ' cu linkul sau numele rețetei, iar noi o vom verifica și o vom elimina dacă este cazul. Poți folosi și „Raportează” la orice rețetă distribuită.',
           ],
         },
         {
