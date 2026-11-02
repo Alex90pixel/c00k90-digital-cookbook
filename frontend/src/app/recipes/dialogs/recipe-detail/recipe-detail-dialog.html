@@ -158,10 +158,8 @@
     <div class="detail-body">
       @if (allergens().length) {
         <p class="allergens" role="note">
-          <strong>{{ 'allergens.contains' | t }}</strong>
-          @for (id of allergens(); track id) {
-            <span class="allergen">{{ i18n.label('allergens', id) }}</span>
-          }
+          <span class="allergens-title">{{ 'allergens.contains' | t }}</span>
+          {{ allergenList() }}
         </p>
       }
       <section>

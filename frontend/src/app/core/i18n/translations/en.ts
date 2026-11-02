@@ -88,7 +88,7 @@ export const en = {
       "💪 High protein ≥20g protein · 🥦 Low carb ≤20g carbs · 🫒 Low fat ≤10g fat · 🥑 Keto ≤10g carbs · 🍃 Low calorie ≤400 kcal — per serving, estimated from recognized ingredients. ⚡ Quick = under 30 min total. Other labels are set by the recipe's author.",
   },
   allergens: {
-    contains: '⚠️ Contains:',
+    contains: 'Contains',
     gluten: '🌾 Gluten',
     crustaceans: '🦐 Crustaceans',
     eggs: '🥚 Eggs',

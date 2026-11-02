@@ -95,7 +95,7 @@ export const ro: Translations = {
       '💪 Bogat în proteine ≥20g proteine · 🥦 Puțini carbohidrați ≤20g carbohidrați · 🫒 Puține grăsimi ≤10g grăsimi · 🥑 Keto ≤10g carbohidrați · 🍃 Puține calorii ≤400 kcal — pe porție, estimat din ingredientele recunoscute. ⚡ Rapid = sub 30 de minute în total. Celelalte etichete sunt alese de autorul rețetei.',
   },
   allergens: {
-    contains: '⚠️ Conține:',
+    contains: 'Conține',
     gluten: '🌾 Gluten',
     crustaceans: '🦐 Crustacee',
     eggs: '🥚 Ouă',

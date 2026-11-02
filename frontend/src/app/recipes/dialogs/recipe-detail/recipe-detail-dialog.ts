@@ -59,6 +59,11 @@ export class RecipeDetailDialog {
   protected readonly allergens = computed(() =>
     ALLERGEN_IDS.filter((id) => this.recipe()?.allergens?.includes(id)),
   );
+  protected readonly allergenList = computed(() =>
+    this.allergens()
+      .map((id) => this.i18n.label('allergens', id))
+      .join(' · '),
+  );
   protected readonly dietPills = computed(() => {
     const recipe = this.recipe();
     if (!recipe) return [];
