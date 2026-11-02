@@ -119,9 +119,12 @@ export const en = {
   },
   sort: {
     label: 'Sort',
-    recent: 'Recently added',
-    alpha: 'Alphabetical',
+    recent: 'Newest first',
+    alpha: 'A → Z',
+    alphaDesc: 'Z → A',
     time: 'Quickest first',
+    timeDesc: 'Longest time first',
+    easy: 'Easiest first',
   },
   filters: {
     more: 'More filters',

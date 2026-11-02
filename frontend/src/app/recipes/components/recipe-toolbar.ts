@@ -61,11 +61,6 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
           }
         </select>
 
-        <select name="sort" [attr.aria-label]="'sort.label' | t" (change)="setSort($event)">
-          @for (s of sortOptions; track s.id) {
-            <option [value]="s.id" [selected]="store.sort() === s.id">{{ s.labelKey | t }}</option>
-          }
-        </select>
         <button
           type="button"
           class="more-btn"
@@ -80,9 +75,21 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
           }
         </button>
       </div>
-      <span class="recipe-count" aria-live="polite">{{
-        'list.count' | t: { count: count() }
-      }}</span>
+      <div class="sort-side">
+        <span class="recipe-count" aria-live="polite">{{
+          'list.count' | t: { count: count() }
+        }}</span>
+        <label class="sort">
+          <span aria-hidden="true">⇅</span>
+          <select name="sort" [attr.aria-label]="'sort.label' | t" (change)="setSort($event)">
+            @for (s of sortOptions; track s.id) {
+              <option [value]="s.id" [selected]="store.sort() === s.id">
+                {{ s.labelKey | t }}
+              </option>
+            }
+          </select>
+        </label>
+      </div>
     </div>
     @if (moreOpen()) {
       <div class="more-filters" id="more-filters">
@@ -308,6 +315,24 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
       .more-filters label,
       .more-filters input {
         width: 100%;
+      }
+    }
+    .sort-side {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sort {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      color: var(--text-mid);
+      font-size: 13px;
+
+      select {
+        border-color: transparent;
+        background: transparent;
+        font-weight: 600;
       }
     }
     .recipe-count {

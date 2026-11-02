@@ -15,6 +15,7 @@ import {
 import { formToRecipeData } from '../domain/recipe-form';
 import { recipeStoragePaths } from '../domain/recipe-images';
 import { matchesSearch } from '../domain/search';
+import { sortRecipes } from '../domain/sort';
 import { FormPhoto, RecipeFormValue } from '../models/recipe-form.model';
 import {
   AllergenId,
@@ -112,7 +113,7 @@ export class RecipeStore {
     const freeFrom = this.freeFrom();
     if (freeFrom.length) recipes = recipes.filter((r) => isFreeFrom(r, freeFrom));
     if (query) recipes = recipes.filter((r) => matchesSearch(r, query));
-    return this.sorted(recipes, this.sort());
+    return sortRecipes(recipes, this.sort());
   });
 
   constructor() {
@@ -331,18 +332,6 @@ export class RecipeStore {
     this.diet.set(null);
     this.collection.set(null);
     this.clearMoreFilters();
-  }
-
-  private sorted(recipes: Recipe[], sort: RecipeSort): Recipe[] {
-    const list = [...recipes];
-    switch (sort) {
-      case 'alpha':
-        return list.sort((a, b) => a.name.localeCompare(b.name));
-      case 'time':
-        return list.sort((a, b) => totalMinutes(a) - totalMinutes(b));
-      default:
-        return list.sort(newestFirst);
-    }
   }
 }
 

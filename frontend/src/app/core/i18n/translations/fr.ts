@@ -119,9 +119,12 @@ export const fr: Translations = {
   },
   sort: {
     label: 'Trier',
-    recent: 'Ajoutées récemment',
-    alpha: 'Ordre alphabétique',
-    time: "Les plus rapides d'abord",
+    recent: 'Les plus récentes',
+    alpha: 'A → Z',
+    alphaDesc: 'Z → A',
+    time: 'Les plus rapides',
+    timeDesc: 'Les plus longues à préparer',
+    easy: 'Les plus faciles',
   },
   filters: {
     more: 'Plus de filtres',

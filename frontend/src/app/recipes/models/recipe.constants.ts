@@ -89,7 +89,10 @@ export function difficultyIcon(difficulty: string | undefined): string {
 export const SORT_OPTIONS: readonly { id: RecipeSort; labelKey: TranslationKey }[] = [
   { id: 'recent', labelKey: 'sort.recent' },
   { id: 'alpha', labelKey: 'sort.alpha' },
+  { id: 'alpha-desc', labelKey: 'sort.alphaDesc' },
   { id: 'time', labelKey: 'sort.time' },
+  { id: 'time-desc', labelKey: 'sort.timeDesc' },
+  { id: 'easy', labelKey: 'sort.easy' },
 ];
 
 export const MAX_PHOTOS_PER_RECIPE = 3;

@@ -126,9 +126,12 @@ export const ro: Translations = {
   },
   sort: {
     label: 'Sortare',
-    recent: 'Adăugate recent',
-    alpha: 'Alfabetic',
-    time: 'Cele mai rapide întâi',
+    recent: 'Cele mai noi',
+    alpha: 'A → Z',
+    alphaDesc: 'Z → A',
+    time: 'Cele mai rapide',
+    timeDesc: 'Cel mai mult timp întâi',
+    easy: 'Cele mai ușoare',
   },
   filters: {
     more: 'Mai multe filtre',

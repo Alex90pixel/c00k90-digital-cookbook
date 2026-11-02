@@ -91,4 +91,4 @@ export interface Recipe extends RecipeData {
 }
 
 export type RecipeView = 'all' | 'favorites' | 'inspired';
-export type RecipeSort = 'recent' | 'alpha' | 'time';
+export type RecipeSort = 'recent' | 'alpha' | 'alpha-desc' | 'time' | 'time-desc' | 'easy';
