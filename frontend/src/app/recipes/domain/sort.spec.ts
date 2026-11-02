@@ -60,4 +60,19 @@ describe('sortRecipes', () => {
     expect(names(sortRecipes(mixed, 'calories', of))).toEqual(['Light', 'Rich', 'Unknown']);
     expect(names(sortRecipes(mixed, 'protein', of))).toEqual(['Rich', 'Light', 'Unknown']);
   });
+
+  it('sorts by cooked recently and cooked most often; never cooked go last', () => {
+    const mixed = [recipe('Often', 1), recipe('Never', 1), recipe('Lately', 1)];
+    const cooked = { Often: { count: 9, last: 100 }, Lately: { count: 1, last: 500 } };
+    expect(names(sortRecipes(mixed, 'cooked-recent', undefined, cooked))).toEqual([
+      'Lately',
+      'Often',
+      'Never',
+    ]);
+    expect(names(sortRecipes(mixed, 'cooked-most', undefined, cooked))).toEqual([
+      'Often',
+      'Lately',
+      'Never',
+    ]);
+  });
 });

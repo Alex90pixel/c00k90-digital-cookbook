@@ -135,6 +135,8 @@ export const ro: Translations = {
     ingredients: '🥕 Cele mai puține ingrediente',
     calories: '🔥 Cele mai puține calorii',
     protein: '💪 Cele mai multe proteine',
+    cookedRecent: '🍳 Gătite recent',
+    cookedMost: '🔁 Gătite cel mai des',
   },
   filters: {
     more: 'Mai multe filtre',

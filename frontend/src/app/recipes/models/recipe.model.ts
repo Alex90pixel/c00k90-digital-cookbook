@@ -100,4 +100,6 @@ export type RecipeSort =
   | 'easy'
   | 'ingredients'
   | 'calories'
-  | 'protein';
+  | 'protein'
+  | 'cooked-recent'
+  | 'cooked-most';

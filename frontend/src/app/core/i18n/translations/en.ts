@@ -128,6 +128,8 @@ export const en = {
     ingredients: '🥕 Fewest ingredients',
     calories: '🔥 Fewest calories',
     protein: '💪 Most protein',
+    cookedRecent: '🍳 Cooked recently',
+    cookedMost: '🔁 Cooked most often',
   },
   filters: {
     more: 'More filters',

@@ -27,6 +27,7 @@ import {
   RecipeSort,
   RecipeView,
 } from '../models/recipe.model';
+import { CookLogService } from './cook-log.service';
 import { NutritionService } from './nutrition.service';
 import { CollectionsService } from './collections.service';
 import { FavoritesService } from './favorites.service';
@@ -43,6 +44,7 @@ export class RecipeStore {
   private readonly repository = inject(RecipeRepository);
   private readonly photos = inject(RecipePhotoService);
   private readonly nutrition = inject(NutritionService);
+  private readonly cookLog = inject(CookLogService);
   private readonly toast = inject(ToastService);
   private readonly i18n = inject(I18nService);
   private readonly profiles = inject(ProfileService);
@@ -113,8 +115,11 @@ export class RecipeStore {
     const freeFrom = this.freeFrom();
     if (freeFrom.length) recipes = recipes.filter((r) => isFreeFrom(r, freeFrom));
     if (query) recipes = recipes.filter((r) => matchesSearch(r, query));
-    return sortRecipes(recipes, this.sort(), (r) =>
-      this.nutrition.estimate(r.ingredients, r.servings),
+    return sortRecipes(
+      recipes,
+      this.sort(),
+      (r) => this.nutrition.estimate(r.ingredients, r.servings),
+      this.cookLog.entries(),
     );
   });
 

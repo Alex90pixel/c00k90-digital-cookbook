@@ -96,6 +96,8 @@ export const SORT_OPTIONS: readonly { id: RecipeSort; labelKey: TranslationKey }
   { id: 'ingredients', labelKey: 'sort.ingredients' },
   { id: 'calories', labelKey: 'sort.calories' },
   { id: 'protein', labelKey: 'sort.protein' },
+  { id: 'cooked-recent', labelKey: 'sort.cookedRecent' },
+  { id: 'cooked-most', labelKey: 'sort.cookedMost' },
 ];
 
 export const MAX_PHOTOS_PER_RECIPE = 3;

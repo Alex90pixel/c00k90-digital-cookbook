@@ -59,7 +59,7 @@ interface WakeLockNavigator {
           ← {{ 'cookMode.previous' | t }}
         </button>
         @if (isLast()) {
-          <button type="button" class="btn-save" (click)="ref.close()">
+          <button type="button" class="btn-save" (click)="ref.close('cooked')">
             {{ 'cookMode.finish' | t }}
           </button>
         } @else {

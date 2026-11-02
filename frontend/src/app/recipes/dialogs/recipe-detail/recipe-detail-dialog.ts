@@ -18,6 +18,7 @@ import { youtubeVideoId } from '../../domain/video';
 import { VideoPlayer } from '../../components/video-player';
 import { ALLERGEN_IDS, DIETS, difficultyIcon } from '../../models/recipe.constants';
 import { MyAllergiesService } from '../../../account/allergies/my-allergies.service';
+import { CookLogService } from '../../data/cook-log.service';
 import { Recipe } from '../../models/recipe.model';
 import { RecipeDialogs } from '../../recipe-dialogs.service';
 import { ShoppingListData } from '../../models/shopping-list.model';
@@ -66,6 +67,7 @@ export class RecipeDetailDialog {
       .join(' · '),
   );
   private readonly myAllergies = inject(MyAllergiesService);
+  private readonly cookLog = inject(CookLogService);
   /** The reader's own allergens that this recipe contains (Settings → My allergies). */
   protected readonly myAllergensHere = computed(() =>
     this.myAllergies
@@ -138,9 +140,13 @@ export class RecipeDetailDialog {
   }
 
   protected openCookMode(recipe: Recipe): void {
-    this.dialog.open<CookModeDialog, CookModeData>(CookModeDialog, {
+    const ref = this.dialog.open<CookModeDialog, CookModeData, 'cooked'>(CookModeDialog, {
       width: 'detail',
       data: { recipeName: recipe.name, steps: this.steps(), ingredients: this.ingredients() },
+    });
+    // Finishing the last step counts as having cooked it (for the "cooked" sorts).
+    ref.closed.subscribe((result) => {
+      if (result === 'cooked') void this.cookLog.record(recipe.id);
     });
   }
 

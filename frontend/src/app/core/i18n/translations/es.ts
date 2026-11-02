@@ -128,6 +128,8 @@ export const es: Translations = {
     ingredients: '🥕 Menos ingredientes',
     calories: '🔥 Menos calorías',
     protein: '💪 Más proteínas',
+    cookedRecent: '🍳 Cocinadas recientemente',
+    cookedMost: '🔁 Las que más cocinas',
   },
   filters: {
     more: 'Más filtros',

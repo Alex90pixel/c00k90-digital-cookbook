@@ -15,9 +15,15 @@ export function sortRecipes(
   recipes: readonly Recipe[],
   sort: RecipeSort,
   nutritionOf: (recipe: Recipe) => NutritionEstimate | null = () => null,
+  cooked: Readonly<Record<string, { count: number; last: number }>> = {},
 ): Recipe[] {
   const list = [...recipes];
   switch (sort) {
+    case 'cooked-recent':
+      // Never cooked go last.
+      return byNumber(list, (r) => cooked[r.id]?.last || null, -1);
+    case 'cooked-most':
+      return byNumber(list, (r) => cooked[r.id]?.count || null, -1);
     case 'ingredients':
       // Recipes without ingredients go last.
       return byNumber(list, (r) => r.ingredients?.length || null, 1);
