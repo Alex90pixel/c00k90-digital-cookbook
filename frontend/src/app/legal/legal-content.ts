@@ -25,12 +25,12 @@ export const LEGAL_CONTENT: Record<Language, LegalSection[]> = {
   en: [
     {
       title: 'Privacy Policy',
-      updated: 'Last updated: October 16, 2026',
+      updated: 'Last updated: November 2, 2026',
       paragraphs: [
         {
           label: 'What we collect:',
           parts: [
-            'if you sign in with Google, we receive your display name, email address and profile picture (if any). If you create an account with a username instead, we only store that username and a securely encrypted password (handled by Firebase Authentication), with no email or real name. We also store what you enter directly in the app: recipes, ingredients, notes, photos you upload, categories, and tags. If you fill in your profile, we also store the names, profile photo and social media links you enter there; all of them are optional. We also store the list of chefs you follow and the recipes you save as favorites, which only you can see.',
+            'when you sign in with Google, we receive your display name, email address and profile picture (if any). We also store what you enter directly in the app: recipes, ingredients, notes, photos you upload, categories, and tags. If you fill in your profile, we also store the names, profile photo and social media links you enter there; all of them are optional. We also store the list of chefs you follow, the recipes you save as favorites, your recipe collections and your meal plan, which only you can see.',
           ],
         },
         {
@@ -49,6 +49,18 @@ export const LEGAL_CONTENT: Record<Language, LegalSection[]> = {
           label: "Where it's stored:",
           parts: [
             'on Firebase (Google Cloud), which acts as our data processor under its own security measures.',
+          ],
+        },
+        {
+          label: 'Reading recipes from photos (AI):',
+          parts: [
+            "when you use \"From a notebook photo\", the photo you pick is sent to Google's Gemini AI (through Firebase AI Logic, in a separate Google Cloud project) only to read the recipe from it. We don't store that photo; only the cropped dish photo is kept, and only if you save it with the recipe. Google processes the photo under its Gemini API terms; on the free tier we use, Google may use it to improve its services, so please don't photograph pages with personal information. This feature is protected by Google reCAPTCHA Enterprise, which checks that requests come from the real app and may collect information about your device and browser under Google's privacy policy.",
+          ],
+        },
+        {
+          label: 'Welcome email:',
+          parts: [
+            "when you create an account, your email address and first name are sent to Brevo (Sendinblue SAS, France), our email provider, only to send you one welcome email. We don't send newsletters.",
           ],
         },
         {
@@ -132,12 +144,12 @@ export const LEGAL_CONTENT: Record<Language, LegalSection[]> = {
   ro: [
     {
       title: 'Politica de confidențialitate',
-      updated: 'Ultima actualizare: 16 octombrie 2026',
+      updated: 'Ultima actualizare: 2 noiembrie 2026',
       paragraphs: [
         {
           label: 'Ce date colectăm:',
           parts: [
-            'dacă te autentifici cu Google, primim numele afișat, adresa de e-mail și fotografia de profil (dacă există). Dacă îți creezi un cont cu nume de utilizator, stocăm doar acel nume de utilizator și o parolă criptată în siguranță (gestionată de Firebase Authentication), fără e-mail sau nume real. Stocăm și ce introduci direct în aplicație: rețete, ingrediente, notițe, fotografiile pe care le încarci, categorii și etichete. Dacă îți completezi profilul, stocăm și numele, fotografia de profil și linkurile către rețelele sociale introduse acolo; toate sunt opționale. Stocăm și lista bucătarilor pe care îi urmărești și a rețetelor salvate la favorite, vizibile doar pentru tine.',
+            'când te autentifici cu Google, primim numele afișat, adresa de e-mail și fotografia de profil (dacă există). Stocăm și ce introduci direct în aplicație: rețete, ingrediente, notițe, fotografiile pe care le încarci, categorii și etichete. Dacă îți completezi profilul, stocăm și numele, fotografia de profil și linkurile către rețelele sociale introduse acolo; toate sunt opționale. Stocăm și lista bucătarilor pe care îi urmărești, rețetele salvate la favorite, colecțiile tale de rețete și planul de mese, vizibile doar pentru tine.',
           ],
         },
         {
@@ -156,6 +168,18 @@ export const LEGAL_CONTENT: Record<Language, LegalSection[]> = {
           label: 'Unde sunt stocate:',
           parts: [
             'pe Firebase (Google Cloud), care acționează ca persoană împuternicită de noi, cu propriile măsuri de securitate.',
+          ],
+        },
+        {
+          label: 'Citirea rețetelor din poze (AI):',
+          parts: [
+            'când folosești „Din poza unui caiet”, poza aleasă este trimisă către inteligența artificială Gemini de la Google (prin Firebase AI Logic, într-un proiect Google Cloud separat) doar ca să citească rețeta din ea. Nu păstrăm acea poză; se păstrează doar poza decupată a mâncării și doar dacă o salvezi împreună cu rețeta. Google procesează poza conform termenilor Gemini API; pe varianta gratuită pe care o folosim, Google o poate folosi ca să-și îmbunătățească serviciile, așa că te rugăm să nu fotografiezi pagini cu informații personale. Funcția este protejată de Google reCAPTCHA Enterprise, care verifică faptul că cererile vin din aplicația reală și poate colecta informații despre dispozitivul și browserul tău, conform politicii de confidențialitate Google.',
+          ],
+        },
+        {
+          label: 'E-mailul de bun venit:',
+          parts: [
+            'când îți creezi un cont, adresa de e-mail și prenumele tău sunt trimise către Brevo (Sendinblue SAS, Franța), furnizorul nostru de e-mail, doar ca să-ți trimitem un singur e-mail de bun venit. Nu trimitem newslettere.',
           ],
         },
         {
