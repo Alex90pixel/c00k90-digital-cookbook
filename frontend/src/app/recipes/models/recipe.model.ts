@@ -102,4 +102,5 @@ export type RecipeSort =
   | 'calories'
   | 'protein'
   | 'cooked-recent'
-  | 'cooked-most';
+  | 'cooked-most'
+  | 'random';

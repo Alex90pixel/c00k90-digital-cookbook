@@ -75,4 +75,12 @@ describe('sortRecipes', () => {
       'Never',
     ]);
   });
+
+  it('shuffles the same way for the same seed and differently for another', () => {
+    const many = Array.from({ length: 12 }, (_, i) => recipe(`R${i}`, i + 1));
+    const once = names(sortRecipes(many, 'random', undefined, {}, 1));
+    expect(names(sortRecipes(many, 'random', undefined, {}, 1))).toEqual(once);
+    expect(names(sortRecipes(many, 'random', undefined, {}, 2))).not.toEqual(once);
+    expect([...once].sort()).toEqual(names(many).sort());
+  });
 });

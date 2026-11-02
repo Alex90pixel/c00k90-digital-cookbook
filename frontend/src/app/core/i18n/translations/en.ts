@@ -130,6 +130,8 @@ export const en = {
     protein: '💪 Most protein',
     cookedRecent: '🍳 Cooked recently',
     cookedMost: '🔁 Cooked most often',
+    random: '🎲 Surprise me',
+    shuffle: 'Shuffle again',
   },
   filters: {
     more: 'More filters',

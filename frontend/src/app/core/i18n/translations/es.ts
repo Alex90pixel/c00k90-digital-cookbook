@@ -130,6 +130,8 @@ export const es: Translations = {
     protein: '💪 Más proteínas',
     cookedRecent: '🍳 Cocinadas recientemente',
     cookedMost: '🔁 Las que más cocinas',
+    random: '🎲 Sorpréndeme',
+    shuffle: 'Mezclar otra vez',
   },
   filters: {
     more: 'Más filtros',

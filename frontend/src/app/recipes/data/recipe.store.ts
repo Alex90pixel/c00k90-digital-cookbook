@@ -70,6 +70,12 @@ export class RecipeStore {
   readonly category = signal<Category | 'all'>('all');
   readonly diet = signal<DietId | null>(null);
   readonly sort = signal<RecipeSort>('recent');
+  /** Changing it gives "Surprise me" a new random order. */
+  readonly shuffleSeed = signal(Date.now());
+
+  shuffle(): void {
+    this.shuffleSeed.set(Date.now() + Math.random());
+  }
   /** Shows only the recipes of one of my collections (its id). */
   readonly collection = signal<string | null>(null);
   /** "More filters": ingredients the recipe must have / must not have, as typed. */
@@ -120,6 +126,7 @@ export class RecipeStore {
       this.sort(),
       (r) => this.nutrition.estimate(r.ingredients, r.servings),
       this.cookLog.entries(),
+      this.shuffleSeed(),
     );
   });
 

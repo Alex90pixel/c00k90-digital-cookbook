@@ -16,9 +16,13 @@ export function sortRecipes(
   sort: RecipeSort,
   nutritionOf: (recipe: Recipe) => NutritionEstimate | null = () => null,
   cooked: Readonly<Record<string, { count: number; last: number }>> = {},
+  seed = 0,
 ): Recipe[] {
   const list = [...recipes];
   switch (sort) {
+    case 'random':
+      // A shuffled order that stays the same until the seed changes ("shuffle again").
+      return byNumber(list, (r) => hash(`${seed}:${r.id}`), 1);
     case 'cooked-recent':
       // Never cooked go last.
       return byNumber(list, (r) => cooked[r.id]?.last || null, -1);
@@ -68,4 +72,11 @@ function byNumber(
       return (va == null ? 1 : 0) - (vb == null ? 1 : 0) || byName(a, b);
     return (va - vb) * direction || byName(a, b);
   });
+}
+
+/** A quick, stable number for a text (FNV-1a), used to shuffle. */
+function hash(text: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < text.length; i++) h = Math.imul(h ^ text.charCodeAt(i), 16777619);
+  return (h >>> 0) + 1;
 }

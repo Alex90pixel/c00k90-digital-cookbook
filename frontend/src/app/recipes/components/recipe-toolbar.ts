@@ -89,6 +89,17 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
             }
           </select>
         </label>
+        @if (store.sort() === 'random') {
+          <button
+            type="button"
+            class="shuffle"
+            [attr.aria-label]="'sort.shuffle' | t"
+            [title]="'sort.shuffle' | t"
+            (click)="store.shuffle()"
+          >
+            🎲
+          </button>
+        }
       </div>
     </div>
     @if (moreOpen()) {
@@ -335,6 +346,20 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
         font-weight: 600;
       }
     }
+    .shuffle {
+      width: 32px;
+      height: 32px;
+      border: 1.5px solid var(--border);
+      border-radius: 50%;
+      background: transparent;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.3s;
+
+      &:hover {
+        transform: rotate(20deg);
+      }
+    }
     .recipe-count {
       color: var(--text-light);
       font-size: 13px;
@@ -386,7 +411,9 @@ export class RecipeToolbar {
   }
 
   protected setSort(event: Event): void {
-    this.store.sort.set(selectValue(event) as RecipeSort);
+    const sort = selectValue(event) as RecipeSort;
+    if (sort === 'random') this.store.shuffle();
+    this.store.sort.set(sort);
   }
 }
 

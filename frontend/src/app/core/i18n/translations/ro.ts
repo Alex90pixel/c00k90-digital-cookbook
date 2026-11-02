@@ -137,6 +137,8 @@ export const ro: Translations = {
     protein: '💪 Cele mai multe proteine',
     cookedRecent: '🍳 Gătite recent',
     cookedMost: '🔁 Gătite cel mai des',
+    random: '🎲 Surprinde-mă',
+    shuffle: 'Amestecă din nou',
   },
   filters: {
     more: 'Mai multe filtre',
