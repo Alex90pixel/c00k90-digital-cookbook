@@ -68,6 +68,10 @@ export interface RecipeData {
   source?: string;
   notes?: string;
   pairing?: string;
+  /** Things that go well with the recipe, e.g. "corn, for sweetness". */
+  extras?: string[];
+  /** One cook's tip. */
+  tip?: string;
   /** The author's YouTube video of the recipe, as `https://www.youtube.com/watch?v=…`. */
   videoUrl?: string;
   images?: RecipeImage[];

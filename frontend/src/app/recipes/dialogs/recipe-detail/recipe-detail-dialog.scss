@@ -424,3 +424,34 @@
   font-size: 13px;
   font-weight: 600;
 }
+
+.intro {
+  margin: 0 0 16px;
+  color: var(--text-mid);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.extras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+
+  li {
+    padding: 4px 12px;
+    border-radius: 50px;
+    background: var(--teal-pale);
+    color: var(--teal-deep);
+    font-size: 13px;
+  }
+}
+
+.tip {
+  margin: 0 0 20px;
+  color: var(--text-dark);
+  font-size: 14px;
+  line-height: 1.6;
+}

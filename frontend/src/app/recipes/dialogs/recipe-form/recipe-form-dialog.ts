@@ -12,6 +12,7 @@ import { AppDialog } from '../../../shared/dialog/app-dialog.service';
 import { PhotoConsent } from '../../../shared/dialog/photo-consent.service';
 import { AllergenDetectService } from '../../data/allergen-detect.service';
 import { NutritionService } from '../../data/nutrition.service';
+import { RecipeEnrichService } from '../../data/recipe-enrich.service';
 import {
   RecipeImportService,
   VideoPlatform,
@@ -56,6 +57,7 @@ export class RecipeFormDialog {
   private readonly transcriber = inject(NotebookTranscribeService);
   private readonly nutrition = inject(NutritionService);
   private readonly allergenDetect = inject(AllergenDetectService);
+  private readonly enricher = inject(RecipeEnrichService);
   private readonly dialog = inject(AppDialog);
   private readonly photoConsent = inject(PhotoConsent);
   private readonly toast = inject(ToastService);
@@ -117,6 +119,10 @@ export class RecipeFormDialog {
     ALLERGEN_IDS.filter((id) => this.model().allergens[id]),
   );
 
+  // Description, "goes well with" and tip, written by AI.
+  protected readonly enriching = signal(false);
+  protected readonly enrichStatus = signal<TranslationKey | null>(null);
+
   protected readonly saving = signal(false);
 
   constructor() {
@@ -170,6 +176,41 @@ export class RecipeFormDialog {
       this.allergenStatus.set({ key: 'form.allergensFailed' });
     } finally {
       this.detectingAllergens.set(false);
+    }
+  }
+
+  /** Fills only the empty fields among description, "goes well with" and tip. */
+  protected async enrich(): Promise<void> {
+    const value = this.model();
+    const ingredients = [
+      ...value.ingredients.map((i) => [i.qty, i.unit, i.name].join(' ').trim()),
+      ...this.ingredientsPaste().split('\n'),
+    ].filter((line) => line.trim());
+    if (!value.name.trim() || !ingredients.length) {
+      this.enrichStatus.set('form.enrichNeedsRecipe');
+      return;
+    }
+    this.enriching.set(true);
+    this.enrichStatus.set('form.enriching');
+    try {
+      const result = await this.enricher.enrich({
+        name: value.name,
+        ingredients,
+        steps: value.steps,
+      });
+      this.model.update((v) => ({
+        ...v,
+        description: v.description.trim() || result.description,
+        extras: v.extras.trim() || result.extras.join('\n'),
+        tip: v.tip.trim() || result.tip,
+      }));
+      this.recipeForm().markAsDirty();
+      this.enrichStatus.set('form.enriched');
+    } catch (error) {
+      console.error('Enrich failed', error);
+      this.enrichStatus.set('form.enrichFailed');
+    } finally {
+      this.enriching.set(false);
     }
   }
 

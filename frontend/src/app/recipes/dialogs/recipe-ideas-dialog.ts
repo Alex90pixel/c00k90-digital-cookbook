@@ -274,13 +274,9 @@ export class RecipeIdeasDialog {
       ingredients: parseIngredientLines(idea.ingredients.join('\n')),
       steps: idea.steps,
       source: this.i18n.t('ideas.source'),
-      notes: [
-        idea.description,
-        idea.extras.length ? `${this.i18n.t('ideas.extras')} ${idea.extras.join('; ')}` : '',
-        idea.tip ? `💡 ${idea.tip}` : '',
-      ]
-        .filter(Boolean)
-        .join('\n\n'),
+      description: idea.description,
+      extras: idea.extras.join('\n'),
+      tip: idea.tip,
       difficulty: idea.difficulty,
     };
     if (await this.store.save(value, [], null)) {

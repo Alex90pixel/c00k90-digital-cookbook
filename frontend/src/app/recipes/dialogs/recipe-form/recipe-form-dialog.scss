@@ -297,3 +297,13 @@ fieldset {
 .all-allergens {
   margin-top: 10px;
 }
+
+.sub-label {
+  display: block;
+  margin: 10px 0 4px;
+  color: var(--text-mid);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+}

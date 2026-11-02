@@ -156,6 +156,9 @@
     </header>
 
     <div class="detail-body">
+      @if (r.description) {
+        <p class="intro">{{ r.description }}</p>
+      }
       @if (myAllergensHere().length) {
         <p class="allergy-warning" role="alert">
           {{ 'myAllergies.warning' | t: { list: myAllergensHere().join(', ') } }}
@@ -245,6 +248,22 @@
         </section>
       }
 
+      @if (r.extras?.length || r.tip) {
+        <section class="extras-section">
+          @if (r.extras?.length) {
+            <h3 class="section-heading">{{ 'detail.extras' | t }}</h3>
+            <ul class="extras">
+              @for (extra of r.extras; track $index) {
+                <li>{{ extra }}</li>
+              }
+            </ul>
+          }
+          @if (r.tip) {
+            <p class="tip">💡 {{ r.tip }}</p>
+          }
+        </section>
+      }
+
       @if (drinks(); as d) {
         <section>
           <h3 class="section-heading">{{ 'detail.pairing' | t }}</h3>
@@ -266,13 +285,8 @@
         <h3 class="section-heading">{{ 'detail.notes' | t }}</h3>
         <div class="notes-box">
           <div class="notes-title">{{ 'detail.notesTitle' | t }}</div>
-          @if (r.description || r.notes) {
-            @if (r.description) {
-              <p class="notes-text">{{ r.description }}</p>
-            }
-            @if (r.notes) {
-              <p class="notes-text">{{ r.notes }}</p>
-            }
+          @if (r.notes) {
+            <p class="notes-text">{{ r.notes }}</p>
           } @else {
             <p class="notes-empty">{{ 'detail.noNotes' | t }}</p>
           }

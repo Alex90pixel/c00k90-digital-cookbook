@@ -27,9 +27,10 @@ const existing: Recipe = {
 };
 
 describe('recipeToForm', () => {
-  it('merges the old description into the notes and keeps only the manual diets', () => {
+  it('keeps the description apart from the notes and keeps only the manual diets', () => {
     const value = recipeToForm(existing);
-    expect(value.notes).toBe('Old description\n\nUse cold milk');
+    expect(value.description).toBe('Old description');
+    expect(value.notes).toBe('Use cold milk');
     expect(value.diets.vegetarian).toBe(true);
     expect(Object.keys(value.diets)).not.toContain('quick');
     expect(value.prepTime).toBeNull();
@@ -43,7 +44,7 @@ describe('formToRecipeData', () => {
       createdAt: 1000,
       favorite: true,
       tags: ['sunday'],
-      description: '',
+      description: 'Old description',
     });
     // `shared` is left untouched by updates, so it isn't part of the saved data.
     expect('shared' in data).toBe(false);

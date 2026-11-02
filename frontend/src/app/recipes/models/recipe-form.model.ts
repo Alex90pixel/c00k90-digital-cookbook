@@ -21,6 +21,11 @@ export interface RecipeFormValue {
   steps: string[];
   source: string;
   pairing: string;
+  /** A short intro shown at the top of the recipe and on its card. */
+  description: string;
+  /** "Goes well with", one per line. */
+  extras: string;
+  tip: string;
   /** Any YouTube link form; saved as a standard watch link. */
   videoUrl: string;
   notes: string;

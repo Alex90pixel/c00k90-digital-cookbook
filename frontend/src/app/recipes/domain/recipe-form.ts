@@ -25,6 +25,9 @@ export function emptyRecipeForm(): RecipeFormValue {
     steps: [],
     source: '',
     pairing: '',
+    description: '',
+    extras: '',
+    tip: '',
     videoUrl: '',
     notes: '',
   };
@@ -55,9 +58,11 @@ export function recipeToForm(recipe: Recipe): RecipeFormValue {
     steps: [...(recipe.steps ?? [])],
     source: recipe.source ?? '',
     pairing: recipe.pairing ?? '',
+    description: recipe.description ?? '',
+    extras: (recipe.extras ?? []).join('\n'),
+    tip: recipe.tip ?? '',
     videoUrl: recipe.videoUrl ?? '',
-    // The old "description" field is no longer edited separately; it's merged into the notes.
-    notes: [recipe.description, recipe.notes].filter(Boolean).join('\n\n'),
+    notes: recipe.notes ?? '',
   };
 }
 
@@ -77,7 +82,12 @@ export function formToRecipeData(
   const cover = uploaded[0];
   return {
     name: value.name.trim(),
-    description: '',
+    description: value.description.trim(),
+    extras: value.extras
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean),
+    tip: value.tip.trim(),
     category: value.category,
     difficulty: value.difficulty,
     prepTime: Math.trunc(value.prepTime ?? 0) || 0,

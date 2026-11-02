@@ -359,6 +359,37 @@
       }
     </div>
 
+    <fieldset class="form-group">
+      <legend>{{ 'form.extraTitle' | t }}</legend>
+      <label for="recipe-description" class="sub-label">{{ 'form.description' | t }}</label>
+      <textarea
+        id="recipe-description"
+        rows="2"
+        [placeholder]="'form.descriptionPlaceholder' | t"
+        [formField]="recipeForm.description"
+      ></textarea>
+      <label for="recipe-extras" class="sub-label">{{ 'form.extras' | t }}</label>
+      <textarea
+        id="recipe-extras"
+        rows="3"
+        [placeholder]="'form.extrasPlaceholder' | t"
+        [formField]="recipeForm.extras"
+      ></textarea>
+      <label for="recipe-tip" class="sub-label">{{ 'form.tip' | t }}</label>
+      <input
+        id="recipe-tip"
+        type="text"
+        [placeholder]="'form.tipPlaceholder' | t"
+        [formField]="recipeForm.tip"
+      />
+      <button type="button" class="btn-add-row" [disabled]="enriching()" (click)="enrich()">
+        {{ 'form.enrich' | t }}
+      </button>
+      @if (enrichStatus(); as status) {
+        <p class="import-status" role="status">{{ status | t }}</p>
+      }
+    </fieldset>
+
     <div class="form-group">
       <label for="recipe-pairing">{{ 'form.pairing' | t }}</label>
       <input
