@@ -1,4 +1,4 @@
-import { CookbookOptions, CookbookStyle } from '../models/cookbook-export.model';
+import { CookbookOptions, CookbookSection, CookbookStyle } from '../models/cookbook-export.model';
 import { CATEGORIES } from '../models/recipe.constants';
 import { Ingredient, Recipe } from '../models/recipe.model';
 import { totalMinutes } from './diets';
@@ -36,8 +36,16 @@ export function groupByCategory(
     }));
 }
 
+/** The default chapters: one per category, titled with the category's name. */
+export function defaultSections(
+  recipes: readonly Recipe[],
+  categoryLabel: (id: string) => string,
+): CookbookSection[] {
+  return groupByCategory(recipes).map((g) => ({ ...g, title: categoryLabel(g.category) }));
+}
+
 /** One page of the contents: whole groups, or the part of a long group that fits. */
-export type ContentsPage = { category: string; recipes: Recipe[] }[];
+export type ContentsPage = { category: string; title?: string; recipes: Recipe[] }[];
 
 /**
  * Splits the contents over as many pages as needed. A category heading takes the room of two
@@ -45,7 +53,7 @@ export type ContentsPage = { category: string; recipes: Recipe[] }[];
  * fit continues on the next page under its heading again.
  */
 export function paginateContents(
-  groups: readonly { category: string; recipes: Recipe[] }[],
+  groups: readonly { category: string; title?: string; recipes: Recipe[] }[],
   rowsPerPage: number,
   titleRows = 4,
 ): ContentsPage[] {
@@ -60,7 +68,7 @@ export function paginateContents(
         room = rowsPerPage;
       }
       const fit = rest.slice(0, room - 2);
-      pages[pages.length - 1].push({ category: group.category, recipes: fit });
+      pages[pages.length - 1].push({ category: group.category, title: group.title, recipes: fit });
       room -= fit.length + 2;
       rest = rest.slice(fit.length);
     }
@@ -82,7 +90,12 @@ function quantity(ingredient: Ingredient): string {
   return [qty, ingredient.unit].filter((part) => part?.trim()).join(' ');
 }
 
-function recipePage(recipe: Recipe, page: number, options: CookbookOptions): string {
+function recipePage(
+  recipe: Recipe,
+  page: number,
+  options: CookbookOptions,
+  chapter: string,
+): string {
   const { labels, title } = options;
   const e = escapeHtml;
   const photo = safeImageUrl(recipeImages(recipe)[0]?.url);
@@ -107,7 +120,7 @@ function recipePage(recipe: Recipe, page: number, options: CookbookOptions): str
   <div class="inner">
     <div class="head">
       <div class="head-text">
-        <p class="kicker">${e(labels.category(recipe.category))}</p>
+        <p class="kicker">${e(chapter)}</p>
         <h2>${e(recipe.name)}</h2>
         ${meta.length ? `<p class="meta">${meta.map((m) => `<span>${e(m)}</span>`).join('')}</p>` : ''}
         ${source}
@@ -130,11 +143,16 @@ function recipePage(recipe: Recipe, page: number, options: CookbookOptions): str
 export function buildCookbookHtml(options: CookbookOptions): string {
   const { style, title, author, labels } = options;
   const e = escapeHtml;
-  const groups = groupByCategory(options.recipes);
+  const groups = (options.sections ?? defaultSections(options.recipes, labels.category))
+    .map((g) => ({ ...g, title: g.title.trim() || labels.category(g.category) }))
+    .filter((g) => g.recipes.length);
   const ordered = groups.flatMap((g) => g.recipes);
+  const chapterOf = new Map(groups.flatMap((g) => g.recipes.map((r) => [r.id, g.title])));
+  const dedication = options.dedication?.trim() ?? '';
   const contentsPages = paginateContents(groups, CONTENTS_ROWS[style]);
-  // Cover is page 1, then the contents pages, then one page per recipe.
-  const firstRecipePage = 2 + contentsPages.length;
+  // Cover is page 1, then the dedication (if any), the contents pages and one page per recipe.
+  const firstContentsPage = dedication ? 3 : 2;
+  const firstRecipePage = firstContentsPage + contentsPages.length;
   const pageOf = new Map(ordered.map((r, i) => [r.id, i + firstRecipePage]));
   const contents = contentsPages
     .map(
@@ -144,7 +162,7 @@ export function buildCookbookHtml(options: CookbookOptions): string {
   ${page
     .map(
       (g) =>
-        `<div class="toc-group"><h3>${e(labels.category(g.category))}</h3>${g.recipes
+        `<div class="toc-group"><h3>${e(g.title ?? labels.category(g.category))}</h3>${g.recipes
           .map(
             (r) =>
               `<div class="toc-row"><span>${e(r.name)}</span><i></i><span>${pageOf.get(r.id)}</span></div>`,
@@ -152,7 +170,7 @@ export function buildCookbookHtml(options: CookbookOptions): string {
           .join('')}</div>`,
     )
     .join('')}
-  <footer><span>${e(title)}</span><span>${i + 2}</span></footer>
+  <footer><span>${e(title)}</span><span>${i + firstContentsPage}</span></footer>
 </section>`,
     )
     .join('');
@@ -173,8 +191,13 @@ export function buildCookbookHtml(options: CookbookOptions): string {
     <p class="count">${e(labels.recipeCount(ordered.length))}</p>
   </div>
 </section>
+${
+  dedication
+    ? `<section class="page dedication"><p>${e(dedication)}</p><footer><span>${e(title)}</span><span>2</span></footer></section>`
+    : ''
+}
 ${contents}
-${ordered.map((r) => recipePage(r, pageOf.get(r.id) ?? 0, options)).join('')}
+${ordered.map((r) => recipePage(r, pageOf.get(r.id) ?? 0, options, chapterOf.get(r.id) ?? '')).join('')}
 </body>
 </html>`;
 }
@@ -187,6 +210,8 @@ html, body { margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: e
 .page { width: 210mm; height: 297mm; overflow: hidden; padding: 16mm; display: flex; flex-direction: column; break-after: page; position: relative; }
 h1, h2, h3, h5 { margin: 0; }
 .cover { justify-content: center; }
+.dedication { justify-content: center; align-items: center; text-align: center; }
+.dedication p { max-width: 130mm; margin: 0 auto; font-size: 15pt; font-style: italic; line-height: 1.7; white-space: pre-line; }
 .toc h2 { font-size: 26pt; margin-bottom: 10mm; }
 .toc-group { margin-bottom: 7mm; break-inside: avoid; }
 .toc-group h3 { font-size: 9pt; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 2mm; }

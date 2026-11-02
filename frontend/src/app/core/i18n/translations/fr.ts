@@ -189,6 +189,13 @@ export const fr: Translations = {
       minimal: 'Côte dorée',
       moody: 'Tamisé',
     },
+    dedication: 'Dédicace ou préface (facultatif)',
+    dedicationPlaceholder: "ex. Pour maman, qui m'a appris à cuisiner.",
+    sectionTitle: 'Titre du chapitre',
+    moveUp: 'Monter',
+    moveDown: 'Descendre',
+    orderHint:
+      "Renommez les chapitres et utilisez ↑ ↓ pour changer l'ordre. Décochez ce que vous ne voulez pas imprimer.",
     bookTitle: 'Titre du livre',
     defaultTitle: 'Mon livre de recettes',
     recipes: { one: '{count} recette sélectionnée', other: '{count} recettes sélectionnées' },

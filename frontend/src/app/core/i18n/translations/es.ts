@@ -189,6 +189,13 @@ export const es: Translations = {
       minimal: 'Costa dorada',
       moody: 'Íntimo',
     },
+    dedication: 'Dedicatoria o prólogo (opcional)',
+    dedicationPlaceholder: 'p. ej. Para mamá, que me enseñó a cocinar.',
+    sectionTitle: 'Título del capítulo',
+    moveUp: 'Subir',
+    moveDown: 'Bajar',
+    orderHint:
+      'Cambia el nombre de los capítulos y usa ↑ ↓ para cambiar el orden. Desmarca lo que no quieras imprimir.',
     bookTitle: 'Título del libro',
     defaultTitle: 'Mi recetario',
     recipes: { one: '{count} receta seleccionada', other: '{count} recetas seleccionadas' },

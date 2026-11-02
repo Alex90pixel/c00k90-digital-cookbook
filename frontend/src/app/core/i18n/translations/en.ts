@@ -189,6 +189,13 @@ export const en = {
       minimal: 'Golden coast',
       moody: 'Moody',
     },
+    dedication: 'Dedication or preface (optional)',
+    dedicationPlaceholder: 'e.g. To Mum, who taught me how to cook.',
+    sectionTitle: 'Chapter title',
+    moveUp: 'Move up',
+    moveDown: 'Move down',
+    orderHint:
+      "Rename the chapters and use ↑ ↓ to change the order. Untick what you don't want to print.",
     bookTitle: 'Book title',
     defaultTitle: 'My Cookbook',
     recipes: { one: '{count} recipe selected', other: '{count} recipes selected' },

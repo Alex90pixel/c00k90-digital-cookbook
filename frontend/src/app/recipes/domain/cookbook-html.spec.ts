@@ -95,4 +95,27 @@ describe('paginateContents', () => {
     expect(pages[1][0].category).toBe('Soups');
     expect(pages[1][0].recipes.length).toBe(16);
   });
+
+  it('prints a dedication page, renamed chapters and the chosen order', () => {
+    const a = recipe('1', 'Zucchini soup', 'Soups');
+    const b = recipe('2', 'Apple pie', 'Desserts');
+    const html = buildCookbookHtml({
+      style: 'classic',
+      lang: 'en',
+      title: 'For Mum',
+      author: '',
+      labels,
+      recipes: [a, b],
+      dedication: 'To Mum, who taught me to cook.',
+      sections: [
+        { category: 'Desserts', title: 'Sweet things', recipes: [b] },
+        { category: 'Soups', title: '', recipes: [a] },
+      ],
+    });
+    expect(html).toContain('class="page dedication"><p>To Mum, who taught me to cook.</p>');
+    expect(html).toContain('<h3>Sweet things</h3>');
+    // Cover 1, dedication 2, contents 3, then the recipes in the chosen order.
+    expect(html).toMatch(/Apple pie<\/span><i><\/i><span>4/);
+    expect(html).toMatch(/Zucchini soup<\/span><i><\/i><span>5/);
+  });
 });

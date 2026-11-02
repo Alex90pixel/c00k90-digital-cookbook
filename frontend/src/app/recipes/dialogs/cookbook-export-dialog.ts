@@ -6,8 +6,8 @@ import { TranslationKey } from '../../core/i18n/i18n.types';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { ToastService } from '../../core/toast/toast.service';
 import { RecipeStore } from '../data/recipe.store';
-import { buildCookbookHtml, fitPagesToA4 } from '../domain/cookbook-html';
-import { CookbookLabels, CookbookStyle } from '../models/cookbook-export.model';
+import { buildCookbookHtml, defaultSections, fitPagesToA4 } from '../domain/cookbook-html';
+import { CookbookLabels, CookbookSection, CookbookStyle } from '../models/cookbook-export.model';
 
 interface StyleOption {
   id: CookbookStyle;
@@ -61,29 +61,97 @@ const STYLES: readonly StyleOption[] = [
         (input)="title.set($any($event.target).value)"
       />
 
+      <label class="field-label" for="cookbook-dedication">{{ 'cookbook.dedication' | t }}</label>
+      <textarea
+        id="cookbook-dedication"
+        class="field"
+        rows="3"
+        maxlength="600"
+        [placeholder]="'cookbook.dedicationPlaceholder' | t"
+        [value]="dedication()"
+        (input)="dedication.set($any($event.target).value)"
+      ></textarea>
+
       <div class="recipes-head">
         <span>{{ 'cookbook.recipes' | t: { count: selected().size } }}</span>
         <button type="button" class="link" (click)="toggleAll()">
           {{ (allSelected() ? 'cookbook.selectNone' : 'cookbook.selectAll') | t }}
         </button>
       </div>
-      <ul class="recipe-list">
-        @for (recipe of recipes(); track recipe.id) {
-          <li>
-            <label>
+      <p class="order-hint">{{ 'cookbook.orderHint' | t }}</p>
+      <div class="recipe-list">
+        @for (section of sections(); track section.category; let s = $index, lastSection = $last) {
+          <div class="section">
+            <div class="section-head">
               <input
-                name="recipes"
-                type="checkbox"
-                [checked]="selected().has(recipe.id)"
-                (change)="toggle(recipe.id)"
+                class="section-title"
+                type="text"
+                maxlength="40"
+                [attr.aria-label]="'cookbook.sectionTitle' | t"
+                [value]="section.title"
+                (input)="renameSection(s, $any($event.target).value)"
               />
-              <span>{{ recipe.name }}</span>
-            </label>
-          </li>
+              <button
+                type="button"
+                class="move"
+                [disabled]="s === 0"
+                [attr.aria-label]="'cookbook.moveUp' | t"
+                (click)="moveSection(s, -1)"
+              >
+                ↑
+              </button>
+              <button
+                type="button"
+                class="move"
+                [disabled]="lastSection"
+                [attr.aria-label]="'cookbook.moveDown' | t"
+                (click)="moveSection(s, 1)"
+              >
+                ↓
+              </button>
+            </div>
+            <ul>
+              @for (
+                recipe of section.recipes;
+                track recipe.id;
+                let r = $index, lastRecipe = $last
+              ) {
+                <li>
+                  <label>
+                    <input
+                      name="recipes"
+                      type="checkbox"
+                      [checked]="selected().has(recipe.id)"
+                      (change)="toggle(recipe.id)"
+                    />
+                    <span>{{ recipe.name }}</span>
+                  </label>
+                  <button
+                    type="button"
+                    class="move"
+                    [disabled]="r === 0"
+                    [attr.aria-label]="'cookbook.moveUp' | t"
+                    (click)="moveRecipe(s, r, -1)"
+                  >
+                    ↑
+                  </button>
+                  <button
+                    type="button"
+                    class="move"
+                    [disabled]="lastRecipe"
+                    [attr.aria-label]="'cookbook.moveDown' | t"
+                    (click)="moveRecipe(s, r, 1)"
+                  >
+                    ↓
+                  </button>
+                </li>
+              }
+            </ul>
+          </div>
         } @empty {
-          <li class="empty">{{ 'cookbook.noRecipes' | t }}</li>
+          <p class="empty">{{ 'cookbook.noRecipes' | t }}</p>
         }
-      </ul>
+      </div>
 
       <div class="confirm-btns">
         <button type="button" class="btn-confirm-cancel" (click)="ref.close()">
@@ -168,22 +236,78 @@ const STYLES: readonly StyleOption[] = [
       font-weight: 700;
       cursor: pointer;
     }
+    .order-hint {
+      margin: 2px 0 0;
+      color: var(--text-light);
+      font-size: 12px;
+    }
     .recipe-list {
-      max-height: 30vh;
+      max-height: 38vh;
       margin: 6px 0 18px;
-      padding: 0;
       overflow-y: auto;
+    }
+    .section {
+      margin-bottom: 10px;
+    }
+    .section-head {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      padding: 4px 0;
+      background: var(--card);
+    }
+    .section-title {
+      flex: 1;
+      padding: 5px 10px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: transparent;
+      color: var(--teal-deep);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .section ul {
+      margin: 0;
+      padding: 0;
       list-style: none;
     }
-    .recipe-list label {
+    .section li {
       display: flex;
+      gap: 4px;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .section label {
+      display: flex;
+      flex: 1;
       gap: 10px;
       align-items: center;
       padding: 6px 2px;
-      border-bottom: 1px solid var(--border);
       color: var(--text-dark);
       font-size: 14px;
       cursor: pointer;
+    }
+    .move {
+      width: 28px;
+      height: 28px;
+      flex: none;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--text-mid);
+      cursor: pointer;
+
+      &:hover:not(:disabled) {
+        background: var(--teal-pale);
+      }
+      &:disabled {
+        opacity: 0.25;
+        cursor: default;
+      }
     }
     .recipe-list input {
       width: 17px;
@@ -211,9 +335,12 @@ export class CookbookExportDialog {
   protected readonly styles = STYLES;
   protected readonly style = signal<CookbookStyle>('classic');
   protected readonly title = signal(this.i18n.t('cookbook.defaultTitle'));
-  protected readonly recipes = computed(() =>
-    [...this.store.myRecipes()].sort((a, b) => a.name.localeCompare(b.name)),
+  protected readonly dedication = signal('');
+  /** Chapters in the order the user arranges them; starts as one per category. */
+  protected readonly sections = signal<CookbookSection[]>(
+    defaultSections(this.store.myRecipes(), (id) => this.i18n.label('categories', id)),
   );
+  protected readonly recipes = computed(() => this.sections().flatMap((s) => s.recipes));
   protected readonly selected = signal(new Set(this.store.myRecipes().map((r) => r.id)));
   protected readonly allSelected = computed(
     () => this.recipes().length > 0 && this.selected().size === this.recipes().length,
@@ -226,6 +353,22 @@ export class CookbookExportDialog {
       if (!next.delete(id)) next.add(id);
       return next;
     });
+  }
+
+  protected renameSection(index: number, title: string): void {
+    this.sections.update((list) => list.map((s, i) => (i === index ? { ...s, title } : s)));
+  }
+
+  protected moveSection(index: number, step: -1 | 1): void {
+    this.sections.update((list) => swap(list, index, index + step));
+  }
+
+  protected moveRecipe(section: number, index: number, step: -1 | 1): void {
+    this.sections.update((list) =>
+      list.map((s, i) =>
+        i === section ? { ...s, recipes: swap(s.recipes, index, index + step) } : s,
+      ),
+    );
   }
 
   protected toggleAll(): void {
@@ -243,6 +386,11 @@ export class CookbookExportDialog {
         title: this.title().trim() || this.i18n.t('cookbook.defaultTitle'),
         author: this.auth.displayName() ?? '',
         recipes: this.recipes().filter((recipe) => this.selected().has(recipe.id)),
+        sections: this.sections().map((s) => ({
+          ...s,
+          recipes: s.recipes.filter((recipe) => this.selected().has(recipe.id)),
+        })),
+        dedication: this.dedication(),
         labels: this.labels(),
       });
       await printHtml(html);
@@ -269,6 +417,14 @@ export class CookbookExportDialog {
       category: (id) => this.i18n.label('categories', id),
     };
   }
+}
+
+/** A copy of the list with two items swapped (unchanged when `to` is out of range). */
+function swap<T>(list: readonly T[], from: number, to: number): T[] {
+  const copy = [...list];
+  if (to < 0 || to >= copy.length) return copy;
+  [copy[from], copy[to]] = [copy[to], copy[from]];
+  return copy;
 }
 
 /**

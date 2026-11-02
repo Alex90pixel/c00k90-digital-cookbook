@@ -195,6 +195,13 @@ export const ro: Translations = {
       minimal: 'Golden coast',
       moody: 'Moody',
     },
+    dedication: 'Dedicație sau prefață (opțional)',
+    dedicationPlaceholder: 'ex. Pentru mama, care m-a învățat să gătesc.',
+    sectionTitle: 'Titlul capitolului',
+    moveUp: 'Mută mai sus',
+    moveDown: 'Mută mai jos',
+    orderHint:
+      'Redenumește capitolele și folosește ↑ ↓ ca să schimbi ordinea. Debifează ce nu vrei să tipărești.',
     bookTitle: 'Titlul cărții',
     defaultTitle: 'Cartea mea de bucate',
     recipes: {

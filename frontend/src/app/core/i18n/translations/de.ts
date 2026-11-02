@@ -189,6 +189,13 @@ export const de: Translations = {
       minimal: 'Goldene Küste',
       moody: 'Gedämpft',
     },
+    dedication: 'Widmung oder Vorwort (optional)',
+    dedicationPlaceholder: 'z. B. Für Mama, die mir das Kochen beigebracht hat.',
+    sectionTitle: 'Kapiteltitel',
+    moveUp: 'Nach oben',
+    moveDown: 'Nach unten',
+    orderHint:
+      'Benenne die Kapitel um und ändere mit ↑ ↓ die Reihenfolge. Entferne das Häkchen bei allem, was du nicht drucken willst.',
     bookTitle: 'Buchtitel',
     defaultTitle: 'Mein Kochbuch',
     recipes: { one: '{count} Rezept ausgewählt', other: '{count} Rezepte ausgewählt' },

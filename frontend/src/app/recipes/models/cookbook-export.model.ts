@@ -17,6 +17,14 @@ export interface CookbookLabels {
   category: (id: string) => string;
 }
 
+/** A chapter of the cookbook: a category, its printed title and its recipes, in order. */
+export interface CookbookSection {
+  category: string;
+  /** The heading printed for the chapter; the category's name when empty. */
+  title: string;
+  recipes: Recipe[];
+}
+
 /** Everything needed to build the printable cookbook. */
 export interface CookbookOptions {
   style: CookbookStyle;
@@ -26,4 +34,8 @@ export interface CookbookOptions {
   author: string;
   recipes: readonly Recipe[];
   labels: CookbookLabels;
+  /** Chapters in the user's order; when missing, the recipes are grouped by category. */
+  sections?: readonly CookbookSection[];
+  /** A dedication or preface, printed on its own page after the cover. */
+  dedication?: string;
 }
