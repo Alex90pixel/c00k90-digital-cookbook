@@ -196,12 +196,6 @@ export class RecipeStore {
     }
   }
 
-  /** Saves only the allergens of one of my recipes (used by the one-time "detect for all"). */
-  async setAllergens(id: string, allergens: AllergenId[]): Promise<void> {
-    await this.repository.update(id, { allergens });
-    this.patchMine(id, { allergens });
-  }
-
   async toggleShared(recipe: Recipe): Promise<void> {
     const shared = !recipe.shared;
     try {

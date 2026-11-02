@@ -1,6 +1,6 @@
 import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 import { ConnectedPosition } from '@angular/cdk/overlay';
-import { Component, computed, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../core/auth/auth.service';
 import { TranslatePipe } from '../core/i18n/translate.pipe';
@@ -8,12 +8,10 @@ import { FeedbackInboxDialog } from '../moderation/dialogs/feedback-inbox-dialog
 import { ReportsDialog } from '../moderation/dialogs/reports-dialog';
 import { ModerationService } from '../moderation/moderation.service';
 import { AppDialog } from '../shared/dialog/app-dialog.service';
-import { RecipeStore } from '../recipes/data/recipe.store';
 import { MealPlanDialog } from '../recipes/dialogs/meal-plan-dialog';
 import { CookbookExportDialog } from '../recipes/dialogs/cookbook-export-dialog';
 import { CollectionsDialog } from './dialogs/collections-dialog';
 import { RecipeIdeasDialog } from '../recipes/dialogs/recipe-ideas-dialog';
-import { AllergenBatchDialog } from '../recipes/dialogs/allergen-batch-dialog';
 import { ProfileDialog } from './profile/profile-dialog';
 import { SettingsDialog } from './settings/settings-dialog';
 
@@ -94,16 +92,6 @@ import { SettingsDialog } from './settings/settings-dialog';
         >
           {{ 'menu.cookbook' | t }}
         </button>
-        @if (allergensMissing()) {
-          <button
-            type="button"
-            cdkMenuItem
-            class="menu-item"
-            (cdkMenuItemTriggered)="open('allergens')"
-          >
-            {{ 'allergenBatch.menu' | t }}
-          </button>
-        }
         <hr class="dropdown-divider" />
         <button
           type="button"
@@ -134,11 +122,6 @@ export class AccountMenu {
   protected readonly auth = inject(AuthService);
   protected readonly moderation = inject(ModerationService);
   private readonly dialog = inject(AppDialog);
-  private readonly store = inject(RecipeStore);
-  /** The one-time allergen detection shows only while some of my recipes still need it. */
-  protected readonly allergensMissing = computed(() =>
-    this.store.myRecipes().some((r) => !r.allergens && r.ingredients?.length),
-  );
   private readonly router = inject(Router);
 
   /** Opens below the avatar, aligned to its right edge. */
@@ -154,7 +137,6 @@ export class AccountMenu {
       | 'settings'
       | 'mealPlan'
       | 'ideas'
-      | 'allergens'
       | 'collections'
       | 'cookbook',
   ): void {
@@ -173,9 +155,6 @@ export class AccountMenu {
         break;
       case 'mealPlan':
         this.dialog.open(MealPlanDialog, { width: 'wide' });
-        break;
-      case 'allergens':
-        this.dialog.open(AllergenBatchDialog, { width: 'confirm' });
         break;
       case 'ideas':
         this.dialog.open(RecipeIdeasDialog, { width: 'wide' });
