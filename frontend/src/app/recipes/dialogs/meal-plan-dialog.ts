@@ -124,7 +124,12 @@ import { RecipeDialogs } from '../recipe-dialogs.service';
       }
 
       <div class="confirm-btns">
-        <button type="button" class="btn-confirm-cancel" (click)="showList.set(!showList())">
+        <button
+          type="button"
+          class="btn-confirm-cancel"
+          data-guide="week-shopping"
+          (click)="showList.set(!showList())"
+        >
           {{ (showList() ? 'mealPlan.backToWeek' : 'mealPlan.shoppingButton') | t }}
         </button>
         <button type="button" class="btn-save" (click)="ref.close()">

@@ -70,6 +70,8 @@ export class RecipeStore {
   readonly category = signal<Category | 'all'>('all');
   readonly diet = signal<DietId | null>(null);
   readonly sort = signal<RecipeSort>('recent');
+  /** Set by the guide to open "More filters" above the recipes. */
+  readonly openMoreFilters = signal(false);
   /** Changing it gives "Surprise me" a new random order. */
   readonly shuffleSeed = signal(Date.now());
 

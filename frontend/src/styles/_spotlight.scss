@@ -1,0 +1,48 @@
+// The "How to use" guide highlights a place with a soft pulsing ring
+// (see Spotlight in shared/ui/spotlight.service.ts).
+.guide-spotlight {
+  animation: guide-pulse 1.1s ease-in-out 4;
+}
+
+// A short tip shown under the highlighted place.
+.guide-tip {
+  position: fixed;
+  z-index: 2000;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--teal-deep);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+  text-align: center;
+  box-shadow: var(--panel-shadow);
+  pointer-events: none;
+  animation: guide-tip-in 0.25s ease-out;
+}
+
+@keyframes guide-tip-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes guide-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+  50% {
+    box-shadow:
+      0 0 0 6px color-mix(in srgb, var(--teal) 45%, transparent),
+      0 0 18px 4px color-mix(in srgb, var(--teal) 35%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guide-spotlight {
+    animation: none;
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--teal) 45%, transparent);
+  }
+}

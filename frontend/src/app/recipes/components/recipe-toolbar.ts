@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { MyAllergiesService } from '../../account/allergies/my-allergies.service';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
@@ -382,6 +382,16 @@ export class RecipeToolbar {
   }
   /** Opens by itself when filters are already in use (e.g. after leaving the page). */
   protected readonly moreOpen = signal(this.store.moreFiltersCount() > 0);
+
+  constructor() {
+    // The guide's "Filters & allergens" tile asks for "More filters" to open.
+    effect(() => {
+      if (this.store.openMoreFilters()) {
+        this.moreOpen.set(true);
+        this.store.openMoreFilters.set(false);
+      }
+    });
+  }
   protected readonly count = computed(() => this.store.visible().length);
 
   protected setCategory(event: Event): void {

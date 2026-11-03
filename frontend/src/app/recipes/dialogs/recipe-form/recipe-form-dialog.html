@@ -263,7 +263,7 @@
       </div>
     </div>
 
-    <fieldset class="form-group">
+    <fieldset class="form-group" data-guide="allergens">
       <legend>{{ 'form.allergens' | t }}</legend>
       @if (tickedAllergens().length) {
         <div class="allergen-chips">
@@ -359,7 +359,7 @@
       }
     </div>
 
-    <fieldset class="form-group">
+    <fieldset class="form-group" data-guide="extras">
       <legend>{{ 'form.extraTitle' | t }}</legend>
       <label for="recipe-description" class="sub-label">{{ 'form.description' | t }}</label>
       <textarea

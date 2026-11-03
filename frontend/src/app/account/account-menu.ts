@@ -7,11 +7,14 @@ import { TranslatePipe } from '../core/i18n/translate.pipe';
 import { FeedbackInboxDialog } from '../moderation/dialogs/feedback-inbox-dialog';
 import { ReportsDialog } from '../moderation/dialogs/reports-dialog';
 import { ModerationService } from '../moderation/moderation.service';
+import { STORAGE_KEYS, safeLocalStorage } from '../core/storage/local-storage';
 import { AppDialog } from '../shared/dialog/app-dialog.service';
 import { MealPlanDialog } from '../recipes/dialogs/meal-plan-dialog';
 import { CookbookExportDialog } from '../recipes/dialogs/cookbook-export-dialog';
 import { CollectionsDialog } from './dialogs/collections-dialog';
 import { RecipeIdeasDialog } from '../recipes/dialogs/recipe-ideas-dialog';
+import { ChefHat } from './guide/chef-hat';
+import { GuideDialog } from './guide/guide-dialog';
 import { ProfileDialog } from './profile/profile-dialog';
 import { SettingsDialog } from './settings/settings-dialog';
 
@@ -21,7 +24,7 @@ import { SettingsDialog } from './settings/settings-dialog';
  */
 @Component({
   selector: 'app-account-menu',
-  imports: [CdkMenuTrigger, CdkMenu, CdkMenuItem, TranslatePipe],
+  imports: [CdkMenuTrigger, CdkMenu, CdkMenuItem, TranslatePipe, ChefHat],
   template: `
     @if (auth.avatarUrl(); as avatar) {
       <button
@@ -39,6 +42,15 @@ import { SettingsDialog } from './settings/settings-dialog';
             >{{ moderation.openItems() }}</span
           >
         }
+      </button>
+      <button
+        type="button"
+        class="guide-hat"
+        [attr.aria-label]="'guide.open' | t"
+        [title]="'guide.open' | t"
+        (click)="openGuide()"
+      >
+        <app-chef-hat />
       </button>
     }
 
@@ -122,6 +134,18 @@ export class AccountMenu {
   protected readonly auth = inject(AuthService);
   protected readonly moderation = inject(ModerationService);
   private readonly dialog = inject(AppDialog);
+
+  constructor() {
+    // The guide opens by itself once, the first time someone uses the app on this device.
+    if (!safeLocalStorage.get(STORAGE_KEYS.guideSeen)) {
+      safeLocalStorage.set(STORAGE_KEYS.guideSeen, '1');
+      setTimeout(() => this.openGuide(), 600);
+    }
+  }
+
+  protected openGuide(): void {
+    this.dialog.open(GuideDialog, { width: 'medium' });
+  }
   private readonly router = inject(Router);
 
   /** Opens below the avatar, aligned to its right edge. */

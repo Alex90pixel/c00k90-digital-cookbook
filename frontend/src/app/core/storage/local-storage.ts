@@ -25,4 +25,5 @@ export const STORAGE_KEYS = {
   consent: 'c00k90-consent',
   photoConsent: 'c00k90-photo-ok',
   language: 'c00k90-lang',
+  guideSeen: 'c00k90-guide-seen',
 } as const;
