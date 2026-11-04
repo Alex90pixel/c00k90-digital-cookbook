@@ -83,7 +83,6 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
           'list.count' | t: { count: count() }
         }}</span>
         <label class="sort">
-          <span aria-hidden="true">⇅</span>
           <select name="sort" [attr.aria-label]="'sort.label' | t" (change)="setSort($event)">
             @for (s of sortOptions; track s.id) {
               <option [value]="s.id" [selected]="store.sort() === s.id">
