@@ -119,10 +119,6 @@ export const de: Translations = {
   },
   guide: {
     open: 'So nutzt du C00K90',
-    step: '{current} von {total}',
-    skip: 'Überspringen',
-    back: 'Zurück',
-    next: 'Weiter',
     done: "Los geht's!",
     tips: {
       paste:
@@ -166,7 +162,6 @@ export const de: Translations = {
       t6: 'Design & Sprache',
     },
     again: {
-      title: 'Wir sehen uns in der Küche!',
       text: 'Tippe auf die Kochmütze an deinem Foto, wenn du diesen Guide wieder sehen willst.',
     },
   },

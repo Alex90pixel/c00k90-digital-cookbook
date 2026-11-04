@@ -144,7 +144,7 @@ export class AccountMenu {
   }
 
   protected openGuide(): void {
-    this.dialog.open(GuideDialog, { width: 'medium' });
+    this.dialog.open(GuideDialog, { width: 'wide' });
   }
   private readonly router = inject(Router);
 

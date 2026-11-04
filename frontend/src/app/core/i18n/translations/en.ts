@@ -119,10 +119,6 @@ export const en = {
   },
   guide: {
     open: 'How to use C00K90',
-    step: '{current} of {total}',
-    skip: 'Skip',
-    back: 'Back',
-    next: 'Next',
     done: "Let's cook!",
     tips: {
       paste:
@@ -165,7 +161,6 @@ export const en = {
       t6: 'Theme & language',
     },
     again: {
-      title: 'See you in the kitchen!',
       text: "Tap the chef's hat on your photo whenever you want to see this guide again.",
     },
   },

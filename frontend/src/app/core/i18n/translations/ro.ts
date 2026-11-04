@@ -126,10 +126,6 @@ export const ro: Translations = {
   },
   guide: {
     open: 'Cum folosești C00K90',
-    step: '{current} din {total}',
-    skip: 'Sari peste',
-    back: 'Înapoi',
-    next: 'Mai departe',
     done: 'Hai să gătim!',
     tips: {
       paste:
@@ -173,7 +169,6 @@ export const ro: Translations = {
       t6: 'Temă și limbă',
     },
     again: {
-      title: 'Ne vedem în bucătărie!',
       text: 'Apasă pe pălăria de bucătar de pe poza ta oricând vrei să revezi ghidul.',
     },
   },

@@ -119,10 +119,6 @@ export const fr: Translations = {
   },
   guide: {
     open: 'Comment utiliser C00K90',
-    step: '{current} sur {total}',
-    skip: 'Passer',
-    back: 'Retour',
-    next: 'Suivant',
     done: 'On cuisine !',
     tips: {
       paste:
@@ -166,7 +162,6 @@ export const fr: Translations = {
       t6: 'Thème et langue',
     },
     again: {
-      title: 'À bientôt en cuisine !',
       text: 'Touchez la toque sur votre photo pour revoir ce guide quand vous voulez.',
     },
   },

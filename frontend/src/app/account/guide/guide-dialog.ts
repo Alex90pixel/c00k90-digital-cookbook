@@ -1,5 +1,5 @@
 import { DialogRef } from '@angular/cdk/dialog';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { RecipeStore } from '../../recipes/data/recipe.store';
 import { RecipeDialogs } from '../../recipes/recipe-dialogs.service';
@@ -13,16 +13,14 @@ import { ChefHat } from './chef-hat';
 interface GuideCard {
   id: string;
   emoji: string;
-  /** Icons of the tiles (their labels are `guide.<id>.t1`, `t2`…); none for a text card. */
-  tiles?: readonly string[];
+  /** Icons of the tiles (their labels are `guide.<id>.t1`, `t2`…). */
+  tiles: readonly string[];
 }
 
-const CARDS: readonly GuideCard[] = [
-  { id: 'welcome', emoji: '👋' },
+const SECTIONS: readonly GuideCard[] = [
   { id: 'start', emoji: '✍️', tiles: ['🍳', '📷', '🔗', '🔎', '🌾', '🎲'] },
   { id: 'cook', emoji: '👩‍🍳', tiles: ['🍽️', '📱', '🛒', '🗓️', '📁', '🥕'] },
   { id: 'yours', emoji: '💛', tiles: ['🌍', '❤️', '👨‍🍳', '📄', '⚠️', '🎨'] },
-  { id: 'again', emoji: '' },
 ];
 
 /** Where the arrow points after a tile opens its place (CSS selectors). */
@@ -52,77 +50,49 @@ const TIPS: Record<string, string> = {
   'yours.2': 'chefs',
 };
 
-/** The card to reopen at after a tile took the user somewhere ("back to the guide"). */
-let resumeAt = 0;
-
 /**
- * "How to use C00K90": a short illustrated tour, one card at a time. It opens by itself the
- * first time, and again from the chef's hat on the avatar.
+ * "How to use C00K90": everything the app can do on one page, as tiles that open each place.
+ * It opens by itself the first time, and again from the chef's hat on the avatar.
  */
 @Component({
   selector: 'app-guide-dialog',
   imports: [TranslatePipe, ChefHat],
-  host: { '(document:keydown)': 'onKey($event)' },
   template: `
-    @let card = current();
-    <div class="guide" role="dialog" aria-labelledby="guide-title" aria-live="polite">
-      <button type="button" class="skip" (click)="finish()">
-        {{ (isLast() ? 'common.close' : 'guide.skip') | t }}
+    <div class="guide" role="dialog" aria-labelledby="guide-title">
+      <button
+        type="button"
+        class="close"
+        [attr.aria-label]="'common.close' | t"
+        (click)="ref.close()"
+      >
+        ✕
       </button>
 
-      <div class="picture" aria-hidden="true">
-        @if (card.id === 'again') {
-          <span class="mini-avatar">🙂<app-chef-hat class="mini-hat" /></span>
-        } @else {
-          {{ card.emoji }}
-        }
-      </div>
+      <h2 id="guide-title">👋 {{ 'guide.welcome.title' | t }}</h2>
+      <p class="intro">{{ 'guide.welcome.text' | t }}</p>
 
-      <p class="step">{{ 'guide.step' | t: { current: index() + 1, total: total } }}</p>
-      <h2 id="guide-title">{{ key(card, 'title') | t }}</h2>
-      @if (card.tiles; as tiles) {
+      @for (section of sections; track section.id) {
+        <h3>{{ section.emoji }} {{ key(section, 'title') | t }}</h3>
         <ul class="tiles">
-          @for (icon of tiles; track $index) {
+          @for (icon of section.tiles; track $index) {
             <li>
-              <button type="button" (click)="goTo(card.id, $index)">
+              <button type="button" (click)="goTo(section.id, $index)">
                 <span class="tile-icon" aria-hidden="true">{{ icon }}</span>
-                <span class="tile-label">{{ key(card, 't' + ($index + 1)) | t }}</span>
-                <span class="tile-go" aria-hidden="true">→</span>
+                <span class="tile-label">{{ key(section, 't' + ($index + 1)) | t }}</span>
               </button>
             </li>
           }
         </ul>
-      } @else {
-        <p class="text">{{ key(card, 'text') | t }}</p>
       }
 
-      <div class="dots" aria-hidden="true">
-        @for (c of cards; track c.id; let i = $index) {
-          <button
-            type="button"
-            tabindex="-1"
-            [class.on]="i === index()"
-            (click)="index.set(i)"
-          ></button>
-        }
-      </div>
-
-      <div class="nav">
-        <button
-          type="button"
-          class="btn-confirm-cancel"
-          [disabled]="index() === 0"
-          (click)="go(-1)"
-        >
-          {{ 'guide.back' | t }}
+      <div class="footer">
+        <p class="again">
+          <app-chef-hat class="hat" />
+          {{ 'guide.again.text' | t }}
+        </p>
+        <button type="button" class="btn-save" (click)="ref.close()">
+          {{ 'guide.done' | t }}
         </button>
-        @if (isLast()) {
-          <button type="button" class="btn-save" (click)="finish()">
-            {{ 'guide.done' | t }}
-          </button>
-        } @else {
-          <button type="button" class="btn-save" (click)="go(1)">{{ 'guide.next' | t }}</button>
-        }
       </div>
     </div>
   `,
@@ -130,101 +100,75 @@ let resumeAt = 0;
     /* Its own card, so the text never sits on top of the page behind. */
     .guide {
       position: relative;
-      padding: 28px 24px 22px;
+      padding: 26px 24px 22px;
       border-radius: 20px;
       background: var(--card);
       box-shadow: var(--panel-shadow);
       text-align: center;
     }
-    .skip {
+    .close {
       position: absolute;
-      top: 14px;
-      right: 16px;
+      top: 12px;
+      right: 14px;
+      width: 32px;
+      height: 32px;
       border: 0;
-      background: none;
-      color: var(--text-mid);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .picture {
-      display: grid;
-      place-items: center;
-      width: 112px;
-      height: 112px;
-      margin: 6px auto 14px;
       border-radius: 50%;
-      background: var(--teal-pale);
-      font-size: 54px;
-      animation: pop 0.35s ease-out;
-    }
-    .mini-avatar {
-      position: relative;
-      font-size: 54px;
-    }
-    .mini-hat {
-      position: absolute;
-      top: -26px;
-      left: -14px;
-      width: 46px;
-      height: 46px;
-      transform: rotate(-18deg);
-    }
-    @keyframes pop {
-      from {
-        transform: scale(0.85);
-        opacity: 0;
+      background: transparent;
+      color: var(--text-mid);
+      font-size: 15px;
+      cursor: pointer;
+
+      &:hover {
+        background: var(--teal-pale);
       }
     }
-    .step {
-      margin: 0 0 4px;
-      color: var(--text-mid);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
     h2 {
-      margin: 0 0 14px;
+      margin: 0 0 6px;
       color: var(--text-dark);
       font-family: 'Playfair Display', serif;
-      font-size: 22px;
+      font-size: 24px;
     }
-    .text {
-      max-width: 360px;
-      margin: 0 auto 22px;
+    .intro {
+      max-width: 420px;
+      margin: 0 auto 18px;
       color: var(--text-dark);
-      font-size: 17px;
-      font-weight: 500;
-      line-height: 1.6;
+      font-size: 15px;
+      line-height: 1.55;
     }
+    h3 {
+      margin: 16px 0 8px;
+      color: var(--text-dark);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-align: left;
+      text-transform: uppercase;
+    }
+    /* Six tiles a row on wide screens, three on phones; all the same size. */
     .tiles {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      max-width: 420px;
-      margin: 0 auto 22px;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+      margin: 0;
       padding: 0;
       list-style: none;
     }
-    /* Every tile has the same size, whatever its label; tapping one opens that place. */
     .tiles button {
-      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       width: 100%;
-      height: 96px;
-      padding: 12px 8px;
+      height: 92px;
+      padding: 8px 6px;
       border: 2px solid transparent;
-      border-radius: 18px;
+      border-radius: 16px;
       background: var(--teal-pale);
       font: inherit;
       text-align: center;
       cursor: pointer;
-      animation: pop 0.35s ease-out both;
       transition:
         transform 0.15s,
         border-color 0.15s;
@@ -235,73 +179,51 @@ let resumeAt = 0;
         transform: translateY(-2px);
         outline: none;
       }
-      &:hover .tile-go,
-      &:focus-visible .tile-go {
-        opacity: 1;
-      }
-    }
-    .tile-go {
-      position: absolute;
-      right: 10px;
-      bottom: 8px;
-      color: var(--teal);
-      font-weight: 700;
-      opacity: 0.45;
-      transition: opacity 0.15s;
-    }
-    .tiles li:nth-child(2) button {
-      animation-delay: 0.08s;
-    }
-    .tiles li:nth-child(3) button {
-      animation-delay: 0.16s;
     }
     .tile-icon {
-      font-size: 30px;
+      font-size: 24px;
       line-height: 1;
     }
     .tile-label {
       color: var(--teal-deep);
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 700;
-      line-height: 1.3;
+      line-height: 1.25;
     }
-    .dots {
+    .footer {
       display: flex;
-      justify-content: center;
-      gap: 6px;
-      margin-bottom: 16px;
-    }
-    .dots button {
-      width: 8px;
-      height: 8px;
-      padding: 0;
-      border: 0;
-      border-radius: 50%;
-      background: var(--border);
-      cursor: pointer;
-    }
-    .dots button.on {
-      width: 22px;
-      border-radius: 4px;
-      background: var(--teal);
-    }
-    .nav {
-      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 12px;
+      margin-top: 20px;
     }
-    .nav button:disabled {
-      visibility: hidden;
+    .again {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      color: var(--text-mid);
+      font-size: 13px;
+      text-align: left;
+    }
+    .hat {
+      width: 26px;
+      height: 26px;
+      flex: none;
+      transform: rotate(-18deg);
+    }
+    @media (max-width: 640px) {
+      .tiles {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
     }
   `,
 })
 export class GuideDialog {
   protected readonly ref = inject(DialogRef);
-  protected readonly cards = CARDS;
-  protected readonly total = CARDS.length;
-  protected readonly index = signal(resumeAt);
-  protected readonly current = computed(() => CARDS[this.index()]);
-  protected readonly isLast = computed(() => this.index() === this.total - 1);
+  protected readonly sections = SECTIONS;
 
   protected key(card: GuideCard, part: string): TranslationKey {
     return `guide.${card.id}.${part}` as TranslationKey;
@@ -316,7 +238,6 @@ export class GuideDialog {
 
   /** Closes the guide, opens the place a tile talks about and points at it. */
   protected async goTo(card: string, tile: number): Promise<void> {
-    resumeAt = this.index();
     this.ref.close();
     const action = `${card}.${tile}`;
     await this.open(action);
@@ -397,20 +318,5 @@ export class GuideDialog {
         return;
       }
     }
-  }
-
-  /** Skip, Close or "Let's cook": the next time the guide starts from the beginning. */
-  protected finish(): void {
-    resumeAt = 0;
-    this.ref.close();
-  }
-
-  protected go(step: number): void {
-    this.index.update((i) => Math.min(this.total - 1, Math.max(0, i + step)));
-  }
-
-  protected onKey(event: KeyboardEvent): void {
-    if (event.key === 'ArrowRight') this.go(1);
-    if (event.key === 'ArrowLeft') this.go(-1);
   }
 }
