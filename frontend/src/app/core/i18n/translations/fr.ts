@@ -322,6 +322,14 @@ export const fr: Translations = {
     failed: "⚠️ Impossible d'enregistrer le menu. Veuillez réessayer.",
   },
   ideas: {
+    more: '🔄 Autres idées',
+    optionsLabel: 'Options',
+    options: {
+      quick: '⚡ Rapide',
+      guests: '🎉 Pour des invités',
+      vegetarian: '🥕 Végétarien',
+      kids: '🧒 Pour les enfants',
+    },
     menu: "✨ Qu'est-ce que je peux cuisiner ?",
     title: "✨ Qu'est-ce que je peux cuisiner ?",
     hint: 'Écrivez ce que vous avez à la maison et recevez 3 idées de recettes. Enregistrez celles qui vous plaisent dans votre livre.',

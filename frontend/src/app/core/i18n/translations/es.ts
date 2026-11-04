@@ -320,6 +320,14 @@ export const es: Translations = {
     failed: '⚠️ No se pudo guardar el menú. Inténtalo de nuevo.',
   },
   ideas: {
+    more: '🔄 Más ideas',
+    optionsLabel: 'Opciones',
+    options: {
+      quick: '⚡ Rápido',
+      guests: '🎉 Para invitados',
+      vegetarian: '🥕 Vegetariano',
+      kids: '🧒 Para niños',
+    },
     menu: '✨ ¿Qué puedo cocinar?',
     title: '✨ ¿Qué puedo cocinar?',
     hint: 'Escribe lo que tienes en casa y recibe 3 ideas de recetas con ello. Guarda las que te gusten en tu recetario.',

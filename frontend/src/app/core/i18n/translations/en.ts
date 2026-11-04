@@ -320,6 +320,14 @@ export const en = {
     failed: '⚠️ Could not save the meal plan. Please try again.',
   },
   ideas: {
+    more: '🔄 More ideas',
+    optionsLabel: 'Options',
+    options: {
+      quick: '⚡ Quick',
+      guests: '🎉 For guests',
+      vegetarian: '🥕 Vegetarian',
+      kids: '🧒 For kids',
+    },
     menu: '✨ What can I cook?',
     title: '✨ What can I cook?',
     hint: 'Type what you have at home and get 3 recipe ideas made with it. Save the ones you like to your cookbook.',

@@ -331,6 +331,14 @@ export const ro: Translations = {
     failed: '⚠️ Nu am putut salva planul de mese. Încearcă din nou.',
   },
   ideas: {
+    more: '🔄 Alte idei',
+    optionsLabel: 'Opțiuni',
+    options: {
+      quick: '⚡ Rapid',
+      guests: '🎉 Pentru musafiri',
+      vegetarian: '🥕 Vegetarian',
+      kids: '🧒 Pentru copii',
+    },
     menu: '✨ Ce pot găti?',
     title: '✨ Ce pot găti?',
     hint: 'Scrie ce ai în casă și primești 3 idei de rețete făcute cu ele. Pe cele care îți plac le salvezi în cartea ta de bucate.',

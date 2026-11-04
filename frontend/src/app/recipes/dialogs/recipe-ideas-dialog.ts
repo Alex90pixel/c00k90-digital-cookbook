@@ -2,12 +2,20 @@ import { DialogRef } from '@angular/cdk/dialog';
 import { Component, inject, signal } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
-import { RecipeIdeasService } from '../data/recipe-ideas.service';
+import { IdeaOption, RecipeIdeasService } from '../data/recipe-ideas.service';
+import { TranslationKey } from '../../core/i18n/i18n.types';
 import { RecipeStore } from '../data/recipe.store';
 import { parseIngredientLines } from '../domain/ingredients';
 import { emptyRecipeForm } from '../domain/recipe-form';
 import { RecipeIdea } from '../models/recipe-idea.model';
 import { categoryEmoji, difficultyIcon } from '../models/recipe.constants';
+
+const OPTIONS: readonly { id: IdeaOption; label: TranslationKey }[] = [
+  { id: 'quick', label: 'ideas.options.quick' },
+  { id: 'guests', label: 'ideas.options.guests' },
+  { id: 'vegetarian', label: 'ideas.options.vegetarian' },
+  { id: 'kids', label: 'ideas.options.kids' },
+];
 
 /**
  * "What can I cook?": the user types what they have at home and Gemini suggests three recipes
@@ -36,6 +44,20 @@ import { categoryEmoji, difficultyIcon } from '../models/recipe.constants';
           {{ (loading() ? 'ideas.thinking' : 'ideas.get') | t }}
         </button>
       </form>
+
+      <div class="options" role="group" [attr.aria-label]="'ideas.optionsLabel' | t">
+        @for (option of optionList; track option.id) {
+          <button
+            type="button"
+            class="option"
+            [class.on]="options().includes(option.id)"
+            [attr.aria-pressed]="options().includes(option.id)"
+            (click)="toggleOption(option.id)"
+          >
+            {{ option.label | t }}
+          </button>
+        }
+      </div>
 
       @if (error()) {
         <p class="error" role="alert">{{ error()! | t }}</p>
@@ -93,6 +115,17 @@ import { categoryEmoji, difficultyIcon } from '../models/recipe.constants';
         }
       </div>
 
+      @if (ideas().length) {
+        <button
+          type="button"
+          class="btn-add-row more"
+          [disabled]="loading()"
+          (click)="suggest(true)"
+        >
+          {{ (loading() ? 'ideas.thinking' : 'ideas.more') | t }}
+        </button>
+      }
+
       <p class="note">{{ 'ideas.note' | t }}</p>
       <div class="confirm-btns">
         <button type="button" class="btn-confirm-cancel" (click)="ref.close()">
@@ -110,6 +143,32 @@ import { categoryEmoji, difficultyIcon } from '../models/recipe.constants';
     .ask .field {
       flex: 1;
       min-width: 0;
+    }
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: -4px 0 14px;
+    }
+    .option {
+      padding: 5px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      background: transparent;
+      color: var(--text-mid);
+      font-size: 13px;
+      cursor: pointer;
+
+      &.on {
+        border-color: var(--teal);
+        background: var(--teal-pale);
+        color: var(--teal-deep);
+        font-weight: 600;
+      }
+    }
+    .more {
+      display: block;
+      margin: 14px auto 0;
     }
     .error {
       color: var(--magenta-deep);
@@ -245,13 +304,32 @@ export class RecipeIdeasDialog {
     return difficultyIcon(idea.difficulty);
   }
 
-  protected async suggest(): Promise<void> {
+  protected readonly optionList = OPTIONS;
+  protected readonly options = signal<readonly IdeaOption[]>([]);
+  /** Every idea shown for these ingredients, so "More ideas" doesn't repeat them. */
+  private shownNames: string[] = [];
+
+  protected toggleOption(id: IdeaOption): void {
+    this.options.update((list) =>
+      list.includes(id) ? list.filter((o) => o !== id) : [...list, id],
+    );
+  }
+
+  /** `more` keeps asking about the same ingredients, for ideas not shown yet. */
+  protected async suggest(more = false): Promise<void> {
     if (!this.have().trim() || this.loading()) return;
+    if (!more) this.shownNames = [];
     this.loading.set(true);
     this.error.set(null);
     this.saved.set(new Set());
     try {
-      const ideas = await this.ideasService.suggest(this.have(), this.i18n.language());
+      const ideas = await this.ideasService.suggest(
+        this.have(),
+        this.i18n.language(),
+        this.options(),
+        this.shownNames,
+      );
+      this.shownNames.push(...ideas.map((idea) => idea.name));
       this.ideas.set(ideas);
       if (!ideas.length) this.error.set('ideas.none');
     } catch (error) {
@@ -278,6 +356,12 @@ export class RecipeIdeasDialog {
       extras: idea.extras.join('\n'),
       tip: idea.tip,
       difficulty: idea.difficulty,
+    };
+    // Ideas asked for as vegetarian or for kids get those diet labels.
+    value.diets = {
+      ...value.diets,
+      vegetarian: this.options().includes('vegetarian'),
+      'kid-friendly': this.options().includes('kids'),
     };
     if (await this.store.save(value, [], null)) {
       this.saved.update((set) => new Set(set).add(index));

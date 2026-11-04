@@ -5,6 +5,16 @@ import { Category } from '../models/recipe.model';
 import { RecipeIdea } from '../models/recipe-idea.model';
 import { connectAiApp } from './notebook-transcribe.service';
 
+/** Ways to narrow the ideas, picked as chips in "What can I cook?". */
+export type IdeaOption = 'quick' | 'guests' | 'vegetarian' | 'kids';
+
+const OPTION_PROMPTS: Record<IdeaOption, string> = {
+  quick: 'All recipes must be quick: ready in 30 minutes or less in total.',
+  guests: 'Make them nice enough to serve to guests, a little special and well presented.',
+  vegetarian: 'All recipes must be vegetarian (no meat or fish).',
+  kids: 'Make them kid-friendly: mild, simple flavours, nothing spicy.',
+};
+
 const LANGUAGE_NAMES: Record<string, string> = {
   en: 'English',
   ro: 'Romanian',
@@ -22,7 +32,16 @@ const LANGUAGE_NAMES: Record<string, string> = {
 export class RecipeIdeasService {
   private aiApp?: Promise<FirebaseApp>;
 
-  async suggest(ingredients: string, language: string): Promise<RecipeIdea[]> {
+  /**
+   * `options` narrows the ideas (quick, for guests, vegetarian…); `avoid` lists names already
+   * suggested, so "More ideas" brings new ones.
+   */
+  async suggest(
+    ingredients: string,
+    language: string,
+    options: readonly IdeaOption[] = [],
+    avoid: readonly string[] = [],
+  ): Promise<RecipeIdea[]> {
     const { getAI, getGenerativeModel, GoogleAIBackend, Schema, ThinkingLevel } =
       await import('firebase/ai');
     const app = await (this.aiApp ??= connectAiApp());
@@ -68,7 +87,13 @@ category (one of ${categories.join(', ')}); difficulty (Easy, Medium or Hard); s
 ingredients (one per item, with metric quantity and unit, e.g. "200 g rice");
 steps (clear and in order, with times and heat where useful);
 extras (2-3 optional additions that would go well, each with a short reason, e.g. "corn, for sweetness and crunch");
-tip (one practical cook's tip). If the input is not food ingredients, return an empty list.`;
+tip (one practical cook's tip). If the input is not food ingredients, return an empty list.${options
+      .map((o) => `\n${OPTION_PROMPTS[o]}`)
+      .join('')}${
+      avoid.length
+        ? `\nDo not suggest these again; suggest different dishes: ${avoid.join('; ').slice(0, 400)}.`
+        : ''
+    }`;
 
     const result = await model.generateContent(prompt);
     const parsed = JSON.parse(result.response.text()) as { ideas?: Partial<RecipeIdea>[] };

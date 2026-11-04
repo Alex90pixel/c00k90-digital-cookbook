@@ -321,6 +321,14 @@ export const de: Translations = {
     failed: '⚠️ Der Wochenplan konnte nicht gespeichert werden. Bitte versuche es noch einmal.',
   },
   ideas: {
+    more: '🔄 Mehr Ideen',
+    optionsLabel: 'Optionen',
+    options: {
+      quick: '⚡ Schnell',
+      guests: '🎉 Für Gäste',
+      vegetarian: '🥕 Vegetarisch',
+      kids: '🧒 Für Kinder',
+    },
     menu: '✨ Was kann ich kochen?',
     title: '✨ Was kann ich kochen?',
     hint: 'Schreib, was du zu Hause hast, und erhalte 3 Rezeptideen damit. Speichere die, die dir gefallen, in deinem Kochbuch.',

@@ -321,6 +321,14 @@ export const it: Translations = {
     failed: '⚠️ Impossibile salvare il menù. Riprova.',
   },
   ideas: {
+    more: '🔄 Altre idee',
+    optionsLabel: 'Opzioni',
+    options: {
+      quick: '⚡ Veloce',
+      guests: '🎉 Per gli ospiti',
+      vegetarian: '🥕 Vegetariano',
+      kids: '🧒 Per bambini',
+    },
     menu: '✨ Cosa posso cucinare?',
     title: '✨ Cosa posso cucinare?',
     hint: 'Scrivi cosa hai in casa e ricevi 3 idee di ricette. Salva quelle che ti piacciono nel tuo ricettario.',
