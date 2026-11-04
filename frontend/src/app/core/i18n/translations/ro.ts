@@ -335,9 +335,11 @@ export const ro: Translations = {
     optionsLabel: 'Opțiuni',
     options: {
       quick: '⚡ Rapid',
-      guests: '🎉 Pentru musafiri',
       vegetarian: '🥕 Vegetarian',
+      budget: '💰 Ieftin',
+      onePot: '🍲 O singură oală',
       kids: '🧒 Pentru copii',
+      protein: '💪 Proteic',
     },
     menu: '✨ Ce pot găti?',
     title: '✨ Ce pot găti?',

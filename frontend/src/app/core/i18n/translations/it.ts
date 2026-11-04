@@ -325,9 +325,11 @@ export const it: Translations = {
     optionsLabel: 'Opzioni',
     options: {
       quick: '⚡ Veloce',
-      guests: '🎉 Per gli ospiti',
       vegetarian: '🥕 Vegetariano',
+      budget: '💰 Economico',
+      onePot: '🍲 Una sola pentola',
       kids: '🧒 Per bambini',
+      protein: '💪 Proteico',
     },
     menu: '✨ Cosa posso cucinare?',
     title: '✨ Cosa posso cucinare?',

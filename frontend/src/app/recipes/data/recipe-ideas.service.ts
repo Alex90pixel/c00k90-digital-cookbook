@@ -6,13 +6,15 @@ import { RecipeIdea } from '../models/recipe-idea.model';
 import { connectAiApp } from './notebook-transcribe.service';
 
 /** Ways to narrow the ideas, picked as chips in "What can I cook?". */
-export type IdeaOption = 'quick' | 'guests' | 'vegetarian' | 'kids';
+export type IdeaOption = 'quick' | 'vegetarian' | 'budget' | 'onePot' | 'kids' | 'protein';
 
 const OPTION_PROMPTS: Record<IdeaOption, string> = {
   quick: 'All recipes must be quick: ready in 30 minutes or less in total.',
-  guests: 'Make them nice enough to serve to guests, a little special and well presented.',
   vegetarian: 'All recipes must be vegetarian (no meat or fish).',
+  budget: 'Keep them cheap: affordable, everyday ingredients and no expensive extras.',
+  onePot: 'Each recipe must be cooked in a single pot, pan or tray, so there is little washing up.',
   kids: 'Make them kid-friendly: mild, simple flavours, nothing spicy.',
+  protein: 'Make them high in protein (at least 25 g per serving).',
 };
 
 const LANGUAGE_NAMES: Record<string, string> = {

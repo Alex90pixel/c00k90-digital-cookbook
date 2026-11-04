@@ -324,9 +324,11 @@ export const en = {
     optionsLabel: 'Options',
     options: {
       quick: '⚡ Quick',
-      guests: '🎉 For guests',
       vegetarian: '🥕 Vegetarian',
+      budget: '💰 Budget',
+      onePot: '🍲 One pot',
       kids: '🧒 For kids',
+      protein: '💪 High protein',
     },
     menu: '✨ What can I cook?',
     title: '✨ What can I cook?',

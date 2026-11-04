@@ -12,9 +12,11 @@ import { categoryEmoji, difficultyIcon } from '../models/recipe.constants';
 
 const OPTIONS: readonly { id: IdeaOption; label: TranslationKey }[] = [
   { id: 'quick', label: 'ideas.options.quick' },
-  { id: 'guests', label: 'ideas.options.guests' },
   { id: 'vegetarian', label: 'ideas.options.vegetarian' },
+  { id: 'budget', label: 'ideas.options.budget' },
+  { id: 'onePot', label: 'ideas.options.onePot' },
   { id: 'kids', label: 'ideas.options.kids' },
+  { id: 'protein', label: 'ideas.options.protein' },
 ];
 
 /**
