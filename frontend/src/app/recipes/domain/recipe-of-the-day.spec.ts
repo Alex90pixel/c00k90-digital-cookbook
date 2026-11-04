@@ -18,11 +18,12 @@ describe('recipeOfTheDay', () => {
     expect(today?.id).not.toBe('a');
   });
 
-  it('changes from one day to another', () => {
-    const list = Array.from({ length: 20 }, (_, i) => recipe(`r${i}`, true));
-    const days = ['2026-11-01', '2026-11-02', '2026-11-03', '2026-11-04'];
-    const picks = new Set(days.map((d) => recipeOfTheDay(list, d, 'u1')?.id));
-    expect(picks.size).toBeGreaterThan(1);
+  it('shows every recipe once before any comes back', () => {
+    const list = Array.from({ length: 7 }, (_, i) => recipe(`r${i}`, true));
+    const days = Array.from({ length: 7 }, (_, i) => `2026-11-${String(i + 1).padStart(2, '0')}`);
+    const picks = days.map((d) => recipeOfTheDay(list, d, 'u1')?.id);
+    expect(new Set(picks).size).toBe(7);
+    expect(recipeOfTheDay(list, '2026-11-08', 'u1')?.id).toBe(picks[0]);
   });
 
   it('has nothing to show without recipes', () => {
