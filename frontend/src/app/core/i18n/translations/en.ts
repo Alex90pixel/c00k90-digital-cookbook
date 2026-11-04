@@ -164,6 +164,11 @@ export const en = {
       text: "Tap the chef's hat on your photo whenever you want to see this guide again.",
     },
   },
+  recipeOfDay: {
+    kicker: 'Recipe of the day',
+    open: 'Open recipe',
+    hide: 'Hide until tomorrow',
+  },
   sort: {
     label: 'Sort',
     recent: '🕒 Newest first',

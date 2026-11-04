@@ -165,6 +165,11 @@ export const de: Translations = {
       text: 'Tippe auf die Kochmütze an deinem Foto, wenn du diesen Guide wieder sehen willst.',
     },
   },
+  recipeOfDay: {
+    kicker: 'Rezept des Tages',
+    open: 'Rezept öffnen',
+    hide: 'Bis morgen ausblenden',
+  },
   sort: {
     label: 'Sortieren',
     recent: '🕒 Neueste zuerst',

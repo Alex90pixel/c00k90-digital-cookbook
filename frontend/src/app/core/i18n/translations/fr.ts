@@ -165,6 +165,11 @@ export const fr: Translations = {
       text: 'Touchez la toque sur votre photo pour revoir ce guide quand vous voulez.',
     },
   },
+  recipeOfDay: {
+    kicker: 'Recette du jour',
+    open: 'Ouvrir la recette',
+    hide: "Masquer jusqu'à demain",
+  },
   sort: {
     label: 'Trier',
     recent: '🕒 Les plus récentes',

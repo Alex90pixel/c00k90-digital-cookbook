@@ -164,6 +164,11 @@ export const es: Translations = {
       text: 'Toca el gorro de chef de tu foto cuando quieras volver a ver esta guía.',
     },
   },
+  recipeOfDay: {
+    kicker: 'Receta del día',
+    open: 'Abrir receta',
+    hide: 'Ocultar hasta mañana',
+  },
   sort: {
     label: 'Ordenar',
     recent: '🕒 Más recientes',

@@ -2,6 +2,7 @@ import { Component, computed, effect, inject, input, untracked } from '@angular/
 import { TranslationKey } from '../../core/i18n/i18n.types';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { RecipeCard } from '../components/recipe-card';
+import { RecipeOfTheDay } from '../components/recipe-of-the-day';
 import { RecipeToolbar } from '../components/recipe-toolbar';
 import { RecipeStore } from '../data/recipe.store';
 import { RecipeView } from '../models/recipe.model';
@@ -16,10 +17,14 @@ interface EmptyState {
 /** The recipe grid for "My recipes", "Favorites" and "Get Inspired" (`view` comes from the route). */
 @Component({
   selector: 'app-recipe-list-page',
-  imports: [RecipeCard, RecipeToolbar, TranslatePipe],
+  imports: [RecipeCard, RecipeToolbar, RecipeOfTheDay, TranslatePipe],
   template: `
     <div class="page">
       <app-recipe-toolbar />
+
+      @if (view() === 'all' && !store.loading() && !store.search().trim()) {
+        <app-recipe-of-the-day />
+      }
 
       <section
         class="recipe-grid"

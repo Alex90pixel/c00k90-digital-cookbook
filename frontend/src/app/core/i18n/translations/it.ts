@@ -164,6 +164,11 @@ export const it: Translations = {
       text: 'Tocca il cappello da chef sulla tua foto quando vuoi rivedere questa guida.',
     },
   },
+  recipeOfDay: {
+    kicker: 'Ricetta del giorno',
+    open: 'Apri la ricetta',
+    hide: 'Nascondi fino a domani',
+  },
   sort: {
     label: 'Ordina',
     recent: '🕒 Le più recenti',

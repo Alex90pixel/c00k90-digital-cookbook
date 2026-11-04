@@ -172,6 +172,11 @@ export const ro: Translations = {
       text: 'Apasă pe pălăria de bucătar de pe poza ta oricând vrei să revezi ghidul.',
     },
   },
+  recipeOfDay: {
+    kicker: 'Rețeta zilei',
+    open: 'Deschide rețeta',
+    hide: 'Ascunde până mâine',
+  },
   sort: {
     label: 'Sortare',
     recent: '🕒 Cele mai noi',
