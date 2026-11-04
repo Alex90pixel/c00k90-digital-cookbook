@@ -73,7 +73,9 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
           @if (store.moreFiltersCount()) {
             <span class="badge">{{ store.moreFiltersCount() }}</span>
           }
-          <span class="caret" [class.open]="moreOpen()" aria-hidden="true">▾</span>
+          <svg class="caret" [class.open]="moreOpen()" viewBox="0 0 12 8" aria-hidden="true">
+            <path d="M1.5 1.5 6 6l4.5-4.5" />
+          </svg>
         </button>
       </div>
       <div class="sort-side">
@@ -220,8 +222,16 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
         color: var(--teal);
       }
     }
+    /* Drawn like the arrow of the selects next to it. */
     .caret {
-      font-size: 11px;
+      width: 12px;
+      height: 8px;
+      margin-left: 2px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
       transition: transform 0.2s;
 
       &.open {
