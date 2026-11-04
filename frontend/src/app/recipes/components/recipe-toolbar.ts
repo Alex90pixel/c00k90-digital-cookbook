@@ -73,6 +73,7 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
           @if (store.moreFiltersCount()) {
             <span class="badge">{{ store.moreFiltersCount() }}</span>
           }
+          <span class="caret" [class.open]="moreOpen()" aria-hidden="true">▾</span>
         </button>
       </div>
       <div class="sort-side">
@@ -196,22 +197,35 @@ import { Category, DietId, RecipeSort } from '../models/recipe.model';
         border-color: var(--teal);
       }
     }
+    /* Looks like the selects next to it: same border, shape and size, with a ▾. */
     .more-btn {
       display: inline-flex;
       align-items: center;
       gap: 6px;
       padding: 6px 12px;
-      border: 1.5px dashed var(--border);
+      border: 1.5px solid var(--border);
       border-radius: 50px;
-      background: transparent;
+      background: var(--card);
       color: var(--text-mid);
+      font: inherit;
       font-size: 13px;
       cursor: pointer;
 
+      &:focus-visible {
+        border-color: var(--teal);
+        outline: none;
+      }
       &.on {
-        border-style: solid;
         border-color: var(--teal);
         color: var(--teal);
+      }
+    }
+    .caret {
+      font-size: 11px;
+      transition: transform 0.2s;
+
+      &.open {
+        transform: rotate(180deg);
       }
     }
     .badge {
