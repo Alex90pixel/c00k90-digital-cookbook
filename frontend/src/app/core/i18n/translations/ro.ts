@@ -654,6 +654,12 @@ export const ro: Translations = {
     },
   },
   chefs: {
+    new: 'Nou',
+    newCount: {
+      one: '{count} rețetă nouă',
+      few: '{count} rețete noi',
+      other: '{count} de rețete noi',
+    },
     unknown: 'Un bucătar C00K90',
     sharedBy: 'Distribuită de',
     openProfile: 'Deschide profilul: {name}',

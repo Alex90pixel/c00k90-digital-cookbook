@@ -11,6 +11,7 @@ import { ChefDialogs } from '../chef-dialogs.service';
 import { ChefService } from '../chef.service';
 import { FollowButton } from '../components/follow-button';
 import { SocialIcons } from '../components/social-icons';
+import { FollowNewsService } from '../follow-news.service';
 import { FollowService } from '../follow.service';
 
 /** The chefs the user follows, and their latest shared recipes. */
@@ -27,6 +28,7 @@ export class FollowedChefsPage {
   protected readonly store = inject(RecipeStore);
   protected readonly recipeDialogs = inject(RecipeDialogs);
   protected readonly chefDialogs = inject(ChefDialogs);
+  protected readonly news = inject(FollowNewsService);
 
   protected readonly chefs = computed(() =>
     this.follows.followed().map((id) => {
@@ -61,6 +63,7 @@ export class FollowedChefsPage {
   constructor() {
     this.store.search.set('');
     this.store.ensureSharedLoaded();
+    this.news.markSeen();
     effect(() => {
       const ids = this.follows.followed();
       untracked(() => this.chefService.request(ids));

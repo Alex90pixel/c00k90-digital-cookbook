@@ -643,6 +643,8 @@ export const es: Translations = {
     },
   },
   chefs: {
+    new: 'Nueva',
+    newCount: { one: '{count} receta nueva', other: '{count} recetas nuevas' },
     unknown: 'Un cocinero de C00K90',
     sharedBy: 'Compartida por',
     openProfile: 'Abrir el perfil de {name}',

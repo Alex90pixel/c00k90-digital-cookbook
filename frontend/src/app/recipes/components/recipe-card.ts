@@ -35,7 +35,12 @@ import { Recipe } from '../models/recipe.model';
         }
       </div>
       <div class="card-body">
-        <div class="card-category">{{ i18n.label('categories', r.category) }}</div>
+        <div class="card-category">
+          {{ i18n.label('categories', r.category) }}
+          @if (isNew()) {
+            <span class="new-label">{{ 'chefs.new' | t }}</span>
+          }
+        </div>
         <h3 class="card-title">
           <!-- The whole card is clickable through this button (see .card-open::after). -->
           <button type="button" class="card-open" (click)="open.emit()">{{ r.name }}</button>
@@ -77,6 +82,8 @@ export class RecipeCard {
   readonly favorite = input(false);
   /** Shows who shared the recipe (Get Inspired, Followed Chefs). */
   readonly showChef = input(false);
+  /** Shows a "New" label (Followed Chefs, recipes shared since my last visit). */
+  readonly isNew = input(false);
   readonly open = output();
   readonly toggleFavorite = output();
 

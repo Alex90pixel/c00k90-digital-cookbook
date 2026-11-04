@@ -47,6 +47,7 @@
               [showFavorite]="!store.isOwner(recipe)"
               [favorite]="store.isFavorite(recipe)"
               [showChef]="true"
+              [isNew]="news.isNew(recipe.createdAt)"
               (open)="recipeDialogs.openDetail(recipe.id)"
               (toggleFavorite)="store.toggleFavorite(recipe)"
             />

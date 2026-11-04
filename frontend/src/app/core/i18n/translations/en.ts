@@ -639,6 +639,8 @@ export const en = {
     },
   },
   chefs: {
+    new: 'New',
+    newCount: { one: '{count} new recipe', other: '{count} new recipes' },
     unknown: 'A C00K90 cook',
     sharedBy: 'Shared by',
     openProfile: 'Open the profile of {name}',

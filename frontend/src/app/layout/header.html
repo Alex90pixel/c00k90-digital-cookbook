@@ -21,8 +21,15 @@
           [class.active]="item.active"
           [attr.aria-current]="item.active ? 'page' : null"
           [routerLink]="item.link"
-          >{{ item.labelKey | t }}</a
-        >
+          >{{ item.labelKey | t }}
+          @if (item.path === '/chefs' && news.count() && !item.active) {
+            <span
+              class="nav-badge"
+              [attr.aria-label]="'chefs.newCount' | t: { count: news.count() }"
+              >{{ news.count() }}</span
+            >
+          }
+        </a>
       }
       <button
         type="button"

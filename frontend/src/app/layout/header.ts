@@ -5,6 +5,7 @@ import { filter, map } from 'rxjs';
 import { AccountMenu } from '../account/account-menu';
 import { TranslationKey } from '../core/i18n/i18n.types';
 import { TranslatePipe } from '../core/i18n/translate.pipe';
+import { FollowNewsService } from '../chefs/follow-news.service';
 import { RecipeStore } from '../recipes/data/recipe.store';
 import { RecipeDialogs } from '../recipes/recipe-dialogs.service';
 import { Logo } from '../shared/ui/logo';
@@ -31,6 +32,7 @@ export class Header {
   private readonly router = inject(Router);
   protected readonly store = inject(RecipeStore);
   protected readonly dialogs = inject(RecipeDialogs);
+  protected readonly news = inject(FollowNewsService);
 
   /** The current path, without query string or fragment. */
   private readonly path = toSignal(

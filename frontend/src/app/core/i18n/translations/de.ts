@@ -649,6 +649,8 @@ export const de: Translations = {
     },
   },
   chefs: {
+    new: 'Neu',
+    newCount: { one: '{count} neues Rezept', other: '{count} neue Rezepte' },
     unknown: 'Jemand von C00K90',
     sharedBy: 'Geteilt von',
     openProfile: 'Profil von {name} öffnen',

@@ -204,3 +204,19 @@
     }
   }
 }
+
+// New recipes from the chefs I follow, on the "Followed Chefs" tab.
+.nav-badge {
+  display: inline-block;
+  min-width: 18px;
+  margin-left: 4px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--magenta);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  vertical-align: 1px;
+}
