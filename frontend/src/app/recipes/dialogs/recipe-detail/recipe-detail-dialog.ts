@@ -133,7 +133,7 @@ export class RecipeDetailDialog {
     this.ref.close();
   }
 
-  /** "Send recipe": the share sheet on phones (WhatsApp, Messages, email…), else a copy. */
+  /** "Send recipe": the share sheet on phones (WhatsApp, Messages, email…), a copy on computers. */
   protected async sendRecipe(recipe: Recipe): Promise<void> {
     const t = this.i18n.t;
     const text = recipeShareText(
@@ -149,7 +149,9 @@ export class RecipeDetailDialog {
         footer: t('detail.sendFooter'),
       },
     );
-    if ('share' in navigator) {
+    // Phones and tablets get their share sheet (WhatsApp, Messages…); computers just copy it.
+    const touchScreen = window.matchMedia?.('(pointer: coarse)').matches;
+    if (touchScreen && 'share' in navigator) {
       try {
         await navigator.share({ title: recipe.name, text });
         return;
