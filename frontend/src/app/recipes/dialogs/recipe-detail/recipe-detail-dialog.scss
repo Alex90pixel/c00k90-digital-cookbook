@@ -410,8 +410,9 @@
     transform: scale(1.1);
   }
 
+  /* Same look when on, with a thin ring around it. */
   &.on {
-    background: var(--teal);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--teal) 45%, transparent);
   }
 }
 
