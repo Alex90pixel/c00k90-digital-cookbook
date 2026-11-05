@@ -177,6 +177,15 @@ export const en = {
     print: 'Print',
     failed: '⚠️ Could not prepare the recipe for printing.',
   },
+  cookNote: {
+    title: 'How did it turn out?',
+    hint: "Write a quick note for next time. It's added, with today's date, to My Notes.",
+    placeholder: 'e.g. Less salt next time, it needed 5 more minutes…',
+    skip: 'Skip',
+    save: 'Save note',
+    saved: '📝 Note saved to My Notes',
+    failed: '⚠️ Could not save the note',
+  },
   sort: {
     label: 'Sort',
     recent: '🕒 Newest first',

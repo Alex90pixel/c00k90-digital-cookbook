@@ -177,6 +177,15 @@ export const es: Translations = {
     print: 'Imprimir',
     failed: '⚠️ No se pudo preparar la receta para imprimir.',
   },
+  cookNote: {
+    title: '¿Qué tal salió?',
+    hint: 'Escribe una nota rápida para la próxima vez. Se añade, con la fecha de hoy, a Mis notas.',
+    placeholder: 'p. ej. Menos sal la próxima vez, necesitó 5 minutos más…',
+    skip: 'Saltar',
+    save: 'Guardar nota',
+    saved: '📝 Nota guardada en Mis notas',
+    failed: '⚠️ No se pudo guardar la nota',
+  },
   sort: {
     label: 'Ordenar',
     recent: '🕒 Más recientes',

@@ -186,6 +186,15 @@ export const ro: Translations = {
     print: 'Printează',
     failed: '⚠️ Nu am putut pregăti rețeta pentru printare.',
   },
+  cookNote: {
+    title: 'Cum a ieșit?',
+    hint: 'Scrie o notiță scurtă pentru data viitoare. Se adaugă, cu data de azi, la Notițele mele.',
+    placeholder: 'ex. Mai puțină sare data viitoare, a mai avut nevoie de 5 minute…',
+    skip: 'Sari peste',
+    save: 'Salvează notița',
+    saved: '📝 Notița a fost salvată în Notițele mele',
+    failed: '⚠️ Nu am putut salva notița',
+  },
   sort: {
     label: 'Sortare',
     recent: '🕒 Cele mai noi',

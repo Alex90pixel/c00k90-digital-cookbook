@@ -195,8 +195,14 @@ export class RecipeDetailDialog {
       data: { recipeName: recipe.name, steps: this.steps(), ingredients: this.ingredients() },
     });
     // Finishing the last step counts as having cooked it (for the "cooked" sorts).
-    ref.closed.subscribe((result) => {
-      if (result === 'cooked') void this.cookLog.record(recipe.id);
+    ref.closed.subscribe(async (result) => {
+      if (result !== 'cooked') return;
+      void this.cookLog.record(recipe.id);
+      // "How did it turn out?" (only for my own recipes: the notes are mine to change).
+      if (this.isOwner()) {
+        const { CookNoteDialog } = await import('../cook-note-dialog');
+        this.dialog.open(CookNoteDialog, { data: recipe, width: 'medium' });
+      }
     });
   }
 

@@ -179,6 +179,15 @@ export const de: Translations = {
     print: 'Drucken',
     failed: '⚠️ Das Rezept konnte nicht zum Drucken vorbereitet werden.',
   },
+  cookNote: {
+    title: 'Wie ist es geworden?',
+    hint: 'Schreib eine kurze Notiz für das nächste Mal. Sie wird mit dem heutigen Datum zu Meinen Notizen hinzugefügt.',
+    placeholder: 'z. B. Nächstes Mal weniger Salz, brauchte 5 Minuten länger…',
+    skip: 'Überspringen',
+    save: 'Notiz speichern',
+    saved: '📝 Notiz in Meinen Notizen gespeichert',
+    failed: '⚠️ Notiz konnte nicht gespeichert werden',
+  },
   sort: {
     label: 'Sortieren',
     recent: '🕒 Neueste zuerst',

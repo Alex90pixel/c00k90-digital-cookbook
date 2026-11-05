@@ -213,6 +213,14 @@ export class RecipeStore {
     }
   }
 
+  /** Adds a line at the end of one of my recipes' notes ("My Notes"). */
+  async addNote(recipe: Recipe, line: string): Promise<void> {
+    const current = this.findById(recipe.id)?.notes?.trim() ?? '';
+    const notes = current ? `${current}\n${line}` : line;
+    await this.repository.update(recipe.id, { notes });
+    this.patchMine(recipe.id, { notes });
+  }
+
   async toggleShared(recipe: Recipe): Promise<void> {
     const shared = !recipe.shared;
     try {

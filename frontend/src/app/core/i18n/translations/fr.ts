@@ -179,6 +179,15 @@ export const fr: Translations = {
     print: 'Imprimer',
     failed: "⚠️ Impossible de préparer la recette pour l'impression.",
   },
+  cookNote: {
+    title: "Alors, c'était comment ?",
+    hint: "Notez quelque chose pour la prochaine fois. C'est ajouté, avec la date du jour, à Mes notes.",
+    placeholder: 'ex. Moins de sel la prochaine fois, 5 minutes de plus…',
+    skip: 'Passer',
+    save: 'Enregistrer la note',
+    saved: '📝 Note ajoutée à Mes notes',
+    failed: "⚠️ Impossible d'enregistrer la note",
+  },
   sort: {
     label: 'Trier',
     recent: '🕒 Les plus récentes',
