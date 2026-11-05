@@ -303,9 +303,9 @@ export const it: Translations = {
     voice: 'Voce',
     voiceListening: 'Ascolto…',
     voiceHint:
-      'Di\' "avanti", "indietro", "ripeti", "ingredienti" o "timer"; le mani restano libere.',
+      'Di\' "avanti", "indietro", "ripeti", "basta", "ingredienti", "timer" o "ferma timer"; le mani restano libere.',
     voiceOn: 'Tocca per smettere di ascoltare.',
-    voiceHelp: "Di': avanti · indietro · ripeti · ingredienti · timer",
+    voiceHelp: "Di': avanti · indietro · ripeti · basta · ingredienti · timer · ferma timer",
     voiceBlocked:
       '🎙️ Il microfono è bloccato. Consentilo nelle impostazioni del sito del browser e riprova.',
     startTimer: 'Timer {time}',

@@ -1,5 +1,6 @@
 /** What the cook can say in Cook mode. */
-export type VoiceCommand = 'next' | 'back' | 'read' | 'ingredients' | 'steps' | 'timer';
+export type VoiceCommand =
+  'next' | 'back' | 'read' | 'ingredients' | 'steps' | 'timer' | 'stop' | 'stopTimer';
 
 /** Speech recognition language for each app language. */
 export const SPEECH_LANGUAGES: Record<string, string> = {
@@ -82,7 +83,61 @@ const WORDS: Record<VoiceCommand, string[]> = {
   ],
   ingredients: ['ingredients', 'ingrediente', 'ingredientes', 'ingredienti', 'zutaten'],
   steps: ['steps', 'pasi', 'pasii', 'pasos', 'etapes', 'passaggi', 'passi', 'schritte'],
-  timer: ['timer', 'start timer', 'cronometru', 'temporizador', 'minuteur', 'minuterie', 'wecker'],
+  timer: [
+    'timer',
+    'start timer',
+    'cronometru',
+    'porneste cronometrul',
+    'temporizador',
+    'minuteur',
+    'minuterie',
+    'wecker',
+  ],
+  // Stops the reading out loud (and a ringing timer).
+  stop: [
+    'stop',
+    'quiet',
+    'silence',
+    'enough',
+    'stai',
+    'opreste',
+    'opreste te',
+    'liniste',
+    'destul',
+    'para',
+    'basta',
+    'silencio',
+    'arrete',
+    'arrete toi',
+    'silence',
+    'fermati',
+    'basta',
+    'silenzio',
+    'halt',
+    'stopp',
+    'ruhe',
+    'genug',
+  ],
+  stopTimer: [
+    'stop timer',
+    'stop the timer',
+    'cancel timer',
+    'opreste cronometrul',
+    'opreste timerul',
+    'stop cronometru',
+    'stop timer',
+    'para temporizador',
+    'para el temporizador',
+    'detener temporizador',
+    'arrete le minuteur',
+    'stop minuteur',
+    'ferma timer',
+    'ferma il timer',
+    'stop timer',
+    'timer stoppen',
+    'stopp timer',
+    'wecker aus',
+  ],
 };
 
 /** "Următorul!" → "urmatorul". */

@@ -305,9 +305,10 @@ export const fr: Translations = {
     voice: 'Voix',
     voiceListening: "J'écoute…",
     voiceHint:
-      'Dites « suivant », « retour », « répète », « ingrédients » ou « minuteur » ; vos mains restent libres.',
+      'Dites « suivant », « retour », « répète », « arrête », « ingrédients », « minuteur » ou « arrête le minuteur » ; vos mains restent libres.',
     voiceOn: "Touchez pour arrêter l'écoute.",
-    voiceHelp: 'Dites : suivant · retour · répète · ingrédients · minuteur',
+    voiceHelp:
+      'Dites : suivant · retour · répète · arrête · ingrédients · minuteur · arrête le minuteur',
     voiceBlocked:
       '🎙️ Le micro est bloqué. Autorisez-le dans les paramètres du site de votre navigateur et réessayez.',
     startTimer: 'Minuteur {time}',

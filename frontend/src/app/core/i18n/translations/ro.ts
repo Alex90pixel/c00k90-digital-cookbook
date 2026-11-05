@@ -309,9 +309,10 @@ export const ro: Translations = {
     voice: 'Voce',
     voiceListening: 'Ascult…',
     voiceHint:
-      'Spune „următorul”, „înapoi”, „repetă”, „ingrediente” sau „cronometru”; mâinile rămân libere.',
+      'Spune „următorul”, „înapoi”, „repetă”, „stai”, „ingrediente”, „cronometru” sau „oprește cronometrul”; mâinile rămân libere.',
     voiceOn: 'Apasă ca să nu mai ascult.',
-    voiceHelp: 'Spune: următorul · înapoi · repetă · ingrediente · cronometru',
+    voiceHelp:
+      'Spune: următorul · înapoi · repetă · stai · ingrediente · cronometru · oprește cronometrul',
     voiceBlocked:
       '🎙️ Microfonul e blocat. Permite-l din setările site-ului în browser și încearcă din nou.',
     startTimer: 'Cronometru {time}',

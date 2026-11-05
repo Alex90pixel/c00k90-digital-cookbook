@@ -303,9 +303,10 @@ export const es: Translations = {
     voice: 'Voz',
     voiceListening: 'Escuchando…',
     voiceHint:
-      'Di "siguiente", "atrás", "repite", "ingredientes" o "temporizador"; tus manos quedan libres.',
+      'Di "siguiente", "atrás", "repite", "para", "ingredientes", "temporizador" o "para temporizador"; tus manos quedan libres.',
     voiceOn: 'Toca para dejar de escuchar.',
-    voiceHelp: 'Di: siguiente · atrás · repite · ingredientes · temporizador',
+    voiceHelp:
+      'Di: siguiente · atrás · repite · para · ingredientes · temporizador · para temporizador',
     voiceBlocked:
       '🎙️ El micrófono está bloqueado. Permítelo en los ajustes del sitio de tu navegador e inténtalo de nuevo.',
     startTimer: 'Temporizador {time}',

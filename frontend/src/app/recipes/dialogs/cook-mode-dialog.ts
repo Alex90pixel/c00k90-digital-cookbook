@@ -580,12 +580,32 @@ export class CookModeDialog {
       case 'steps':
         this.showIngredients.set(false);
         break;
+      case 'stop':
+        this.silence();
+        break;
+      case 'stopTimer':
+        this.stopLatestTimer();
+        break;
       case 'timer': {
         const [first] = this.stepTimes();
         if (first) this.startTimer(first);
         break;
       }
     }
+  }
+
+  /** "Stop": no more reading out loud, and a ringing timer goes quiet. */
+  private silence(): void {
+    if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel();
+    this.timers.update((list) => list.filter((t) => this.remaining(t) > 0));
+  }
+
+  /** "Stop timer": the ringing ones, or else the one started last. */
+  private stopLatestTimer(): void {
+    const list = this.timers();
+    const ringing = list.filter((t) => this.remaining(t) <= 0);
+    if (ringing.length) this.timers.set(list.filter((t) => !ringing.includes(t)));
+    else this.timers.set(list.slice(0, -1));
   }
 
   /** Reads the current step out loud, in the app's language. */

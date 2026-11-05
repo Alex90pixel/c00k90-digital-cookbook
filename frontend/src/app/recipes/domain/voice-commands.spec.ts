@@ -12,6 +12,11 @@ describe('voiceCommand', () => {
     expect(voiceCommand('repetă')).toBe('read');
     expect(voiceCommand('ingrediente')).toBe('ingredients');
     expect(voiceCommand('start timer')).toBe('timer');
+    expect(voiceCommand('Stop!')).toBe('stop');
+    expect(voiceCommand('stai')).toBe('stop');
+    expect(voiceCommand('oprește cronometrul')).toBe('stopTimer');
+    expect(voiceCommand('stop timer')).toBe('stopTimer');
+    expect(voiceCommand('Timer stoppen')).toBe('stopTimer');
   });
 
   it('lets the last word decide', () => {

@@ -300,9 +300,10 @@ export const en = {
     celebrate: '🎉 Well done, chef!',
     voice: 'Voice',
     voiceListening: 'Listening…',
-    voiceHint: 'Say "next", "back", "repeat", "ingredients" or "timer"; your hands stay free.',
+    voiceHint:
+      'Say "next", "back", "repeat", "stop", "ingredients", "timer" or "stop timer"; your hands stay free.',
     voiceOn: 'Tap to stop listening.',
-    voiceHelp: 'Say: next · back · repeat · ingredients · timer',
+    voiceHelp: 'Say: next · back · repeat · stop · ingredients · timer · stop timer',
     voiceBlocked:
       "🎙️ The microphone is blocked. Allow it in your browser's site settings and try again.",
     startTimer: 'Timer {time}',

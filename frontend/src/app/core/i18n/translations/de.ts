@@ -304,9 +304,9 @@ export const de: Translations = {
     voice: 'Stimme',
     voiceListening: 'Ich höre zu…',
     voiceHint:
-      'Sag „weiter“, „zurück“, „wiederholen“, „Zutaten“ oder „Timer“; deine Hände bleiben frei.',
+      'Sag „weiter“, „zurück“, „wiederholen“, „stopp“, „Zutaten“, „Timer“ oder „Timer stoppen“; deine Hände bleiben frei.',
     voiceOn: 'Tippen, um das Zuhören zu beenden.',
-    voiceHelp: 'Sag: weiter · zurück · wiederholen · Zutaten · Timer',
+    voiceHelp: 'Sag: weiter · zurück · wiederholen · stopp · Zutaten · Timer · Timer stoppen',
     voiceBlocked:
       '🎙️ Das Mikrofon ist blockiert. Erlaube es in den Website-Einstellungen deines Browsers und versuche es erneut.',
     startTimer: 'Timer {time}',
