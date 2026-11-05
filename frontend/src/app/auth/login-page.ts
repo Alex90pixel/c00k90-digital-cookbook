@@ -25,7 +25,7 @@ const FEATURES: readonly Feature[] = [
 
 /**
  * The page people see before signing in: what C00K90 does, a small preview of a recipe and the
- * "Sign in with Google" button (at the top and again at the end).
+ * "Sign in with Google" button, once, at eye level. It fits on one screen on a computer.
  */
 @Component({
   selector: 'app-login-page',
@@ -40,6 +40,8 @@ export class LoginPage {
 
   protected readonly features = FEATURES;
   protected readonly signingIn = signal(false);
+  /** The preview dish photo (public/landing-dish.png); an emoji if it is missing. */
+  protected readonly photoOk = signal(true);
   protected readonly error = signal('');
 
   protected async signInWithGoogle(): Promise<void> {

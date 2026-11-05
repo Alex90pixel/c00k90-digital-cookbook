@@ -11,18 +11,24 @@
 
     <div class="preview" aria-hidden="true">
       <div class="preview-card">
-        <div class="preview-photo">🍲</div>
+        <div class="preview-photo">
+          @if (photoOk()) {
+            <img src="landing-dish.png" alt="" (error)="photoOk.set(false)" />
+          } @else {
+            🍰
+          }
+        </div>
         <p class="preview-kicker">{{ 'landing.previewCategory' | t }}</p>
         <p class="preview-name">{{ 'landing.previewName' | t }}</p>
         <p class="preview-pills">
-          <span>⏱ 46 min</span><span>🟢 {{ 'difficulty.Easy' | t }}</span>
+          <span>⏱ 45 min</span><span>🟢 {{ 'difficulty.Easy' | t }}</span>
         </p>
         <ul class="preview-list">
-          <li><b>2 tbsp</b> {{ 'landing.previewIng1' | t }}</li>
-          <li><b>3</b> {{ 'landing.previewIng2' | t }}</li>
-          <li><b>1 kg</b> {{ 'landing.previewIng3' | t }}</li>
+          <li><b>200 g</b> {{ 'landing.previewIng1' | t }}</li>
+          <li><b>4</b> {{ 'landing.previewIng2' | t }}</li>
+          <li><b>100 g</b> {{ 'landing.previewIng3' | t }}</li>
         </ul>
-        <p class="preview-timer">⏲️ {{ 'landing.previewTimer' | t }} <b>24:59</b></p>
+        <p class="preview-timer">⏲️ {{ 'landing.previewTimer' | t }} <b>29:59</b></p>
       </div>
     </div>
   </section>
@@ -38,20 +44,6 @@
         </li>
       }
     </ul>
-  </section>
-
-  <section class="steps" aria-labelledby="steps-title">
-    <h2 id="steps-title">{{ 'landing.stepsTitle' | t }}</h2>
-    <ol>
-      <li><span>1</span>{{ 'landing.step1' | t }}</li>
-      <li><span>2</span>{{ 'landing.step2' | t }}</li>
-      <li><span>3</span>{{ 'landing.step3' | t }}</li>
-    </ol>
-  </section>
-
-  <section class="final">
-    <h2>{{ 'landing.finalTitle' | t }}</h2>
-    <ng-container *ngTemplateOutlet="signIn" />
   </section>
 </main>
 

@@ -7,20 +7,23 @@
 
 .landing {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   background: linear-gradient(160deg, var(--magenta-pale), var(--teal-pale) 60%, var(--bg));
 }
 
 section {
   max-width: 1080px;
   margin: 0 auto;
-  padding: 56px 24px;
+  padding: 16px 24px;
 }
 
 h2 {
-  margin: 0 0 28px;
+  margin: 0 0 12px;
   color: var(--text-dark);
   font-family: 'Playfair Display', serif;
-  font-size: 30px;
+  font-size: 22px;
   text-align: center;
 }
 
@@ -30,20 +33,20 @@ h2 {
   grid-template-columns: 1.1fr 0.9fr;
   align-items: center;
   gap: 48px;
-  padding-top: 72px;
+  padding-top: 20px;
 }
 h1 {
-  margin: 22px 0 14px;
+  margin: 10px 0 10px;
   color: var(--text-dark);
   font-family: 'Playfair Display', serif;
-  font-size: clamp(32px, 5vw, 48px);
+  font-size: clamp(30px, 4.2vw, 42px);
   line-height: 1.1;
 }
 .lead {
   max-width: 520px;
-  margin: 0 0 28px;
+  margin: 0 0 20px;
   color: var(--text-mid);
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1.6;
 }
 .promise {
@@ -69,11 +72,18 @@ h1 {
 .preview-photo {
   display: grid;
   place-items: center;
-  height: 150px;
-  margin-bottom: 14px;
+  height: 130px;
+  margin-bottom: 10px;
   border-radius: 18px;
   background: linear-gradient(135deg, var(--teal-pale), var(--magenta-pale));
+  overflow: hidden;
   font-size: 64px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
 .preview-kicker {
   margin: 0;
@@ -137,8 +147,15 @@ h1 {
   padding: 0;
   list-style: none;
 }
+.features {
+  padding-bottom: 24px;
+}
 .features li {
-  padding: 22px 20px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 14px;
+  align-items: start;
+  padding: 14px 16px;
   border-radius: 20px;
   background: var(--card);
   box-shadow: var(--panel-shadow);
@@ -146,62 +163,23 @@ h1 {
 .feature-icon {
   display: inline-grid;
   place-items: center;
-  width: 48px;
-  height: 48px;
-  margin-bottom: 10px;
+  grid-row: span 2;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   background: var(--teal-pale);
-  font-size: 24px;
+  font-size: 21px;
 }
 .features h3 {
-  margin: 0 0 6px;
+  margin: 2px 0 2px;
   color: var(--text-dark);
-  font-size: 16px;
+  font-size: 15px;
 }
 .features p {
   margin: 0;
   color: var(--text-mid);
-  font-size: 14px;
-  line-height: 1.55;
-}
-
-// ----- How it works -----
-.steps ol {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 14px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.steps li {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 20px 12px 12px;
-  border-radius: 50px;
-  background: var(--card);
-  color: var(--text-dark);
-  font-weight: 600;
-
-  span {
-    display: grid;
-    place-items: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--teal);
-    color: #fff;
-    font-weight: 700;
-  }
-}
-
-// ----- Final call -----
-.final {
-  max-width: 420px;
-  padding-bottom: 80px;
-  text-align: center;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 // ----- Sign in -----
@@ -232,9 +210,6 @@ h1 {
     opacity: 0.6;
     cursor: wait;
   }
-}
-.final .btn-google {
-  margin: 0 auto;
 }
 .auth-error {
   margin: 14px 0 0;
