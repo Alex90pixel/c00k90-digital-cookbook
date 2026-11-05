@@ -42,6 +42,14 @@ export const en = {
     copyright: '© {year} C00K90 · Digital Cook Book',
   },
   menu: {
+    kitchen: 'My kitchen',
+    me: 'Me',
+    account: 'Account',
+    allergies: '🌾 My allergies',
+    theme: '🎨 Theme',
+    language: '🌐 Language',
+    feedback: '💬 Send feedback',
+    myData: '🔒 My data',
     label: 'Account menu',
     openItems: { one: '{count} open item', other: '{count} open items' },
     reports: '🚩 Reports',
@@ -614,6 +622,8 @@ export const en = {
     intro: 'Choose the language of the app.',
   },
   settings: {
+    myDataTitle: '🔒 My data',
+    myDataIntro: 'Download everything you saved, or delete your account.',
     title: '⚙️ Settings',
     app: 'App',
     data: 'Your data',

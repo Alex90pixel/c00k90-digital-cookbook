@@ -42,6 +42,14 @@ export const es: Translations = {
     copyright: '© {year} C00K90 · Recetario digital',
   },
   menu: {
+    kitchen: 'Mi cocina',
+    me: 'Yo',
+    account: 'Cuenta',
+    allergies: '🌾 Mis alergias',
+    theme: '🎨 Tema',
+    language: '🌐 Idioma',
+    feedback: '💬 Enviar opinión',
+    myData: '🔒 Mis datos',
     label: 'Menú de la cuenta',
     openItems: { one: '{count} elemento pendiente', other: '{count} elementos pendientes' },
     reports: '🚩 Denuncias',
@@ -618,6 +626,8 @@ export const es: Translations = {
     intro: 'Elige el idioma de la aplicación.',
   },
   settings: {
+    myDataTitle: '🔒 Mis datos',
+    myDataIntro: 'Descarga todo lo que has guardado o elimina tu cuenta.',
     title: '⚙️ Ajustes',
     app: 'Aplicación',
     data: 'Tus datos',

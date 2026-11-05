@@ -37,7 +37,6 @@ const SPOTLIGHT: Record<string, string> = {
   'yours.0': '.nav-btn.active',
   'yours.1': '.nav-btn.active',
   'yours.2': '.nav-btn.active',
-  'yours.5': '.settings-row',
 };
 
 /** A short tip shown under the highlighted place (`guide.tips.<name>`). */
@@ -314,8 +313,8 @@ export class GuideDialog {
         return;
       }
       case 'yours.5': {
-        const { SettingsDialog } = await import('../settings/settings-dialog');
-        this.dialog.open(SettingsDialog, { width: 'wide' });
+        const { ThemeDialog } = await import('../dialogs/theme-dialog');
+        this.dialog.open(ThemeDialog, { width: 'small' });
         return;
       }
     }

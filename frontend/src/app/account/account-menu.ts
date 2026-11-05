@@ -17,6 +17,10 @@ import { ChefHat } from './guide/chef-hat';
 import { GuideDialog } from './guide/guide-dialog';
 import { ProfileDialog } from './profile/profile-dialog';
 import { SettingsDialog } from './settings/settings-dialog';
+import { MyAllergiesDialog } from './allergies/my-allergies-dialog';
+import { FeedbackDialog } from './dialogs/feedback-dialog';
+import { LanguageDialog } from './dialogs/language-dialog';
+import { ThemeDialog } from './dialogs/theme-dialog';
 
 /**
  * Avatar button with the account menu: the moderator's inboxes, then the kitchen tools (meal
@@ -77,6 +81,7 @@ import { SettingsDialog } from './settings/settings-dialog';
           </button>
           <hr class="dropdown-divider" />
         }
+        <p class="menu-label">{{ 'menu.kitchen' | t }}</p>
         <button type="button" cdkMenuItem class="menu-item" (cdkMenuItemTriggered)="open('ideas')">
           {{ 'ideas.menu' | t }}
         </button>
@@ -104,7 +109,7 @@ import { SettingsDialog } from './settings/settings-dialog';
         >
           {{ 'menu.cookbook' | t }}
         </button>
-        <hr class="dropdown-divider" />
+        <p class="menu-label">{{ 'menu.me' | t }}</p>
         <button
           type="button"
           cdkMenuItem
@@ -117,11 +122,38 @@ import { SettingsDialog } from './settings/settings-dialog';
           type="button"
           cdkMenuItem
           class="menu-item"
+          (cdkMenuItemTriggered)="open('allergies')"
+        >
+          {{ 'menu.allergies' | t }}
+        </button>
+        <button type="button" cdkMenuItem class="menu-item" (cdkMenuItemTriggered)="open('theme')">
+          {{ 'menu.theme' | t }}
+        </button>
+        <button
+          type="button"
+          cdkMenuItem
+          class="menu-item"
+          (cdkMenuItemTriggered)="open('language')"
+        >
+          {{ 'menu.language' | t }}
+        </button>
+        <p class="menu-label">{{ 'menu.account' | t }}</p>
+        <button
+          type="button"
+          cdkMenuItem
+          class="menu-item"
+          (cdkMenuItemTriggered)="open('feedback')"
+        >
+          {{ 'menu.feedback' | t }}
+        </button>
+        <button
+          type="button"
+          cdkMenuItem
+          class="menu-item"
           (cdkMenuItemTriggered)="open('settings')"
         >
-          {{ 'menu.settings' | t }}
+          {{ 'menu.myData' | t }}
         </button>
-        <hr class="dropdown-divider" />
         <button type="button" cdkMenuItem class="menu-item" (cdkMenuItemTriggered)="signOut()">
           {{ 'menu.signOut' | t }}
         </button>
@@ -162,7 +194,11 @@ export class AccountMenu {
       | 'mealPlan'
       | 'ideas'
       | 'collections'
-      | 'cookbook',
+      | 'cookbook'
+      | 'allergies'
+      | 'theme'
+      | 'language'
+      | 'feedback',
   ): void {
     switch (dialog) {
       case 'reports':
@@ -175,7 +211,7 @@ export class AccountMenu {
         this.dialog.open(ProfileDialog, { width: 'legal' });
         break;
       case 'settings':
-        this.dialog.open(SettingsDialog, { width: 'wide' });
+        this.dialog.open(SettingsDialog, { width: 'medium' });
         break;
       case 'mealPlan':
         this.dialog.open(MealPlanDialog, { width: 'wide' });
@@ -185,6 +221,18 @@ export class AccountMenu {
         break;
       case 'collections':
         this.dialog.open(CollectionsDialog, { width: 'medium' });
+        break;
+      case 'allergies':
+        this.dialog.open(MyAllergiesDialog, { width: 'medium' });
+        break;
+      case 'theme':
+        this.dialog.open(ThemeDialog, { width: 'small' });
+        break;
+      case 'language':
+        this.dialog.open(LanguageDialog, { width: 'small' });
+        break;
+      case 'feedback':
+        this.dialog.open(FeedbackDialog, { width: 'medium' });
         break;
       case 'cookbook':
         this.dialog.open(CookbookExportDialog, { width: 'wide' });

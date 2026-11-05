@@ -112,3 +112,17 @@
     border-radius: 50%;
   }
 }
+
+// Small group titles in the menu ("My kitchen", "Me", "Account").
+.menu-label {
+  margin: 8px 4px 2px;
+  color: var(--text-light);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+
+  &:first-child {
+    margin-top: 2px;
+  }
+}

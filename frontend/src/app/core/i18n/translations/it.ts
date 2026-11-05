@@ -42,6 +42,14 @@ export const it: Translations = {
     copyright: '© {year} C00K90 · Ricettario digitale',
   },
   menu: {
+    kitchen: 'La mia cucina',
+    me: 'Io',
+    account: 'Account',
+    allergies: '🌾 Le mie allergie',
+    theme: '🎨 Tema',
+    language: '🌐 Lingua',
+    feedback: '💬 Invia un feedback',
+    myData: '🔒 I miei dati',
     label: "Menu dell'account",
     openItems: { one: '{count} elemento aperto', other: '{count} elementi aperti' },
     reports: '🚩 Segnalazioni',
@@ -618,6 +626,8 @@ export const it: Translations = {
     intro: "Scegli la lingua dell'app.",
   },
   settings: {
+    myDataTitle: '🔒 I miei dati',
+    myDataIntro: 'Scarica tutto ciò che hai salvato o elimina il tuo account.',
     title: '⚙️ Impostazioni',
     app: 'App',
     data: 'I tuoi dati',

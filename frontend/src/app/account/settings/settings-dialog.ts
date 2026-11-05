@@ -1,21 +1,15 @@
 import { DialogRef } from '@angular/cdk/dialog';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
-import { THEME_OPTIONS, ThemeService } from '../../core/theme/theme.service';
 import { ToastService } from '../../core/toast/toast.service';
 import { AppDialog } from '../../shared/dialog/app-dialog.service';
 import { AccountService } from '../account.service';
-import { MyAllergiesDialog } from '../allergies/my-allergies-dialog';
-import { MyAllergiesService } from '../allergies/my-allergies.service';
-import { FeedbackDialog } from '../dialogs/feedback-dialog';
-import { LanguageDialog } from '../dialogs/language-dialog';
-import { ThemeDialog } from '../dialogs/theme-dialog';
 
 /**
- * App settings and the user's data rights. Theme, language and feedback open on top of this
- * dialog, so closing them comes back here.
+ * "My data": the user's data rights (export everything, delete the account). Theme, language,
+ * allergies and feedback are straight in the account menu.
  */
 @Component({
   selector: 'app-settings-dialog',
@@ -24,7 +18,6 @@ import { ThemeDialog } from '../dialogs/theme-dialog';
   styleUrl: './settings-dialog.scss',
 })
 export class SettingsDialog {
-  private readonly theme = inject(ThemeService);
   private readonly account = inject(AccountService);
   private readonly dialog = inject(AppDialog);
   private readonly toast = inject(ToastService);
@@ -32,35 +25,8 @@ export class SettingsDialog {
   protected readonly i18n = inject(I18nService);
   protected readonly ref = inject(DialogRef);
 
-  private readonly myAllergies = inject(MyAllergiesService);
-  protected readonly allergiesSummary = computed(() =>
-    this.myAllergies
-      .allergies()
-      .map((id) => this.i18n.label('allergens', id))
-      .join(', '),
-  );
-
   protected readonly exporting = signal(false);
   protected readonly deleting = signal(false);
-  protected readonly themeKey = computed(
-    () => THEME_OPTIONS.find((option) => option.id === this.theme.preference())!.labelKey,
-  );
-
-  protected openTheme(): void {
-    this.dialog.open(ThemeDialog, { width: 'small' });
-  }
-
-  protected openLanguage(): void {
-    this.dialog.open(LanguageDialog, { width: 'small' });
-  }
-
-  protected openAllergies(): void {
-    this.dialog.open(MyAllergiesDialog, { width: 'medium' });
-  }
-
-  protected openFeedback(): void {
-    this.dialog.open(FeedbackDialog, { width: 'medium' });
-  }
 
   protected async exportData(): Promise<void> {
     this.exporting.set(true);

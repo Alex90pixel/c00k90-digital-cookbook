@@ -45,6 +45,14 @@ export const ro: Translations = {
     copyright: '© {year} C00K90 · Carte de bucate digitală',
   },
   menu: {
+    kitchen: 'Bucătăria mea',
+    me: 'Eu',
+    account: 'Cont',
+    allergies: '🌾 Alergiile mele',
+    theme: '🎨 Temă',
+    language: '🌐 Limbă',
+    feedback: '💬 Trimite feedback',
+    myData: '🔒 Datele mele',
     label: 'Meniul contului',
     openItems: {
       one: '{count} element deschis',
@@ -629,6 +637,8 @@ export const ro: Translations = {
     intro: 'Alege limba aplicației.',
   },
   settings: {
+    myDataTitle: '🔒 Datele mele',
+    myDataIntro: 'Descarcă tot ce ai salvat sau șterge-ți contul.',
     title: '⚙️ Setări',
     app: 'Aplicație',
     data: 'Datele tale',

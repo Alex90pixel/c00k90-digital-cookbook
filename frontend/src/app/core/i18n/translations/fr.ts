@@ -42,6 +42,14 @@ export const fr: Translations = {
     copyright: '© {year} C00K90 · Livre de recettes numérique',
   },
   menu: {
+    kitchen: 'Ma cuisine',
+    me: 'Moi',
+    account: 'Compte',
+    allergies: '🌾 Mes allergies',
+    theme: '🎨 Thème',
+    language: '🌐 Langue',
+    feedback: '💬 Donner un avis',
+    myData: '🔒 Mes données',
     label: 'Menu du compte',
     openItems: { one: '{count} élément en attente', other: '{count} éléments en attente' },
     reports: '🚩 Signalements',
@@ -622,6 +630,8 @@ export const fr: Translations = {
     intro: "Choisissez la langue de l'application.",
   },
   settings: {
+    myDataTitle: '🔒 Mes données',
+    myDataIntro: 'Téléchargez tout ce que vous avez enregistré, ou supprimez votre compte.',
     title: '⚙️ Paramètres',
     app: 'Application',
     data: 'Vos données',

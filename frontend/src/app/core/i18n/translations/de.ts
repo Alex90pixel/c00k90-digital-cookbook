@@ -42,6 +42,14 @@ export const de: Translations = {
     copyright: '© {year} C00K90 · Digitales Kochbuch',
   },
   menu: {
+    kitchen: 'Meine Küche',
+    me: 'Ich',
+    account: 'Konto',
+    allergies: '🌾 Meine Allergien',
+    theme: '🎨 Design',
+    language: '🌐 Sprache',
+    feedback: '💬 Feedback senden',
+    myData: '🔒 Meine Daten',
     label: 'Kontomenü',
     openItems: { one: '{count} offener Eintrag', other: '{count} offene Einträge' },
     reports: '🚩 Meldungen',
@@ -623,6 +631,8 @@ export const de: Translations = {
     intro: 'Wähle die Sprache der App.',
   },
   settings: {
+    myDataTitle: '🔒 Meine Daten',
+    myDataIntro: 'Lade alles herunter, was du gespeichert hast, oder lösche dein Konto.',
     title: '⚙️ Einstellungen',
     app: 'App',
     data: 'Deine Daten',
