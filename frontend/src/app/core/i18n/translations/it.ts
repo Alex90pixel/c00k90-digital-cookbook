@@ -361,6 +361,7 @@ export const it: Translations = {
     failed: '⚠️ Al momento non è possibile trovare idee. Riprova.',
   },
   detail: {
+    more: 'Altro',
     send: '📤 Invia la ricetta',
     sendCopied: "📋 Ricetta copiata: incollala su WhatsApp, in un messaggio o in un'e-mail.",
     sendFailed: '⚠️ Impossibile copiare la ricetta',

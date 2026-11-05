@@ -73,9 +73,6 @@
             <button type="button" class="btn-action primary" (click)="edit(r)">
               {{ 'detail.edit' | t }}
             </button>
-            <button type="button" class="btn-action danger" (click)="delete(r)">
-              {{ 'detail.delete' | t }}
-            </button>
             @if (r.hiddenByModerator) {
               <button
                 type="button"
@@ -95,18 +92,6 @@
                 {{ (r.shared ? 'detail.shared' : 'detail.share') | t }}
               </button>
             }
-            <button type="button" class="btn-action" (click)="addToCollection(r)">
-              {{ 'collections.addButton' | t }}
-            </button>
-            <button type="button" class="btn-action" (click)="addToPlan(r)">
-              {{ 'mealPlan.addButton' | t }}
-            </button>
-            <button type="button" class="btn-action" (click)="sendRecipe(r)">
-              {{ 'detail.send' | t }}
-            </button>
-            <button type="button" class="btn-action" (click)="printRecipe(r)">
-              {{ 'print.button' | t }}
-            </button>
           } @else {
             <button
               type="button"
@@ -116,28 +101,55 @@
             >
               {{ (isFavorite() ? 'detail.favorited' : 'detail.favorite') | t }}
             </button>
-            <button type="button" class="btn-action" (click)="addToCollection(r)">
+          }
+          <button
+            type="button"
+            class="btn-action more-btn"
+            [cdkMenuTriggerFor]="moreMenu"
+            [attr.aria-label]="'detail.more' | t"
+          >
+            ⋯ {{ 'detail.more' | t }}
+          </button>
+        </div>
+
+        <!-- The less frequent actions, in a menu so the recipe stays calm to look at. -->
+        <ng-template #moreMenu>
+          <div class="more-menu" cdkMenu>
+            <button type="button" cdkMenuItem (cdkMenuItemTriggered)="addToCollection(r)">
               {{ 'collections.addButton' | t }}
             </button>
-            <button type="button" class="btn-action" (click)="addToPlan(r)">
+            <button type="button" cdkMenuItem (cdkMenuItemTriggered)="addToPlan(r)">
               {{ 'mealPlan.addButton' | t }}
             </button>
-            <button type="button" class="btn-action" (click)="sendRecipe(r)">
+            <button type="button" cdkMenuItem (cdkMenuItemTriggered)="sendRecipe(r)">
               {{ 'detail.send' | t }}
             </button>
-            <button type="button" class="btn-action" (click)="printRecipe(r)">
+            <button type="button" cdkMenuItem (cdkMenuItemTriggered)="printRecipe(r)">
               {{ 'print.button' | t }}
             </button>
-            <button type="button" class="btn-action" (click)="report(r)">
-              {{ 'detail.report' | t }}
-            </button>
-            @if (isAdmin()) {
-              <button type="button" class="btn-action danger" (click)="hideFromInspired(r)">
-                {{ 'detail.hide' | t }}
+            @if (isOwner()) {
+              <hr />
+              <button type="button" cdkMenuItem class="danger" (cdkMenuItemTriggered)="delete(r)">
+                {{ 'detail.delete' | t }}
               </button>
+            } @else {
+              <hr />
+              <button type="button" cdkMenuItem (cdkMenuItemTriggered)="report(r)">
+                {{ 'detail.report' | t }}
+              </button>
+              @if (isAdmin()) {
+                <button
+                  type="button"
+                  cdkMenuItem
+                  class="danger"
+                  (cdkMenuItemTriggered)="hideFromInspired(r)"
+                >
+                  {{ 'detail.hide' | t }}
+                </button>
+              }
             }
-          }
-        </div>
+          </div>
+        </ng-template>
       </div>
 
       <div class="detail-gallery">

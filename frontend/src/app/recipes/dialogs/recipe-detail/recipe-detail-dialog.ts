@@ -1,3 +1,4 @@
+import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, computed, effect, inject, linkedSignal, signal } from '@angular/core';
 import { ChefBadge } from '../../../chefs/components/chef-badge';
@@ -31,7 +32,15 @@ import { AddToPlanDialog } from '../add-to-plan-dialog';
 
 @Component({
   selector: 'app-recipe-detail-dialog',
-  imports: [TranslatePipe, ChefBadge, FollowButton, VideoPlayer],
+  imports: [
+    TranslatePipe,
+    ChefBadge,
+    FollowButton,
+    VideoPlayer,
+    CdkMenuTrigger,
+    CdkMenu,
+    CdkMenuItem,
+  ],
   templateUrl: './recipe-detail-dialog.html',
   styleUrl: './recipe-detail-dialog.scss',
 })

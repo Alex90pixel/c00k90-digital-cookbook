@@ -371,6 +371,7 @@ export const ro: Translations = {
     failed: '⚠️ Nu am putut găsi idei acum. Încearcă din nou.',
   },
   detail: {
+    more: 'Mai mult',
     send: '📤 Trimite rețeta',
     sendCopied: '📋 Rețeta a fost copiată: lipește-o în WhatsApp, un mesaj sau un email.',
     sendFailed: '⚠️ Nu am putut copia rețeta',

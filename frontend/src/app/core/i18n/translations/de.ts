@@ -361,6 +361,7 @@ export const de: Translations = {
     failed: '⚠️ Gerade konnten keine Ideen geladen werden. Bitte versuche es noch einmal.',
   },
   detail: {
+    more: 'Mehr',
     send: '📤 Rezept senden',
     sendCopied: '📋 Rezept kopiert: Füge es in WhatsApp, eine Nachricht oder eine E-Mail ein.',
     sendFailed: '⚠️ Rezept konnte nicht kopiert werden',

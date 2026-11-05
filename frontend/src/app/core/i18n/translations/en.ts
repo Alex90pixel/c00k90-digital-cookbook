@@ -360,6 +360,7 @@ export const en = {
     failed: '⚠️ Could not get ideas right now. Please try again.',
   },
   detail: {
+    more: 'More',
     send: '📤 Send recipe',
     sendCopied: '📋 Recipe copied: paste it in WhatsApp, a message or an email.',
     sendFailed: '⚠️ Could not copy the recipe',

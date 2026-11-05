@@ -360,6 +360,7 @@ export const es: Translations = {
     failed: '⚠️ Ahora no se pudieron obtener ideas. Inténtalo de nuevo.',
   },
   detail: {
+    more: 'Más',
     send: '📤 Enviar receta',
     sendCopied: '📋 Receta copiada: pégala en WhatsApp, un mensaje o un correo.',
     sendFailed: '⚠️ No se pudo copiar la receta',
