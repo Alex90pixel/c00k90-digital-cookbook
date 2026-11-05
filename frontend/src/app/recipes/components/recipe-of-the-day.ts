@@ -35,7 +35,7 @@ const HIDDEN_KEY = 'c00k90-recipe-of-day-hidden';
             <span class="meta">
               <span class="category">{{ i18n.label('categories', r.category) }}</span>
               @if (minutes()) {
-                <span>⏱ {{ 'card.minutes' | t: { count: minutes() } }}</span>
+                <span>{{ 'card.minutes' | t: { count: minutes() } }}</span>
               }
               <span class="go">{{ 'recipeOfDay.open' | t }} →</span>
             </span>
