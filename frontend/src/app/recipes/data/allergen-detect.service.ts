@@ -1,3 +1,4 @@
+import { lazyImport } from '../../core/app-update/stale-chunk';
 import { Injectable } from '@angular/core';
 import { FirebaseApp } from 'firebase/app';
 import { ALLERGEN_IDS } from '../models/recipe.constants';
@@ -23,8 +24,9 @@ export class AllergenDetectService {
    * Returns one allergen list per recipe, in the same order.
    */
   async detectMany(recipes: string[][]): Promise<AllergenId[][]> {
-    const { getAI, getGenerativeModel, GoogleAIBackend, Schema, ThinkingLevel } =
-      await import('firebase/ai');
+    const { getAI, getGenerativeModel, GoogleAIBackend, Schema, ThinkingLevel } = await lazyImport(
+      () => import('firebase/ai'),
+    );
     const app = await (this.aiApp ??= connectAiApp());
 
     const model = getGenerativeModel(getAI(app, { backend: new GoogleAIBackend() }), {

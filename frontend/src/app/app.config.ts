@@ -1,6 +1,7 @@
 import { OVERLAY_DEFAULT_CONFIG } from '@angular/cdk/overlay';
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, ErrorHandler, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { StaleChunkErrorHandler } from './core/app-update/stale-chunk';
 import { TitleStrategy, provideRouter, withComponentInputBinding } from '@angular/router';
 import { environment } from '../environments/environment';
 import { routes } from './app.routes';
@@ -10,6 +11,8 @@ import { I18nTitleStrategy } from './core/i18n/i18n-title.strategy';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
+    // After a deploy, an open tab reloads once instead of failing to open a page or dialog.
+    { provide: ErrorHandler, useClass: StaleChunkErrorHandler },
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(withFetch()),
     provideFirebase(environment.firebase),

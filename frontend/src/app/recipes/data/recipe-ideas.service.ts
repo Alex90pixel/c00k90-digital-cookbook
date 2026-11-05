@@ -1,3 +1,4 @@
+import { lazyImport } from '../../core/app-update/stale-chunk';
 import { Injectable } from '@angular/core';
 import { FirebaseApp } from 'firebase/app';
 import { CATEGORIES } from '../models/recipe.constants';
@@ -45,8 +46,9 @@ export class RecipeIdeasService {
     options: readonly IdeaOption[] = [],
     avoid: readonly string[] = [],
   ): Promise<RecipeIdea[]> {
-    const { getAI, getGenerativeModel, GoogleAIBackend, Schema, ThinkingLevel } =
-      await import('firebase/ai');
+    const { getAI, getGenerativeModel, GoogleAIBackend, Schema, ThinkingLevel } = await lazyImport(
+      () => import('firebase/ai'),
+    );
     const app = await (this.aiApp ??= connectAiApp());
     const categories = CATEGORIES.map((c) => c.id);
 
@@ -129,8 +131,9 @@ tip (one practical cook's tip). If the input is not food ingredients, return an 
    * user's language ("eggs, spinach, cheese"). Only the photo is sent, made smaller first.
    */
   async ingredientsInPhoto(photo: Blob, language: string): Promise<string[]> {
-    const { getAI, getGenerativeModel, GoogleAIBackend, Schema, ThinkingLevel } =
-      await import('firebase/ai');
+    const { getAI, getGenerativeModel, GoogleAIBackend, Schema, ThinkingLevel } = await lazyImport(
+      () => import('firebase/ai'),
+    );
     const app = await (this.aiApp ??= connectAiApp());
     const model = getGenerativeModel(getAI(app, { backend: new GoogleAIBackend() }), {
       model: 'gemini-3.5-flash-lite',

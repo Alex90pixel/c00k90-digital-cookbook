@@ -1,3 +1,4 @@
+import { lazyImport } from '../../core/app-update/stale-chunk';
 import { Injectable } from '@angular/core';
 import { FirebaseApp } from 'firebase/app';
 import { connectAiApp } from './notebook-transcribe.service';
@@ -31,8 +32,9 @@ export class RecipeEnrichService {
 
   /** Several recipes in one request; one result per recipe, in the same order. */
   async enrichMany(recipes: RecipeToEnrich[]): Promise<RecipeEnrichment[]> {
-    const { getAI, getGenerativeModel, GoogleAIBackend, Schema, ThinkingLevel } =
-      await import('firebase/ai');
+    const { getAI, getGenerativeModel, GoogleAIBackend, Schema, ThinkingLevel } = await lazyImport(
+      () => import('firebase/ai'),
+    );
     const app = await (this.aiApp ??= connectAiApp());
 
     const model = getGenerativeModel(getAI(app, { backend: new GoogleAIBackend() }), {

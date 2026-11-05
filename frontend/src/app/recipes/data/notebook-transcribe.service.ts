@@ -1,3 +1,4 @@
+import { lazyImport } from '../../core/app-update/stale-chunk';
 import { Injectable, isDevMode } from '@angular/core';
 import { FirebaseApp, getApp, getApps, initializeApp } from 'firebase/app';
 import { environment } from '../../../environments/environment';
@@ -31,8 +32,9 @@ export class NotebookTranscribeService {
 
   async transcribe(photo: Blob): Promise<TranscribedRecipe> {
     // Loaded only when someone uses this feature, so the app stays light.
-    const { getAI, getGenerativeModel, GoogleAIBackend, Schema, ThinkingLevel } =
-      await import('firebase/ai');
+    const { getAI, getGenerativeModel, GoogleAIBackend, Schema, ThinkingLevel } = await lazyImport(
+      () => import('firebase/ai'),
+    );
     const app = await (this.aiApp ??= connectAiApp());
 
     const model = getGenerativeModel(getAI(app, { backend: new GoogleAIBackend() }), {
@@ -86,7 +88,9 @@ export class NotebookTranscribeService {
 export async function connectAiApp(): Promise<FirebaseApp> {
   if (getApps().some((a) => a.name === AI_APP_NAME)) return getApp(AI_APP_NAME);
   const app = initializeApp(environment.aiFirebase, AI_APP_NAME);
-  const { initializeAppCheck, ReCaptchaEnterpriseProvider } = await import('firebase/app-check');
+  const { initializeAppCheck, ReCaptchaEnterpriseProvider } = await lazyImport(
+    () => import('firebase/app-check'),
+  );
   // On localhost, App Check prints a debug token in the console; register it once in
   // Firebase (App Check → Apps → Manage debug tokens) so local testing works.
   if (location.hostname === 'localhost') {
