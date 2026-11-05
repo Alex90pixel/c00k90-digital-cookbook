@@ -15,7 +15,7 @@ interface StyleOption {
   label: TranslationKey;
 }
 
-const STYLES: readonly StyleOption[] = [
+export const STYLES: readonly StyleOption[] = [
   { id: 'classic', label: 'cookbook.styles.classic', emoji: '🥣' },
   { id: 'notebook', label: 'cookbook.styles.notebook', emoji: '📒' },
   { id: 'minimal', label: 'cookbook.styles.minimal', emoji: '🐚' },
@@ -391,7 +391,7 @@ export class CookbookExportDialog {
           recipes: s.recipes.filter((recipe) => this.selected().has(recipe.id)),
         })),
         dedication: this.dedication(),
-        labels: this.labels(),
+        labels: cookbookLabels(this.i18n),
       });
       await printHtml(html);
     } catch (error) {
@@ -401,22 +401,23 @@ export class CookbookExportDialog {
       this.preparing.set(false);
     }
   }
+}
 
-  private labels(): CookbookLabels {
-    const t = this.i18n.t;
-    return {
-      by: t('cookbook.by'),
-      contents: t('cookbook.contents'),
-      ingredients: t('detail.ingredients'),
-      steps: t('detail.steps'),
-      notes: t('cookbook.notes'),
-      source: t('cookbook.source'),
-      serves: (count) => t('cookbook.serves', { count }),
-      minutes: (count) => t('cookbook.minutes', { count }),
-      recipeCount: (count) => t('cookbook.recipeCount', { count }),
-      category: (id) => this.i18n.label('categories', id),
-    };
-  }
+/** The words printed in the cookbook, in the current language. */
+export function cookbookLabels(i18n: I18nService): CookbookLabels {
+  const t = i18n.t;
+  return {
+    by: t('cookbook.by'),
+    contents: t('cookbook.contents'),
+    ingredients: t('detail.ingredients'),
+    steps: t('detail.steps'),
+    notes: t('cookbook.notes'),
+    source: t('cookbook.source'),
+    serves: (count) => t('cookbook.serves', { count }),
+    minutes: (count) => t('cookbook.minutes', { count }),
+    recipeCount: (count) => t('cookbook.recipeCount', { count }),
+    category: (id) => i18n.label('categories', id),
+  };
 }
 
 /** A copy of the list with two items swapped (unchanged when `to` is out of range). */
@@ -431,7 +432,7 @@ function swap<T>(list: readonly T[], from: number, to: number): T[] {
  * Opens the print window for a whole HTML document, from a hidden frame, once its fonts and
  * photos have loaded. The frame is removed afterwards.
  */
-function printHtml(html: string): Promise<void> {
+export function printHtml(html: string): Promise<void> {
   return new Promise((resolve, reject) => {
     const frame = document.createElement('iframe');
     frame.setAttribute('aria-hidden', 'true');

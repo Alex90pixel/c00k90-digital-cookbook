@@ -170,6 +170,13 @@ export const de: Translations = {
     open: 'Rezept öffnen',
     hide: 'Bis morgen ausblenden',
   },
+  print: {
+    button: '🖨️ Drucken',
+    title: 'Dieses Rezept drucken',
+    hint: 'Wähle einen Stil. Dein Browser öffnet ein Druckfenster, in dem du auch „Als PDF speichern“ wählen kannst. Stelle die Ränder auf „Keine“ und aktiviere „Hintergrundgrafiken“.',
+    print: 'Drucken',
+    failed: '⚠️ Das Rezept konnte nicht zum Drucken vorbereitet werden.',
+  },
   sort: {
     label: 'Sortieren',
     recent: '🕒 Neueste zuerst',

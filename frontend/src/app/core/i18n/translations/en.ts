@@ -169,6 +169,13 @@ export const en = {
     open: 'Open recipe',
     hide: 'Hide until tomorrow',
   },
+  print: {
+    button: '🖨️ Print',
+    title: 'Print this recipe',
+    hint: 'Pick a style. Your browser opens a print window, where you can also choose "Save as PDF". Set Margins to "None" and tick "Background graphics".',
+    print: 'Print',
+    failed: '⚠️ Could not prepare the recipe for printing.',
+  },
   sort: {
     label: 'Sort',
     recent: '🕒 Newest first',

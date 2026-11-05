@@ -118,4 +118,19 @@ describe('paginateContents', () => {
     expect(html).toMatch(/Apple pie<\/span><i><\/i><span>4/);
     expect(html).toMatch(/Zucchini soup<\/span><i><\/i><span>5/);
   });
+
+  it('prints just the recipe page when asked', () => {
+    const html = buildCookbookHtml({
+      style: 'minimal',
+      lang: 'en',
+      title: 'Apple pie',
+      author: 'Sora',
+      labels,
+      recipes: [recipe('1', 'Apple pie', 'Desserts')],
+      recipesOnly: true,
+    });
+    expect(html).not.toContain('class="page cover"');
+    expect(html).not.toContain('class="page toc"');
+    expect(html.match(/class="page recipe"/g)?.length).toBe(1);
+  });
 });

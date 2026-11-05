@@ -170,6 +170,13 @@ export const fr: Translations = {
     open: 'Ouvrir la recette',
     hide: "Masquer jusqu'à demain",
   },
+  print: {
+    button: '🖨️ Imprimer',
+    title: 'Imprimer cette recette',
+    hint: "Choisissez un style. Votre navigateur ouvre une fenêtre d'impression, où vous pouvez aussi choisir « Enregistrer au format PDF ». Réglez les marges sur « Aucune » et cochez « Graphiques d'arrière-plan ».",
+    print: 'Imprimer',
+    failed: "⚠️ Impossible de préparer la recette pour l'impression.",
+  },
   sort: {
     label: 'Trier',
     recent: '🕒 Les plus récentes',

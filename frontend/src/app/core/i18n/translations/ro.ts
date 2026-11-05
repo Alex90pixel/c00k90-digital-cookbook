@@ -177,6 +177,13 @@ export const ro: Translations = {
     open: 'Deschide rețeta',
     hide: 'Ascunde până mâine',
   },
+  print: {
+    button: '🖨️ Printează',
+    title: 'Printează rețeta',
+    hint: 'Alege un stil. Browserul deschide fereastra de printare, unde poți alege și „Salvează ca PDF”. Pune Margini pe „Niciuna” și bifează „Grafică de fundal”.',
+    print: 'Printează',
+    failed: '⚠️ Nu am putut pregăti rețeta pentru printare.',
+  },
   sort: {
     label: 'Sortare',
     recent: '🕒 Cele mai noi',

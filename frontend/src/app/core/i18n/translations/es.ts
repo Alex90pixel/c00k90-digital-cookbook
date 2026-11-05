@@ -169,6 +169,13 @@ export const es: Translations = {
     open: 'Abrir receta',
     hide: 'Ocultar hasta mañana',
   },
+  print: {
+    button: '🖨️ Imprimir',
+    title: 'Imprimir esta receta',
+    hint: 'Elige un estilo. El navegador abrirá una ventana de impresión, donde también puedes elegir «Guardar como PDF». Pon los márgenes en «Ninguno» y marca «Gráficos de fondo».',
+    print: 'Imprimir',
+    failed: '⚠️ No se pudo preparar la receta para imprimir.',
+  },
   sort: {
     label: 'Ordenar',
     recent: '🕒 Más recientes',

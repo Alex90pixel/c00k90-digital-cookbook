@@ -168,6 +168,11 @@ export class RecipeDetailDialog {
     }
   }
 
+  protected async printRecipe(recipe: Recipe): Promise<void> {
+    const { PrintRecipeDialog } = await import('../print-recipe-dialog');
+    this.dialog.open(PrintRecipeDialog, { data: recipe, width: 'medium' });
+  }
+
   protected openShoppingList(recipe: Recipe): void {
     this.dialog.open<ShoppingListDialog, ShoppingListData>(ShoppingListDialog, {
       width: 'wide',

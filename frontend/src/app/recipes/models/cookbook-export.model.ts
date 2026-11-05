@@ -38,4 +38,6 @@ export interface CookbookOptions {
   sections?: readonly CookbookSection[];
   /** A dedication or preface, printed on its own page after the cover. */
   dedication?: string;
+  /** Just the recipe pages: no cover, dedication or contents (printing one recipe). */
+  recipesOnly?: boolean;
 }

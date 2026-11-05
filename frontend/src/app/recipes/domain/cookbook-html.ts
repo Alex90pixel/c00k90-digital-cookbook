@@ -151,8 +151,9 @@ export function buildCookbookHtml(options: CookbookOptions): string {
   const dedication = options.dedication?.trim() ?? '';
   const contentsPages = paginateContents(groups, CONTENTS_ROWS[style]);
   // Cover is page 1, then the dedication (if any), the contents pages and one page per recipe.
-  const firstContentsPage = dedication ? 3 : 2;
-  const firstRecipePage = firstContentsPage + contentsPages.length;
+  const recipesOnly = !!options.recipesOnly;
+  const firstContentsPage = recipesOnly ? 1 : dedication ? 3 : 2;
+  const firstRecipePage = recipesOnly ? 1 : firstContentsPage + contentsPages.length;
   const pageOf = new Map(ordered.map((r, i) => [r.id, i + firstRecipePage]));
   const contents = contentsPages
     .map(
@@ -182,21 +183,25 @@ export function buildCookbookHtml(options: CookbookOptions): string {
 <link rel="stylesheet" href="${FONTS}" />
 <style>${COMMON_CSS}${STYLE_CSS[style]}</style>
 </head>
-<body class="${style}">
-<section class="page cover">
+<body class="${style}${recipesOnly ? ' recipes-only' : ''}">
+${
+  recipesOnly
+    ? ''
+    : `<section class="page cover">
   <div class="cover-inner">
     <p class="brand">C00K90</p>
     <h1>${e(title)}</h1>
     ${author ? `<p class="by">${e(labels.by)} ${e(author)}</p>` : ''}
     <p class="count">${e(labels.recipeCount(ordered.length))}</p>
   </div>
-</section>
+</section>`
+}
 ${
-  dedication
+  !recipesOnly && dedication
     ? `<section class="page dedication"><p>${e(dedication)}</p><footer><span>${e(title)}</span><span>2</span></footer></section>`
     : ''
 }
-${contents}
+${recipesOnly ? '' : contents}
 ${ordered.map((r) => recipePage(r, pageOf.get(r.id) ?? 0, options, chapterOf.get(r.id) ?? '')).join('')}
 </body>
 </html>`;
@@ -210,6 +215,8 @@ html, body { margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: e
 .page { width: 210mm; height: 297mm; overflow: hidden; padding: 16mm; display: flex; flex-direction: column; break-after: page; position: relative; }
 h1, h2, h3, h5 { margin: 0; }
 .cover { justify-content: center; }
+/* One printed recipe: no page number in the footer. */
+.recipes-only footer span:last-child { visibility: hidden; }
 .dedication { justify-content: center; align-items: center; text-align: center; }
 .dedication p { max-width: 130mm; margin: 0 auto; font-size: 15pt; font-style: italic; line-height: 1.7; white-space: pre-line; }
 .toc h2 { font-size: 26pt; margin-bottom: 10mm; }

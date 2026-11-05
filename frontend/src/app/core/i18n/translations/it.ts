@@ -169,6 +169,13 @@ export const it: Translations = {
     open: 'Apri la ricetta',
     hide: 'Nascondi fino a domani',
   },
+  print: {
+    button: '🖨️ Stampa',
+    title: 'Stampa questa ricetta',
+    hint: 'Scegli uno stile. Il browser apre una finestra di stampa, dove puoi anche scegliere «Salva come PDF». Imposta i margini su «Nessuno» e spunta «Grafica di sfondo».',
+    print: 'Stampa',
+    failed: '⚠️ Impossibile preparare la ricetta per la stampa.',
+  },
   sort: {
     label: 'Ordina',
     recent: '🕒 Le più recenti',
