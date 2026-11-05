@@ -400,6 +400,12 @@ export const de: Translations = {
     failed: '⚠️ Der Wochenplan konnte nicht gespeichert werden. Bitte versuche es noch einmal.',
   },
   ideas: {
+    photo: 'Foto vom Kühlschrank',
+    photoHint: 'Fotografiere deinen Kühlschrank oder Vorrat und wir schreiben auf, was drin ist.',
+    readingPhoto: 'Ich schaue mir dein Foto an…',
+    photoNothing:
+      'Auf dem Foto wurden keine Lebensmittel gefunden. Versuche ein näheres, helleres Foto.',
+    photoFailed: '⚠️ Das Foto konnte nicht gelesen werden. Bitte versuche es noch einmal.',
     more: '🔄 Mehr Ideen',
     optionsLabel: 'Optionen',
     options: {
@@ -424,7 +430,7 @@ export const de: Translations = {
     save: '💾 In meinen Rezepten speichern',
     saved: '✅ Gespeichert',
     source: '✨ Rezeptidee (KI)',
-    note: 'Die Ideen schreibt eine KI (Google Gemini): Prüfe Mengen, Garzeiten und Allergene vor dem Kochen. Es werden nur die Zutaten gesendet, die du eingibst.',
+    note: 'Die Ideen schreibt eine KI (Google Gemini): Prüfe Mengen, Garzeiten und Allergene vor dem Kochen. Es werden nur die Zutaten gesendet, die du eingibst (oder das Foto, das du machst).',
     none: 'Dazu gibt es keine Ideen. Schreib ein paar Zutaten, z. B. „Eier, Spinat, Käse“.',
     failed: '⚠️ Gerade konnten keine Ideen geladen werden. Bitte versuche es noch einmal.',
   },

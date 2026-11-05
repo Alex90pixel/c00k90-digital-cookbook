@@ -397,6 +397,11 @@ export const en = {
     failed: '⚠️ Could not save the meal plan. Please try again.',
   },
   ideas: {
+    photo: 'Photo of my fridge',
+    photoHint: "Take a photo of your fridge or pantry and we'll list what's in it.",
+    readingPhoto: 'Looking at your photo…',
+    photoNothing: 'No food found in this photo. Try a closer, brighter photo.',
+    photoFailed: '⚠️ Could not read the photo. Please try again.',
     more: '🔄 More ideas',
     optionsLabel: 'Options',
     options: {
@@ -421,7 +426,7 @@ export const en = {
     save: '💾 Save to my recipes',
     saved: '✅ Saved',
     source: '✨ Recipe idea (AI)',
-    note: 'Ideas are written by AI (Google Gemini): check quantities, cooking times and allergens before cooking. Only the ingredients you type are sent.',
+    note: 'Ideas are written by AI (Google Gemini): check quantities, cooking times and allergens before cooking. Only the ingredients you type (or the photo you take) are sent.',
     none: 'No ideas for that. Try listing a few food ingredients, e.g. "eggs, spinach, cheese".',
     failed: '⚠️ Could not get ideas right now. Please try again.',
   },

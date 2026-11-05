@@ -400,6 +400,11 @@ export const it: Translations = {
     failed: '⚠️ Impossibile salvare il menù. Riprova.',
   },
   ideas: {
+    photo: 'Foto del frigo',
+    photoHint: "Fotografa il frigo o la dispensa e ti diciamo cosa c'è.",
+    readingPhoto: 'Guardo la tua foto…',
+    photoNothing: 'Nessun alimento trovato nella foto. Prova con una foto più vicina e luminosa.',
+    photoFailed: '⚠️ Impossibile leggere la foto. Riprova.',
     more: '🔄 Altre idee',
     optionsLabel: 'Opzioni',
     options: {
@@ -424,7 +429,7 @@ export const it: Translations = {
     save: '💾 Salva nelle mie ricette',
     saved: '✅ Salvata',
     source: '✨ Idea di ricetta (IA)',
-    note: "Le idee sono scritte da un'IA (Google Gemini): controlla quantità, tempi di cottura e allergeni prima di cucinare. Vengono inviati solo gli ingredienti che scrivi.",
+    note: "Le idee sono scritte da un'IA (Google Gemini): controlla quantità, tempi di cottura e allergeni prima di cucinare. Vengono inviati solo gli ingredienti che scrivi (o la foto che scatti).",
     none: 'Nessuna idea per questo. Prova a scrivere qualche ingrediente, es. «uova, spinaci, formaggio».',
     failed: '⚠️ Al momento non è possibile trovare idee. Riprova.',
   },

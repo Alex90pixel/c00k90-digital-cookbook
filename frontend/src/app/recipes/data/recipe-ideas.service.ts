@@ -3,7 +3,8 @@ import { FirebaseApp } from 'firebase/app';
 import { CATEGORIES } from '../models/recipe.constants';
 import { Category } from '../models/recipe.model';
 import { RecipeIdea } from '../models/recipe-idea.model';
-import { connectAiApp } from './notebook-transcribe.service';
+import { resizeImage } from '../../core/images/image-processing';
+import { connectAiApp, toBase64 } from './notebook-transcribe.service';
 
 /** Ways to narrow the ideas, picked as chips in "What can I cook?". */
 export type IdeaOption = 'quick' | 'vegetarian' | 'budget' | 'onePot' | 'kids' | 'protein';
@@ -121,5 +122,41 @@ tip (one practical cook's tip). If the input is not food ingredients, return an 
         },
       ];
     });
+  }
+
+  /**
+   * Reads a photo of a fridge, a pantry shelf or a table and lists the food it shows, in the
+   * user's language ("eggs, spinach, cheese"). Only the photo is sent, made smaller first.
+   */
+  async ingredientsInPhoto(photo: Blob, language: string): Promise<string[]> {
+    const { getAI, getGenerativeModel, GoogleAIBackend, Schema, ThinkingLevel } =
+      await import('firebase/ai');
+    const app = await (this.aiApp ??= connectAiApp());
+    const model = getGenerativeModel(getAI(app, { backend: new GoogleAIBackend() }), {
+      model: 'gemini-3.5-flash-lite',
+      generationConfig: {
+        responseMimeType: 'application/json',
+        thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
+        responseSchema: Schema.object({
+          properties: { ingredients: Schema.array({ items: Schema.string() }) },
+        }),
+      },
+    });
+    const small = await resizeImage(photo, 1280, 0.8);
+    const result = await model.generateContent([
+      `List the food ingredients you can clearly see in this photo (a fridge, a pantry or a table),
+in ${LANGUAGE_NAMES[language] ?? 'English'}, short and in lower case (e.g. "eggs", "spinach", "cheddar").
+Leave out drinks, sauces you cannot identify, packaging and anything that is not food.
+If there is no food, return an empty list.`,
+      {
+        type: 'inlineData',
+        inlineData: { mimeType: small.type || 'image/jpeg', data: await toBase64(small) },
+      },
+    ]);
+    const parsed = JSON.parse(result.response.text()) as { ingredients?: string[] };
+    return [...new Set((parsed.ingredients ?? []).map((i) => i.trim()).filter(Boolean))].slice(
+      0,
+      25,
+    );
   }
 }

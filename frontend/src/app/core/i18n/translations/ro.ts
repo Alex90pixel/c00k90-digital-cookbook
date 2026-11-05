@@ -409,6 +409,11 @@ export const ro: Translations = {
     failed: '⚠️ Nu am putut salva planul de mese. Încearcă din nou.',
   },
   ideas: {
+    photo: 'Poză la frigider',
+    photoHint: 'Fă o poză la frigider sau la cămară și îți scriem noi ce e acolo.',
+    readingPhoto: 'Mă uit la poza ta…',
+    photoNothing: 'N-am găsit mâncare în poză. Încearcă o poză mai de aproape și mai luminoasă.',
+    photoFailed: '⚠️ Nu am putut citi poza. Încearcă din nou.',
     more: '🔄 Alte idei',
     optionsLabel: 'Opțiuni',
     options: {
@@ -433,7 +438,7 @@ export const ro: Translations = {
     save: '💾 Salvează în rețetele mele',
     saved: '✅ Salvată',
     source: '✨ Idee de rețetă (AI)',
-    note: 'Ideile sunt scrise de AI (Google Gemini): verifică cantitățile, timpii de gătire și alergenii înainte să gătești. Se trimit doar ingredientele pe care le scrii.',
+    note: 'Ideile sunt scrise de AI (Google Gemini): verifică cantitățile, timpii de gătire și alergenii înainte să gătești. Se trimit doar ingredientele scrise de tine (sau poza pe care o faci).',
     none: 'N-am găsit idei pentru asta. Încearcă să scrii câteva ingrediente, de ex. „ouă, spanac, brânză”.',
     failed: '⚠️ Nu am putut găsi idei acum. Încearcă din nou.',
   },

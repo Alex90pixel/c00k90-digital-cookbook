@@ -5,6 +5,7 @@ import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { IdeaOption, RecipeIdeasService } from '../data/recipe-ideas.service';
 import { TranslationKey } from '../../core/i18n/i18n.types';
 import { RecipeStore } from '../data/recipe.store';
+import { PhotoConsent } from '../../shared/dialog/photo-consent.service';
 import { parseIngredientLines } from '../domain/ingredients';
 import { emptyRecipeForm } from '../domain/recipe-form';
 import { RecipeIdea } from '../models/recipe-idea.model';
@@ -42,6 +43,24 @@ const OPTIONS: readonly { id: IdeaOption; label: TranslationKey }[] = [
           [value]="have()"
           (input)="have.set($any($event.target).value)"
         />
+        <input
+          #fridgePhoto
+          type="file"
+          accept="image/*"
+          capture="environment"
+          hidden
+          (change)="readFridge(fridgePhoto)"
+        />
+        <button
+          type="button"
+          class="btn-confirm-cancel photo-btn"
+          [disabled]="loading() || readingPhoto()"
+          [attr.aria-label]="'ideas.photo' | t"
+          [title]="'ideas.photoHint' | t"
+          (click)="pickFridge(fridgePhoto)"
+        >
+          📸
+        </button>
         <button type="submit" class="btn-save" [disabled]="!have().trim() || loading()">
           {{ (loading() ? 'ideas.thinking' : 'ideas.get') | t }}
         </button>
@@ -60,6 +79,10 @@ const OPTIONS: readonly { id: IdeaOption; label: TranslationKey }[] = [
           </button>
         }
       </div>
+
+      @if (readingPhoto()) {
+        <p class="photo-status" role="status">{{ 'ideas.readingPhoto' | t }}</p>
+      }
 
       @if (error()) {
         <p class="error" role="alert">{{ error()! | t }}</p>
@@ -171,6 +194,17 @@ const OPTIONS: readonly { id: IdeaOption; label: TranslationKey }[] = [
     .more {
       display: block;
       margin: 14px auto 0;
+    }
+    .photo-btn {
+      flex: none;
+      padding: 0 14px;
+      font-size: 20px;
+    }
+    .photo-status {
+      margin: -6px 0 12px;
+      color: var(--teal);
+      font-size: 13px;
+      font-weight: 600;
     }
     .error {
       color: var(--magenta-deep);
@@ -294,7 +328,9 @@ export class RecipeIdeasDialog {
   protected readonly have = signal('');
   protected readonly ideas = signal<RecipeIdea[]>([]);
   protected readonly loading = signal(false);
-  protected readonly error = signal<'ideas.failed' | 'ideas.none' | null>(null);
+  protected readonly error = signal<
+    'ideas.failed' | 'ideas.none' | 'ideas.photoNothing' | 'ideas.photoFailed' | null
+  >(null);
   protected readonly saved = signal(new Set<number>());
   protected readonly saving = signal<number | null>(null);
 
@@ -310,6 +346,41 @@ export class RecipeIdeasDialog {
   protected readonly options = signal<readonly IdeaOption[]>([]);
   /** Every idea shown for these ingredients, so "More ideas" doesn't repeat them. */
   private shownNames: string[] = [];
+
+  // "📸": a photo of the fridge fills in the ingredients.
+  private readonly photoConsent = inject(PhotoConsent);
+  protected readonly readingPhoto = signal(false);
+
+  protected async pickFridge(input: HTMLInputElement): Promise<void> {
+    if (await this.photoConsent.ask()) input.click();
+  }
+
+  protected async readFridge(input: HTMLInputElement): Promise<void> {
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file?.type.startsWith('image/')) return;
+    this.readingPhoto.set(true);
+    this.error.set(null);
+    try {
+      const found = await this.ideasService.ingredientsInPhoto(file, this.i18n.language());
+      if (!found.length) {
+        this.error.set('ideas.photoNothing');
+        return;
+      }
+      // Added to what was already typed, without repeats.
+      const typed = this.have()
+        .split(',')
+        .map((i) => i.trim())
+        .filter(Boolean);
+      this.have.set([...new Set([...typed, ...found])].join(', '));
+      await this.suggest();
+    } catch (error) {
+      console.error('Reading the fridge photo failed', error);
+      this.error.set('ideas.photoFailed');
+    } finally {
+      this.readingPhoto.set(false);
+    }
+  }
 
   protected toggleOption(id: IdeaOption): void {
     this.options.update((list) =>

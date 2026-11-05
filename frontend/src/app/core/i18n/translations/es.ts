@@ -399,6 +399,11 @@ export const es: Translations = {
     failed: '⚠️ No se pudo guardar el menú. Inténtalo de nuevo.',
   },
   ideas: {
+    photo: 'Foto de mi nevera',
+    photoHint: 'Haz una foto de tu nevera o despensa y te decimos qué hay.',
+    readingPhoto: 'Mirando tu foto…',
+    photoNothing: 'No encontramos comida en la foto. Prueba con una foto más cercana y luminosa.',
+    photoFailed: '⚠️ No se pudo leer la foto. Inténtalo de nuevo.',
     more: '🔄 Más ideas',
     optionsLabel: 'Opciones',
     options: {
@@ -423,7 +428,7 @@ export const es: Translations = {
     save: '💾 Guardar en mis recetas',
     saved: '✅ Guardada',
     source: '✨ Idea de receta (IA)',
-    note: 'Las ideas las escribe una IA (Google Gemini): revisa cantidades, tiempos y alérgenos antes de cocinar. Solo se envían los ingredientes que escribes.',
+    note: 'Las ideas las escribe una IA (Google Gemini): revisa cantidades, tiempos y alérgenos antes de cocinar. Solo se envían los ingredientes que escribes (o la foto que haces).',
     none: 'No hay ideas para eso. Prueba a escribir algunos ingredientes, p. ej. «huevos, espinacas, queso».',
     failed: '⚠️ Ahora no se pudieron obtener ideas. Inténtalo de nuevo.',
   },

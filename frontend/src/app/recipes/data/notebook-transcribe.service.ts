@@ -172,7 +172,7 @@ export function toRegion(box: number[] | undefined): ImageRegion | undefined {
   return { left, top, right, bottom };
 }
 
-function toBase64(blob: Blob): Promise<string> {
+export function toBase64(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(String(reader.result).split(',')[1] ?? '');
