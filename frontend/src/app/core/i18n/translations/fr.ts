@@ -129,6 +129,14 @@ export const fr: Translations = {
     open: 'Comment utiliser C00K90',
     done: 'On cuisine !',
     tips: {
+      timers:
+        '⏲️ Les temps des étapes (« cuire 25 minutes ») deviennent des minuteurs en mode cuisine 👩‍🍳.',
+      notes:
+        "📝 À la fin du mode cuisine 👩‍🍳, on vous demande comment c'était et on garde votre note.",
+      send: '📤 Envoyez la recette par WhatsApp, message ou e-mail depuis ⋯ Plus.',
+      print: '🖨️ Imprimez une recette (ou en PDF) depuis ⋯ Plus.',
+      recipeOfDay: '🌟 Chaque jour une autre recette de votre livre, ici en haut.',
+      newRecipes: '🔔 Un petit chiffre ici indique les nouvelles recettes des chefs suivis.',
       shopping:
         '🛒 La liste de courses est dans ⋯ Plus, avec le mode cuisine, Envoyer et Imprimer.',
       paste:
@@ -170,6 +178,15 @@ export const fr: Translations = {
       t4: 'Livre en PDF',
       t5: 'Mes allergies',
       t6: 'Thème et langue',
+    },
+    more: {
+      title: 'Et encore plus',
+      t1: 'Minuteurs',
+      t2: 'Notes après cuisson',
+      t3: 'Envoyer une recette',
+      t4: 'Imprimer une recette',
+      t5: 'Recette du jour',
+      t6: 'Nouveautés des chefs',
     },
     again: {
       text: 'Touchez la toque sur votre photo pour revoir ce guide quand vous voulez.',

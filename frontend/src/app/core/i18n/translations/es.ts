@@ -129,6 +129,14 @@ export const es: Translations = {
     open: 'Cómo usar C00K90',
     done: '¡A cocinar!',
     tips: {
+      timers:
+        '⏲️ Los tiempos de los pasos («hornear 25 minutos») se convierten en temporizadores en el modo cocina 👩‍🍳.',
+      notes:
+        '📝 Al terminar en el modo cocina 👩‍🍳, te preguntamos qué tal salió y guardamos tu nota.',
+      send: '📤 Envía la receta por WhatsApp, mensaje o correo desde ⋯ Más.',
+      print: '🖨️ Imprime una receta (o guárdala en PDF) desde ⋯ Más.',
+      recipeOfDay: '🌟 Cada día otra receta de tu recetario, aquí arriba.',
+      newRecipes: '🔔 Un número pequeño aquí muestra las recetas nuevas de los chefs que sigues.',
       shopping: '🛒 La lista de la compra está en ⋯ Más, junto con Modo cocina, Enviar e Imprimir.',
       paste:
         '📋 Pega aquí toda la lista, uno por línea. La separamos en cantidades e ingredientes (igual con los pasos).',
@@ -168,6 +176,15 @@ export const es: Translations = {
       t4: 'Recetario en PDF',
       t5: 'Mis alergias',
       t6: 'Tema e idioma',
+    },
+    more: {
+      title: 'Y aún más',
+      t1: 'Temporizadores',
+      t2: 'Notas al cocinar',
+      t3: 'Enviar una receta',
+      t4: 'Imprimir una receta',
+      t5: 'Receta del día',
+      t6: 'Novedades de chefs',
     },
     again: {
       text: 'Toca el gorro de chef de tu foto cuando quieras volver a ver esta guía.',

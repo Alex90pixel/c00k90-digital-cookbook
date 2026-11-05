@@ -129,6 +129,14 @@ export const it: Translations = {
     open: 'Come usare C00K90',
     done: 'Si cucina!',
     tips: {
+      timers:
+        '⏲️ I tempi dei passaggi («cuoci 25 minuti») diventano timer nella modalità cucina 👩‍🍳.',
+      notes:
+        "📝 Quando finisci nella modalità cucina 👩‍🍳, ti chiediamo com'è venuta e salviamo la nota.",
+      send: '📤 Invia la ricetta su WhatsApp, per messaggio o e-mail da ⋯ Altro.',
+      print: '🖨️ Stampa una ricetta (o salvala in PDF) da ⋯ Altro.',
+      recipeOfDay: "🌟 Ogni giorno un'altra ricetta del tuo ricettario, qui in alto.",
+      newRecipes: '🔔 Un piccolo numero qui mostra le nuove ricette degli chef che segui.',
       shopping: '🛒 La lista della spesa è in ⋯ Altro, insieme a Modalità cucina, Invia e Stampa.',
       paste:
         '📋 Incolla qui tutta la lista, uno per riga. La dividiamo noi in quantità e ingredienti (lo stesso per i passaggi).',
@@ -168,6 +176,15 @@ export const it: Translations = {
       t4: 'Ricettario PDF',
       t5: 'Le mie allergie',
       t6: 'Tema e lingua',
+    },
+    more: {
+      title: 'E ancora di più',
+      t1: 'Timer',
+      t2: 'Note dopo la cottura',
+      t3: 'Invia una ricetta',
+      t4: 'Stampa una ricetta',
+      t5: 'Ricetta del giorno',
+      t6: 'Novità dagli chef',
     },
     again: {
       text: 'Tocca il cappello da chef sulla tua foto quando vuoi rivedere questa guida.',

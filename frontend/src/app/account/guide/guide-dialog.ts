@@ -21,6 +21,7 @@ const SECTIONS: readonly GuideCard[] = [
   { id: 'start', emoji: '✍️', tiles: ['🍳', '📷', '🔗', '🔎', '🌾', '🎲'] },
   { id: 'cook', emoji: '👩‍🍳', tiles: ['🍽️', '📱', '🛒', '🗓️', '📁', '🥕'] },
   { id: 'yours', emoji: '💛', tiles: ['🌍', '❤️', '👨‍🍳', '📄', '⚠️', '🎨'] },
+  { id: 'more', emoji: '🌟', tiles: ['⏲️', '📝', '📤', '🖨️', '🌟', '🔔'] },
 ];
 
 /** Where the arrow points after a tile opens its place (CSS selectors). */
@@ -34,6 +35,12 @@ const SPOTLIGHT: Record<string, string> = {
   'cook.0': '.detail-meta-item.servings',
   'cook.1': '.cook-icon',
   'cook.2': '.more-btn',
+  'more.0': '.cook-icon',
+  'more.1': '.cook-icon',
+  'more.2': '.more-btn',
+  'more.3': '.more-btn',
+  'more.4': 'app-recipe-of-the-day .rotd',
+  'more.5': 'a.nav-btn[href="/chefs"]',
   'yours.0': '.nav-btn.active',
   'yours.1': '.nav-btn.active',
   'yours.2': '.nav-btn.active',
@@ -44,6 +51,12 @@ const TIPS: Record<string, string> = {
   'start.0': 'paste',
   'start.2': 'link',
   'cook.0': 'servings',
+  'more.0': 'timers',
+  'more.1': 'notes',
+  'more.2': 'send',
+  'more.3': 'print',
+  'more.4': 'recipeOfDay',
+  'more.5': 'newRecipes',
   'cook.2': 'shopping',
   'yours.0': 'inspired',
   'yours.1': 'favorites',
@@ -270,11 +283,20 @@ export class GuideDialog {
         this.store.shuffle();
         this.store.sort.set('random');
         return;
+      case 'more.4':
+      case 'more.5':
+        await this.router.navigateByUrl('/');
+        return;
+      case 'more.0':
+      case 'more.1':
+      case 'more.2':
+      case 'more.3':
       case 'cook.0':
       case 'cook.1':
       case 'cook.2': {
         // Cooking tips are best seen on a real recipe: open one of the user's own.
-        const recipe = this.store.myRecipes()[0];
+        const recipe =
+          this.store.myRecipes().find((r) => r.steps?.length) ?? this.store.myRecipes()[0];
         return recipe ? this.recipeDialogs.openDetail(recipe.id) : this.recipeDialogs.openForm();
       }
       case 'cook.3': {

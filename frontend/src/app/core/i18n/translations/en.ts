@@ -129,6 +129,12 @@ export const en = {
     open: 'How to use C00K90',
     done: "Let's cook!",
     tips: {
+      timers: '⏲️ Times in the steps ("bake 25 minutes") become timers in Cook mode 👩‍🍳.',
+      notes: '📝 When you finish in Cook mode 👩‍🍳, we ask how it turned out and save your note.',
+      send: '📤 Send the recipe to WhatsApp, a message or an email from ⋯ More.',
+      print: '🖨️ Print one recipe (or save it as PDF) from ⋯ More.',
+      recipeOfDay: '🌟 Every day another recipe from your cookbook, here at the top.',
+      newRecipes: '🔔 A small number here shows new recipes from the chefs you follow.',
       shopping: '🛒 The shopping list is in ⋯ More, together with Cook mode, Send and Print.',
       paste:
         '📋 Paste the whole list here, one per line. We split it into quantities and ingredients for you (the same for the steps).',
@@ -168,6 +174,15 @@ export const en = {
       t4: 'PDF cookbook',
       t5: 'My allergies',
       t6: 'Theme & language',
+    },
+    more: {
+      title: 'And even more',
+      t1: 'Timers',
+      t2: 'Notes after cooking',
+      t3: 'Send a recipe',
+      t4: 'Print a recipe',
+      t5: 'Recipe of the day',
+      t6: 'New from chefs',
     },
     again: {
       text: "Tap the chef's hat on your photo whenever you want to see this guide again.",

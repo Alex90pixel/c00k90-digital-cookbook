@@ -136,6 +136,12 @@ export const ro: Translations = {
     open: 'Cum folosești C00K90',
     done: 'Hai să gătim!',
     tips: {
+      timers: '⏲️ Timpii din pași („coace 25 de minute”) devin cronometre în Modul de gătit 👩‍🍳.',
+      notes: '📝 Când termini în Modul de gătit 👩‍🍳, te întrebăm cum a ieșit și îți salvăm notița.',
+      send: '📤 Trimite rețeta pe WhatsApp, prin mesaj sau email din ⋯ Mai mult.',
+      print: '🖨️ Printează o rețetă (sau salvează ca PDF) din ⋯ Mai mult.',
+      recipeOfDay: '🌟 În fiecare zi, altă rețetă din cartea ta, aici sus.',
+      newRecipes: '🔔 Un număr mic aici îți arată rețetele noi de la bucătarii urmăriți.',
       shopping:
         '🛒 Lista de cumpărături e în ⋯ Mai mult, alături de Mod gătit, Trimite și Printează.',
       paste:
@@ -177,6 +183,15 @@ export const ro: Translations = {
       t4: 'Carte în PDF',
       t5: 'Alergiile mele',
       t6: 'Temă și limbă',
+    },
+    more: {
+      title: 'Și mai multe',
+      t1: 'Cronometre',
+      t2: 'Notițe după gătit',
+      t3: 'Trimite o rețetă',
+      t4: 'Printează o rețetă',
+      t5: 'Rețeta zilei',
+      t6: 'Noutăți de la bucătari',
     },
     again: {
       text: 'Apasă pe pălăria de bucătar de pe poza ta oricând vrei să revezi ghidul.',

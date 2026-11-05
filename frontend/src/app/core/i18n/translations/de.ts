@@ -129,6 +129,13 @@ export const de: Translations = {
     open: 'So nutzt du C00K90',
     done: "Los geht's!",
     tips: {
+      timers: '⏲️ Zeiten in den Schritten („25 Minuten backen“) werden im Kochmodus 👩‍🍳 zu Timern.',
+      notes:
+        '📝 Wenn du im Kochmodus 👩‍🍳 fertig bist, fragen wir, wie es geworden ist, und speichern deine Notiz.',
+      send: '📤 Sende das Rezept per WhatsApp, Nachricht oder E-Mail über ⋯ Mehr.',
+      print: '🖨️ Drucke ein Rezept (oder als PDF) über ⋯ Mehr.',
+      recipeOfDay: '🌟 Jeden Tag ein anderes Rezept aus deinem Kochbuch, hier oben.',
+      newRecipes: '🔔 Eine kleine Zahl hier zeigt neue Rezepte von Köchen, denen du folgst.',
       shopping:
         '🛒 Die Einkaufsliste findest du unter ⋯ Mehr, zusammen mit Kochmodus, Senden und Drucken.',
       paste:
@@ -170,6 +177,15 @@ export const de: Translations = {
       t4: 'PDF-Kochbuch',
       t5: 'Meine Allergien',
       t6: 'Design & Sprache',
+    },
+    more: {
+      title: 'Und noch mehr',
+      t1: 'Timer',
+      t2: 'Notizen nach dem Kochen',
+      t3: 'Rezept senden',
+      t4: 'Rezept drucken',
+      t5: 'Rezept des Tages',
+      t6: 'Neues von Köchen',
     },
     again: {
       text: 'Tippe auf die Kochmütze an deinem Foto, wenn du diesen Guide wieder sehen willst.',
