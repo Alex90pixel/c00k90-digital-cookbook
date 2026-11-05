@@ -272,6 +272,10 @@ export const de: Translations = {
     clear: 'Zurücksetzen',
   },
   list: {
+    starterButton: '🍳 3 Beispielrezepte hinzufügen',
+    starterAdding: 'Wird hinzugefügt…',
+    starterHint: 'Du kannst sie jederzeit bearbeiten oder löschen.',
+    starterSource: 'C00K90-Beispiel',
     label: 'Rezepte',
     count: { one: '{count} Rezept', other: '{count} Rezepte' },
     loadingMine: 'Deine Rezepte werden geladen…',

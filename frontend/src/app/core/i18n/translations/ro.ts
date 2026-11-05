@@ -278,6 +278,10 @@ export const ro: Translations = {
     clear: 'Șterge',
   },
   list: {
+    starterButton: '🍳 Adaugă 3 rețete exemplu',
+    starterAdding: 'Se adaugă…',
+    starterHint: 'Le poți modifica sau șterge oricând.',
+    starterSource: 'Exemplu C00K90',
     label: 'Rețete',
     count: { one: '{count} rețetă', few: '{count} rețete', other: '{count} de rețete' },
     loadingMine: 'Se încarcă rețetele tale…',

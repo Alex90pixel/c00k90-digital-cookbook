@@ -269,6 +269,10 @@ export const en = {
     clear: 'Clear',
   },
   list: {
+    starterButton: '🍳 Add 3 example recipes',
+    starterAdding: 'Adding…',
+    starterHint: 'You can edit or delete them anytime.',
+    starterSource: 'C00K90 example',
     label: 'Recipes',
     count: { one: '{count} recipe', other: '{count} recipes' },
     loadingMine: 'Loading your recipes…',

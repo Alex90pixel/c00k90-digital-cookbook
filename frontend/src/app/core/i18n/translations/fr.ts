@@ -273,6 +273,10 @@ export const fr: Translations = {
     clear: 'Effacer',
   },
   list: {
+    starterButton: "🍳 Ajouter 3 recettes d'exemple",
+    starterAdding: 'Ajout…',
+    starterHint: 'Vous pouvez les modifier ou les supprimer à tout moment.',
+    starterSource: 'Exemple C00K90',
     label: 'Recettes',
     count: { one: '{count} recette', other: '{count} recettes' },
     loadingMine: 'Chargement de vos recettes…',
