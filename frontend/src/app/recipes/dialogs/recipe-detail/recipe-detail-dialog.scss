@@ -389,10 +389,6 @@
   }
 }
 
-.metric-btn {
-  margin-bottom: 12px;
-}
-
 /* Cook mode, as a small round button next to the "Steps" heading. */
 .cook-icon {
   display: inline-grid;
@@ -412,6 +408,10 @@
   &:focus-visible {
     outline: none;
     transform: scale(1.1);
+  }
+
+  &.on {
+    background: var(--teal);
   }
 }
 

@@ -206,18 +206,26 @@
         </p>
       }
       <section>
-        <h3 class="section-heading">{{ 'detail.ingredients' | t }}</h3>
-        @if (hasUsUnits()) {
-          <button
-            type="button"
-            class="btn-action metric-btn"
-            [attr.aria-pressed]="metric()"
-            [title]="'detail.metricHint' | t"
-            (click)="metric.set(!metric())"
-          >
-            {{ (metric() ? 'detail.originalUnits' : 'detail.showMetric') | t }}
-          </button>
-        }
+        <h3 class="section-heading">
+          {{ 'detail.ingredients' | t }}
+          @if (hasUsUnits()) {
+            <button
+              type="button"
+              class="cook-icon"
+              [class.on]="metric()"
+              [attr.aria-pressed]="metric()"
+              [attr.aria-label]="(metric() ? 'detail.originalUnits' : 'detail.showMetric') | t"
+              [title]="
+                ((metric() ? 'detail.originalUnits' : 'detail.showMetric') | t) +
+                ': ' +
+                ('detail.metricHint' | t)
+              "
+              (click)="metric.set(!metric())"
+            >
+              📏
+            </button>
+          }
+        </h3>
         <ul class="ingredients-grid">
           @for (ingredient of ingredients(); track $index) {
             <li class="ingredient-item">
