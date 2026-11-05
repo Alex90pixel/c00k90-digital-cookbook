@@ -115,6 +115,17 @@
         <!-- The less frequent actions, in a menu so the recipe stays calm to look at. -->
         <ng-template #moreMenu>
           <div class="more-menu" cdkMenu>
+            @if (r.steps?.length) {
+              <button type="button" cdkMenuItem (cdkMenuItemTriggered)="openCookMode(r)">
+                👩‍🍳 {{ 'cookMode.open' | t }}
+              </button>
+            }
+            @if (ingredients().length) {
+              <button type="button" cdkMenuItem (cdkMenuItemTriggered)="openShoppingList(r)">
+                🛒 {{ 'shopping.open' | t }}
+              </button>
+            }
+            <hr />
             <button type="button" cdkMenuItem (cdkMenuItemTriggered)="addToCollection(r)">
               {{ 'collections.addButton' | t }}
             </button>
@@ -196,15 +207,10 @@
       }
       <section>
         <h3 class="section-heading">{{ 'detail.ingredients' | t }}</h3>
-        @if (ingredients().length) {
-          <button type="button" class="btn-action shopping-btn" (click)="openShoppingList(r)">
-            🛒 {{ 'shopping.open' | t }}
-          </button>
-        }
         @if (hasUsUnits()) {
           <button
             type="button"
-            class="btn-action shopping-btn metric-btn"
+            class="btn-action metric-btn"
             [attr.aria-pressed]="metric()"
             [title]="'detail.metricHint' | t"
             (click)="metric.set(!metric())"
@@ -225,17 +231,20 @@
       </section>
 
       <section>
-        <h3 class="section-heading">{{ 'detail.steps' | t }}</h3>
-        @if (r.steps?.length) {
-          <button
-            type="button"
-            class="btn-action cook-mode-btn"
-            [title]="'cookMode.hint' | t"
-            (click)="openCookMode(r)"
-          >
-            👩‍🍳 {{ 'cookMode.open' | t }}
-          </button>
-        }
+        <h3 class="section-heading">
+          {{ 'detail.steps' | t }}
+          @if (r.steps?.length) {
+            <button
+              type="button"
+              class="cook-icon"
+              [attr.aria-label]="'cookMode.open' | t"
+              [title]="('cookMode.open' | t) + ': ' + ('cookMode.hint' | t)"
+              (click)="openCookMode(r)"
+            >
+              👩‍🍳
+            </button>
+          }
+        </h3>
         <ol class="steps-list">
           @for (step of steps(); track $index) {
             <li class="step-item">

@@ -121,6 +121,7 @@ export const en = {
     open: 'How to use C00K90',
     done: "Let's cook!",
     tips: {
+      shopping: '🛒 The shopping list is in ⋯ More, together with Cook mode, Send and Print.',
       paste:
         '📋 Paste the whole list here, one per line. We split it into quantities and ingredients for you (the same for the steps).',
       link: '🔗 Paste a YouTube or TikTok link here and press Import.',

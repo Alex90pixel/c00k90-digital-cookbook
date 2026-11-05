@@ -121,6 +121,8 @@ export const fr: Translations = {
     open: 'Comment utiliser C00K90',
     done: 'On cuisine !',
     tips: {
+      shopping:
+        '🛒 La liste de courses est dans ⋯ Plus, avec le mode cuisine, Envoyer et Imprimer.',
       paste:
         '📋 Collez ici toute la liste, un par ligne. Nous la séparons en quantités et ingrédients (pareil pour les étapes).',
       link: '🔗 Collez ici un lien YouTube ou TikTok et appuyez sur Importer.',

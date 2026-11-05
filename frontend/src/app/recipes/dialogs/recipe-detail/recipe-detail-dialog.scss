@@ -389,13 +389,30 @@
   }
 }
 
-.shopping-btn,
-.cook-mode-btn {
+.metric-btn {
   margin-bottom: 12px;
 }
 
-.metric-btn {
-  margin-left: 8px;
+/* Cook mode, as a small round button next to the "Steps" heading. */
+.cook-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1.5px solid var(--teal);
+  border-radius: 50%;
+  background: var(--teal-pale);
+  font-size: 16px;
+  letter-spacing: 0;
+  cursor: pointer;
+  transition: transform 0.15s;
+
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    transform: scale(1.1);
+  }
 }
 
 .allergens {

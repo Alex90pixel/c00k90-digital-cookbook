@@ -128,6 +128,8 @@ export const ro: Translations = {
     open: 'Cum folosești C00K90',
     done: 'Hai să gătim!',
     tips: {
+      shopping:
+        '🛒 Lista de cumpărături e în ⋯ Mai mult, alături de Mod gătit, Trimite și Printează.',
       paste:
         '📋 Lipește aici toată lista, câte un ingredient pe rând. O împărțim noi în cantități și ingrediente (la fel și pașii).',
       link: '🔗 Lipește aici un link de YouTube sau TikTok și apasă Importă.',
