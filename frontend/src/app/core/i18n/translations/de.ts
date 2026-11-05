@@ -307,6 +307,7 @@ export const de: Translations = {
     failed: '⚠️ Liste konnte nicht geteilt werden',
   },
   cookMode: {
+    celebrate: '🎉 Gut gemacht, Chef!',
     voice: 'Stimme',
     voiceListening: 'Ich höre zu…',
     voiceHint:

@@ -308,6 +308,7 @@ export const fr: Translations = {
     failed: '⚠️ Impossible de partager la liste',
   },
   cookMode: {
+    celebrate: '🎉 Bravo, chef !',
     voice: 'Voix',
     voiceListening: "J'écoute…",
     voiceHint:

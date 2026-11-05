@@ -43,6 +43,23 @@ describe('CookModeDialog', () => {
     expect(step()).toBe('Rest');
   });
 
+  it('celebrates on the last step and then closes as cooked', async () => {
+    vi.useFakeTimers();
+    try {
+      const { element, press, fixture, close } = await setup();
+      press('ArrowRight');
+      press('ArrowRight');
+      element.querySelector<HTMLButtonElement>('.cook-bar .btn-save')!.click();
+      fixture.detectChanges();
+      expect(element.querySelector('.party-text')).not.toBeNull();
+      expect(close).not.toHaveBeenCalled();
+      vi.advanceTimersByTime(2000);
+      expect(close).toHaveBeenCalledWith('cooked');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('shows the ingredients on request', async () => {
     const { element, fixture } = await setup();
     const toggle = element.querySelector<HTMLButtonElement>('.cook-bar .btn-action')!;

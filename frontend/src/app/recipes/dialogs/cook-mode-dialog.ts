@@ -164,6 +164,21 @@ interface WakeLockNavigator {
         <p class="voice-help error">{{ 'cookMode.voiceBlocked' | t }}</p>
       }
 
+      @if (celebrating()) {
+        <div class="party" aria-hidden="true">
+          @for (piece of confetti; track $index) {
+            <i
+              [style.left.%]="piece.left"
+              [style.background]="piece.color"
+              [style.animation-delay.ms]="piece.delay"
+              [style.--drift.px]="piece.drift"
+              [style.--spin.deg]="piece.spin"
+            ></i>
+          }
+        </div>
+        <p class="party-text" role="status">{{ 'cookMode.celebrate' | t }}</p>
+      }
+
       <div class="cook-bar">
         <button type="button" class="btn-action" (click)="showIngredients.set(!showIngredients())">
           {{ (showIngredients() ? 'cookMode.backToSteps' : 'cookMode.ingredients') | t }}
@@ -173,7 +188,7 @@ interface WakeLockNavigator {
           ← {{ 'cookMode.previous' | t }}
         </button>
         @if (isLast()) {
-          <button type="button" class="btn-save" (click)="ref.close('cooked')">
+          <button type="button" class="btn-save" [disabled]="celebrating()" (click)="finish()">
             {{ 'cookMode.finish' | t }}
           </button>
         } @else {
@@ -186,6 +201,8 @@ interface WakeLockNavigator {
   `,
   styles: `
     .cook-mode {
+      position: relative;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -243,6 +260,51 @@ interface WakeLockNavigator {
     }
     .spacer {
       flex: 1;
+    }
+    .party {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .party i {
+      position: absolute;
+      top: -16px;
+      width: 9px;
+      height: 14px;
+      border-radius: 2px;
+      opacity: 0;
+      animation: fall 1.7s cubic-bezier(0.25, 0.6, 0.5, 1) forwards;
+    }
+    @keyframes fall {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) rotate(0);
+      }
+      85% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--drift), 640px) rotate(var(--spin));
+      }
+    }
+    .party-text {
+      position: absolute;
+      inset: 50% 16px auto;
+      margin: 0;
+      color: var(--magenta-deep);
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(26px, 5vw, 40px);
+      font-weight: 700;
+      text-align: center;
+      transform: translateY(-50%);
+      animation: pop 0.5s cubic-bezier(0.3, 1.6, 0.6, 1) both;
+    }
+    @keyframes pop {
+      from {
+        opacity: 0;
+        transform: translateY(-50%) scale(0.6);
+      }
     }
     .voice-btn {
       padding: 6px 14px;
@@ -333,8 +395,12 @@ interface WakeLockNavigator {
     }
     @media (prefers-reduced-motion: reduce) {
       .timers li.ringing,
-      .voice-btn.on {
+      .voice-btn.on,
+      .party-text {
         animation: none;
+      }
+      .party {
+        display: none;
       }
     }
   `,
@@ -421,6 +487,25 @@ export class CookModeDialog {
     this.index.update((i) => Math.min(this.total - 1, Math.max(0, i + step)));
   }
 
+  // 🎉 A short celebration when the last step is done, then the dialog closes.
+  protected readonly celebrating = signal(false);
+  protected readonly confetti = Array.from({ length: 48 }, (_, i) => ({
+    left: Math.random() * 100,
+    delay: Math.random() * 450,
+    drift: (Math.random() - 0.5) * 160,
+    spin: (Math.random() - 0.5) * 1080,
+    color: ['var(--magenta)', 'var(--teal)', '#f5b83d', '#ff8a65', '#7cc6a4'][i % 5],
+  }));
+
+  protected finish(): void {
+    if (this.celebrating()) return;
+    this.stopVoice();
+    this.celebrating.set(true);
+    navigator.vibrate?.([60, 60, 120]);
+    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    setTimeout(() => this.ref.close('cooked'), reduced ? 900 : 1800);
+  }
+
   protected toggleVoice(): void {
     if (this.listening()) this.stopVoice();
     else this.startVoice();
@@ -480,7 +565,7 @@ export class CookModeDialog {
   private runCommand(heard: string): void {
     switch (voiceCommand(heard)) {
       case 'next':
-        if (this.isLast()) this.ref.close('cooked');
+        if (this.isLast()) this.finish();
         else this.go(1);
         break;
       case 'back':

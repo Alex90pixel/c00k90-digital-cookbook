@@ -312,6 +312,7 @@ export const ro: Translations = {
     failed: '⚠️ Nu am putut trimite lista',
   },
   cookMode: {
+    celebrate: '🎉 Bravo, chef!',
     voice: 'Voce',
     voiceListening: 'Ascult…',
     voiceHint:

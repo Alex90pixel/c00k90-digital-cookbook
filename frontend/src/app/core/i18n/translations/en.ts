@@ -304,6 +304,7 @@ export const en = {
     failed: '⚠️ Could not share the list',
   },
   cookMode: {
+    celebrate: '🎉 Well done, chef!',
     voice: 'Voice',
     voiceListening: 'Listening…',
     voiceHint: 'Say "next", "back", "repeat", "ingredients" or "timer"; your hands stay free.',
