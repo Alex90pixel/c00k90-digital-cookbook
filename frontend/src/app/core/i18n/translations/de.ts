@@ -232,6 +232,10 @@ export const de: Translations = {
     failed: '⚠️ Liste konnte nicht geteilt werden',
   },
   cookMode: {
+    startTimer: 'Timer {time}',
+    timers: 'Timer',
+    timeUp: 'Zeit ist um!',
+    stopTimer: 'Timer stoppen',
     open: 'Kochmodus',
     hint: 'Hände voller Mehl? Klicke hier und der Bildschirm bleibt beim Kochen an.',
     progress: 'Schritt {current} von {total}',

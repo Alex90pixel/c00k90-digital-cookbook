@@ -50,4 +50,26 @@ describe('CookModeDialog', () => {
     fixture.detectChanges();
     expect(element.querySelector('.cook-ingredients')?.textContent).toContain('200 g flour');
   });
+
+  it('offers a timer for a time in the step and counts it down', async () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [CookModeDialog],
+      providers: [
+        {
+          provide: DIALOG_DATA,
+          useValue: { recipeName: 'Rice', steps: ['Simmer for 10 minutes'], ingredients: [] },
+        },
+        { provide: DialogRef, useValue: { close: vi.fn() } },
+      ],
+    });
+    const fixture = TestBed.createComponent(CookModeDialog);
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    const start = element.querySelector<HTMLButtonElement>('.timer-start');
+    expect(start?.textContent).toContain('10 min');
+    start!.click();
+    fixture.detectChanges();
+    expect(element.querySelector('.timer-clock')?.textContent).toContain('10:00');
+  });
 });

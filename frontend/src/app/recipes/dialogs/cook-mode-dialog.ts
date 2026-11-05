@@ -2,7 +2,44 @@ import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { CookModeData } from '../models/cook-mode.model';
+import { durationLabel, formatClock, stepDurations } from '../domain/step-timers';
 import { Ingredient } from '../models/recipe.model';
+
+/** A running kitchen timer. */
+interface CookTimer {
+  id: number;
+  /** "3. 10 min": the step it came from and its length. */
+  label: string;
+  /** Milliseconds since epoch. */
+  endsAt: number;
+  rang: boolean;
+}
+
+/** A short "ding ding ding" (and a buzz on phones) when a timer is done. */
+function ring(): void {
+  try {
+    navigator.vibrate?.([300, 150, 300, 150, 300]);
+    const AudioContextClass =
+      window.AudioContext ??
+      (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!AudioContextClass) return;
+    const audio = new AudioContextClass();
+    [0, 0.45, 0.9].forEach((start) => {
+      const tone = audio.createOscillator();
+      const volume = audio.createGain();
+      tone.frequency.value = 880;
+      volume.gain.setValueAtTime(0.0001, audio.currentTime + start);
+      volume.gain.exponentialRampToValueAtTime(0.4, audio.currentTime + start + 0.02);
+      volume.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + start + 0.35);
+      tone.connect(volume).connect(audio.destination);
+      tone.start(audio.currentTime + start);
+      tone.stop(audio.currentTime + start + 0.4);
+    });
+    setTimeout(() => void audio.close(), 2000);
+  } catch {
+    // No sound available: the timer still flashes on screen.
+  }
+}
 
 /** The parts of the Screen Wake Lock API we use (not in every TypeScript DOM version). */
 interface WakeLockSentinelLike {
@@ -45,9 +82,40 @@ interface WakeLockNavigator {
           {{ 'cookMode.progress' | t: { current: index() + 1, total: total } }}
         </p>
         <p class="cook-step" aria-live="polite">{{ data.steps[index()] }}</p>
+        @if (stepTimes().length) {
+          <div class="timer-starts">
+            @for (seconds of stepTimes(); track seconds) {
+              <button type="button" class="timer-start" (click)="startTimer(seconds)">
+                ⏲️ {{ 'cookMode.startTimer' | t: { time: label(seconds) } }}
+              </button>
+            }
+          </div>
+        }
         @if (isLast()) {
           <p class="cook-done">{{ 'cookMode.done' | t }}</p>
         }
+      }
+
+      @if (timers().length) {
+        <ul class="timers" [attr.aria-label]="'cookMode.timers' | t">
+          @for (timer of timers(); track timer.id) {
+            @let left = remaining(timer);
+            <li [class.ringing]="left <= 0">
+              <span class="timer-name">⏲️ {{ timer.label }}</span>
+              <span class="timer-clock" role="timer">
+                {{ left > 0 ? clock(left) : ('cookMode.timeUp' | t) }}
+              </span>
+              <button
+                type="button"
+                class="timer-stop"
+                [attr.aria-label]="'cookMode.stopTimer' | t"
+                (click)="stopTimer(timer.id)"
+              >
+                ✕
+              </button>
+            </li>
+          }
+        </ul>
       }
 
       <div class="cook-bar">
@@ -130,6 +198,68 @@ interface WakeLockNavigator {
     .spacer {
       flex: 1;
     }
+    .timer-starts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .timer-start {
+      padding: 8px 16px;
+      border: 1.5px solid var(--teal);
+      border-radius: 50px;
+      background: var(--teal-pale);
+      color: var(--teal-deep);
+      font: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .timers {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .timers li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 6px 6px 14px;
+      border-radius: 50px;
+      background: var(--teal-pale);
+      color: var(--teal-deep);
+      font-weight: 600;
+    }
+    .timers li.ringing {
+      background: var(--magenta);
+      color: #fff;
+      animation: ring 0.8s ease-in-out infinite alternate;
+    }
+    .timer-clock {
+      font-size: 18px;
+      font-variant-numeric: tabular-nums;
+    }
+    .timer-stop {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+    }
+    @keyframes ring {
+      to {
+        transform: scale(1.05);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .timers li.ringing {
+        animation: none;
+      }
+    }
   `,
 })
 export class CookModeDialog {
@@ -144,6 +274,14 @@ export class CookModeDialog {
   protected readonly line = (ingredient: Ingredient) =>
     [ingredient.qty, ingredient.unit, ingredient.name].filter((part) => part?.trim()).join(' ');
 
+  // Timers: started from the times found in the steps; they keep running between steps.
+  protected readonly stepTimes = computed(() => stepDurations(this.data.steps[this.index()] ?? ''));
+  protected readonly timers = signal<CookTimer[]>([]);
+  private readonly now = signal(Date.now());
+  private nextTimerId = 0;
+  protected readonly label = durationLabel;
+  protected readonly clock = formatClock;
+
   private wakeLock: WakeLockSentinelLike | null = null;
 
   constructor() {
@@ -153,10 +291,43 @@ export class CookModeDialog {
       if (document.visibilityState === 'visible') void this.keepScreenOn();
     };
     document.addEventListener('visibilitychange', onVisible);
+    // One tick a second for the countdowns; it rings when a timer reaches zero.
+    const tick = setInterval(() => {
+      this.now.set(Date.now());
+      for (const timer of this.timers()) {
+        if (!timer.rang && this.remaining(timer) <= 0) {
+          timer.rang = true;
+          ring();
+        }
+      }
+    }, 1000);
     inject(DestroyRef).onDestroy(() => {
+      clearInterval(tick);
       document.removeEventListener('visibilitychange', onVisible);
       void this.wakeLock?.release().catch(() => undefined);
     });
+  }
+
+  protected startTimer(seconds: number): void {
+    this.timers.update((list) => [
+      ...list,
+      {
+        id: this.nextTimerId++,
+        label: `${this.index() + 1}. ${durationLabel(seconds)}`,
+        endsAt: Date.now() + seconds * 1000,
+        rang: false,
+      },
+    ]);
+    this.now.set(Date.now());
+  }
+
+  protected stopTimer(id: number): void {
+    this.timers.update((list) => list.filter((t) => t.id !== id));
+  }
+
+  /** Seconds left (0 or less once it has rung). */
+  protected remaining(timer: CookTimer): number {
+    return (timer.endsAt - this.now()) / 1000;
   }
 
   protected go(step: number): void {

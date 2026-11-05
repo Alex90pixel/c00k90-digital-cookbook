@@ -231,6 +231,10 @@ export const es: Translations = {
     failed: '⚠️ No se pudo compartir la lista',
   },
   cookMode: {
+    startTimer: 'Temporizador {time}',
+    timers: 'Temporizadores',
+    timeUp: '¡Tiempo!',
+    stopTimer: 'Parar temporizador',
     open: 'Modo cocina',
     hint: '¿Manos llenas de harina? Haz clic aquí y la pantalla seguirá encendida mientras cocinas.',
     progress: 'Paso {current} de {total}',

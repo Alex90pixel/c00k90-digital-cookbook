@@ -231,6 +231,10 @@ export const en = {
     failed: '⚠️ Could not share the list',
   },
   cookMode: {
+    startTimer: 'Timer {time}',
+    timers: 'Timers',
+    timeUp: "Time's up!",
+    stopTimer: 'Stop timer',
     open: 'Cook mode',
     hint: 'Hands covered in flour? Click here and your screen stays on while you cook.',
     progress: 'Step {current} of {total}',

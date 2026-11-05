@@ -238,6 +238,10 @@ export const ro: Translations = {
     failed: '⚠️ Nu am putut trimite lista',
   },
   cookMode: {
+    startTimer: 'Cronometru {time}',
+    timers: 'Cronometre',
+    timeUp: 'Gata timpul!',
+    stopTimer: 'Oprește cronometrul',
     open: 'Mod gătit',
     hint: 'Ai mâinile pline de făină? Apasă aici și ecranul rămâne aprins cât gătești.',
     progress: 'Pasul {current} din {total}',

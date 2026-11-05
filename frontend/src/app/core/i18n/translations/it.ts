@@ -231,6 +231,10 @@ export const it: Translations = {
     failed: '⚠️ Impossibile condividere la lista',
   },
   cookMode: {
+    startTimer: 'Timer {time}',
+    timers: 'Timer',
+    timeUp: 'Tempo scaduto!',
+    stopTimer: 'Ferma il timer',
     open: 'Modalità cucina',
     hint: 'Mani piene di farina? Clicca qui e lo schermo resta acceso mentre cucini.',
     progress: 'Passaggio {current} di {total}',
