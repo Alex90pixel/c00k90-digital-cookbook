@@ -364,6 +364,10 @@ export const ro: Translations = {
     failed: '⚠️ Nu am putut găsi idei acum. Încearcă din nou.',
   },
   detail: {
+    send: '📤 Trimite rețeta',
+    sendCopied: '📋 Rețeta a fost copiată: lipește-o în WhatsApp, un mesaj sau un email.',
+    sendFailed: '⚠️ Nu am putut copia rețeta',
+    sendFooter: 'Din cartea mea de rețete C00K90 💛 cookbook.antdevlabs.com',
     extras: '✨ Merge bine cu',
     showMetric: '📏 Arată în sistem metric',
     originalUnits: '↩ Unitățile originale',

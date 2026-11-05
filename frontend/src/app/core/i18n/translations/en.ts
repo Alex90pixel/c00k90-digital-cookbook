@@ -353,6 +353,10 @@ export const en = {
     failed: '⚠️ Could not get ideas right now. Please try again.',
   },
   detail: {
+    send: '📤 Send recipe',
+    sendCopied: '📋 Recipe copied: paste it in WhatsApp, a message or an email.',
+    sendFailed: '⚠️ Could not copy the recipe',
+    sendFooter: 'From my C00K90 cookbook 💛 cookbook.antdevlabs.com',
     extras: '✨ Goes well with',
     showMetric: '📏 Show in metric',
     originalUnits: '↩ Original units',

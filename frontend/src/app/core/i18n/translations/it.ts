@@ -354,6 +354,10 @@ export const it: Translations = {
     failed: '⚠️ Al momento non è possibile trovare idee. Riprova.',
   },
   detail: {
+    send: '📤 Invia la ricetta',
+    sendCopied: "📋 Ricetta copiata: incollala su WhatsApp, in un messaggio o in un'e-mail.",
+    sendFailed: '⚠️ Impossibile copiare la ricetta',
+    sendFooter: 'Dal mio ricettario C00K90 💛 cookbook.antdevlabs.com',
     extras: '✨ Si abbina bene con',
     showMetric: '📏 Mostra in sistema metrico',
     originalUnits: '↩ Unità originali',

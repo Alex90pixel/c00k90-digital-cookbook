@@ -101,6 +101,9 @@
             <button type="button" class="btn-action" (click)="addToPlan(r)">
               {{ 'mealPlan.addButton' | t }}
             </button>
+            <button type="button" class="btn-action" (click)="sendRecipe(r)">
+              {{ 'detail.send' | t }}
+            </button>
           } @else {
             <button
               type="button"
@@ -115,6 +118,9 @@
             </button>
             <button type="button" class="btn-action" (click)="addToPlan(r)">
               {{ 'mealPlan.addButton' | t }}
+            </button>
+            <button type="button" class="btn-action" (click)="sendRecipe(r)">
+              {{ 'detail.send' | t }}
             </button>
             <button type="button" class="btn-action" (click)="report(r)">
               {{ 'detail.report' | t }}

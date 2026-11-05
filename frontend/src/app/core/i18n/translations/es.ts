@@ -353,6 +353,10 @@ export const es: Translations = {
     failed: '⚠️ Ahora no se pudieron obtener ideas. Inténtalo de nuevo.',
   },
   detail: {
+    send: '📤 Enviar receta',
+    sendCopied: '📋 Receta copiada: pégala en WhatsApp, un mensaje o un correo.',
+    sendFailed: '⚠️ No se pudo copiar la receta',
+    sendFooter: 'De mi recetario C00K90 💛 cookbook.antdevlabs.com',
     extras: '✨ Combina bien con',
     showMetric: '📏 Ver en sistema métrico',
     originalUnits: '↩ Unidades originales',

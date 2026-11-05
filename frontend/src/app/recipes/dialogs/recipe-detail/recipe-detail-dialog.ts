@@ -6,6 +6,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { ToastService } from '../../../core/toast/toast.service';
+import { recipeShareText } from '../../domain/share-text';
 import { AppDialog } from '../../../shared/dialog/app-dialog.service';
 import { NutritionService } from '../../data/nutrition.service';
 import { PairingService } from '../../data/pairing.service';
@@ -130,6 +131,39 @@ export class RecipeDetailDialog {
 
   protected close(): void {
     this.ref.close();
+  }
+
+  /** "Send recipe": the share sheet on phones (WhatsApp, Messages, email…), else a copy. */
+  protected async sendRecipe(recipe: Recipe): Promise<void> {
+    const t = this.i18n.t;
+    const text = recipeShareText(
+      recipe,
+      recipe.servings ? t('cookbook.serves', { count: this.servings() }) : '',
+      this.ingredients(),
+      this.steps(),
+      {
+        serves: '',
+        ingredients: t('detail.ingredients'),
+        steps: t('detail.steps'),
+        tip: t('form.tip'),
+        footer: t('detail.sendFooter'),
+      },
+    );
+    if ('share' in navigator) {
+      try {
+        await navigator.share({ title: recipe.name, text });
+        return;
+      } catch (error) {
+        // Closing the share sheet is not an error; anything else falls back to copying.
+        if ((error as DOMException)?.name === 'AbortError') return;
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+      this.toast.show(t('detail.sendCopied'));
+    } catch {
+      this.toast.show(t('detail.sendFailed'));
+    }
   }
 
   protected openShoppingList(recipe: Recipe): void {
