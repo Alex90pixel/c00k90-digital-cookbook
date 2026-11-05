@@ -56,10 +56,13 @@ export class RecipeStore {
   private readonly shared = signal<Recipe[]>([]);
   private readonly loadingMine = signal(false);
   private readonly loadingShared = signal(false);
+  private readonly mineLoadedFlag = signal(false);
   private sharedLoaded = false;
 
   /** The signed-in user's own recipes (the printable cookbook, the meal planner). */
   readonly myRecipes = this.mine.asReadonly();
+  /** True once the signed-in user's own recipes have loaded. */
+  readonly mineLoaded = this.mineLoadedFlag.asReadonly();
 
   /** All recipes shared to "Get Inspired", newest first (loaded on demand). */
   readonly sharedRecipes = this.shared.asReadonly();
@@ -271,6 +274,15 @@ export class RecipeStore {
     }
   }
 
+  /** Adds the example recipe to a new cookbook, quietly (no toasts). Throws if it fails. */
+  async addExample(value: RecipeFormValue, photo: Blob | null): Promise<void> {
+    const userId = this.auth.requireUser().uid;
+    const images = photo ? [await this.photos.upload(userId, photo)] : [];
+    const data: RecipeData = { ...formToRecipeData(value, userId, images, null), example: true };
+    const id = await this.repository.create(data);
+    this.mine.update((list) => [{ ...data, id }, ...list]);
+  }
+
   async delete(recipe: Recipe): Promise<boolean> {
     try {
       await this.repository.delete(recipe.id);
@@ -297,6 +309,7 @@ export class RecipeStore {
     this.loadingMine.set(true);
     try {
       this.mine.set(await this.repository.listByOwner(userId));
+      this.mineLoadedFlag.set(true);
     } catch {
       this.toast.show(this.i18n.t('recipes.loadFailed'));
       return;
@@ -348,6 +361,7 @@ export class RecipeStore {
 
   private reset(): void {
     this.mine.set([]);
+    this.mineLoadedFlag.set(false);
     this.shared.set([]);
     this.sharedLoaded = false;
     this.view.set('all');

@@ -70,6 +70,8 @@ export interface RecipeData {
   pairing?: string;
   /** Things that go well with the recipe, e.g. "corn, for sweetness". */
   extras?: string[];
+  /** The example recipe a new cookbook starts with (shows an "Example" label). */
+  example?: boolean;
   /** One cook's tip. */
   tip?: string;
   /** The author's YouTube video of the recipe, as `https://www.youtube.com/watch?v=…`. */

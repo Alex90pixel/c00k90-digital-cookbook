@@ -273,10 +273,7 @@ export const ro: Translations = {
     clear: 'Șterge',
   },
   list: {
-    starterButton: '🍳 Adaugă 3 rețete exemplu',
-    starterAdding: 'Se adaugă…',
-    starterHint: 'Le poți modifica sau șterge oricând.',
-    starterSource: 'Exemplu C00K90',
+    exampleSource: 'Exemplu C00K90',
     label: 'Rețete',
     count: { one: '{count} rețetă', few: '{count} rețete', other: '{count} de rețete' },
     loadingMine: 'Se încarcă rețetele tale…',
@@ -291,6 +288,7 @@ export const ro: Translations = {
     mineEmptyText: 'Apasă „+ Rețetă nouă” ca să adaugi prima ta rețetă!',
   },
   card: {
+    example: 'Exemplu',
     addFavorite: 'Adaugă la favorite',
     removeFavorite: 'Scoate de la favorite',
     minutes: '⏱ {count} min',

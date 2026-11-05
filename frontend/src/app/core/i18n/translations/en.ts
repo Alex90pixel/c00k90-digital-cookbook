@@ -264,10 +264,7 @@ export const en = {
     clear: 'Clear',
   },
   list: {
-    starterButton: '🍳 Add 3 example recipes',
-    starterAdding: 'Adding…',
-    starterHint: 'You can edit or delete them anytime.',
-    starterSource: 'C00K90 example',
+    exampleSource: 'C00K90 example',
     label: 'Recipes',
     count: { one: '{count} recipe', other: '{count} recipes' },
     loadingMine: 'Loading your recipes…',
@@ -283,6 +280,7 @@ export const en = {
     mineEmptyText: 'Click "+ New Recipe" to add your first recipe!',
   },
   card: {
+    example: 'Example',
     addFavorite: 'Add to favorites',
     removeFavorite: 'Remove from favorites',
     minutes: '⏱ {count} min',

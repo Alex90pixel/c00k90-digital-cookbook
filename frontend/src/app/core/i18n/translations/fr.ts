@@ -268,10 +268,7 @@ export const fr: Translations = {
     clear: 'Effacer',
   },
   list: {
-    starterButton: "🍳 Ajouter 3 recettes d'exemple",
-    starterAdding: 'Ajout…',
-    starterHint: 'Vous pouvez les modifier ou les supprimer à tout moment.',
-    starterSource: 'Exemple C00K90',
+    exampleSource: 'Exemple C00K90',
     label: 'Recettes',
     count: { one: '{count} recette', other: '{count} recettes' },
     loadingMine: 'Chargement de vos recettes…',
@@ -287,6 +284,7 @@ export const fr: Translations = {
     mineEmptyText: 'Cliquez sur « + Nouvelle recette » pour ajouter votre première recette !',
   },
   card: {
+    example: 'Exemple',
     addFavorite: 'Ajouter aux favoris',
     removeFavorite: 'Retirer des favoris',
     minutes: '⏱ {count} min',

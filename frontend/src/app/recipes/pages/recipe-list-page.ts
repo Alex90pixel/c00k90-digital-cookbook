@@ -1,12 +1,11 @@
-import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
-import { I18nService } from '../../core/i18n/i18n.service';
+import { Component, computed, effect, inject, input, untracked } from '@angular/core';
 import { TranslationKey } from '../../core/i18n/i18n.types';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { RecipeCard } from '../components/recipe-card';
 import { RecipeOfTheDay } from '../components/recipe-of-the-day';
 import { RecipeToolbar } from '../components/recipe-toolbar';
 import { RecipeStore } from '../data/recipe.store';
-import { starterRecipes } from '../domain/starter-recipes';
+import { ExampleRecipeService } from '../data/example-recipe.service';
 import { RecipeView } from '../models/recipe.model';
 import { RecipeDialogs } from '../recipe-dialogs.service';
 
@@ -54,17 +53,6 @@ interface EmptyState {
               <div class="empty-icon" aria-hidden="true">{{ empty.icon }}</div>
               <h2>{{ empty.title | t }}</h2>
               <p>{{ empty.text | t }}</p>
-              @if (view() === 'all' && !store.search().trim()) {
-                <button
-                  type="button"
-                  class="btn-save starter-btn"
-                  [disabled]="addingStarters()"
-                  (click)="addStarters()"
-                >
-                  {{ (addingStarters() ? 'list.starterAdding' : 'list.starterButton') | t }}
-                </button>
-                <p class="starter-hint">{{ 'list.starterHint' | t }}</p>
-              }
             </div>
           }
         }
@@ -76,20 +64,8 @@ interface EmptyState {
 export class RecipeListPage {
   protected readonly store = inject(RecipeStore);
   protected readonly dialogs = inject(RecipeDialogs);
-  private readonly i18n = inject(I18nService);
-  protected readonly addingStarters = signal(false);
-
-  /** An empty cookbook can start with three example recipes, to see how everything looks. */
-  protected async addStarters(): Promise<void> {
-    this.addingStarters.set(true);
-    try {
-      for (const value of starterRecipes(this.i18n.language(), this.i18n.t('list.starterSource'))) {
-        if (!(await this.store.save(value, [], null))) break;
-      }
-    } finally {
-      this.addingStarters.set(false);
-    }
-  }
+  // A new cookbook starts with an example recipe.
+  protected readonly example = inject(ExampleRecipeService);
 
   readonly view = input.required<RecipeView>();
 

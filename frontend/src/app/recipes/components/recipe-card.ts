@@ -40,6 +40,9 @@ import { Recipe } from '../models/recipe.model';
           @if (isNew()) {
             <span class="new-label">{{ 'chefs.new' | t }}</span>
           }
+          @if (r.example) {
+            <span class="new-label">{{ 'card.example' | t }}</span>
+          }
         </div>
         <h3 class="card-title">
           <!-- The whole card is clickable through this button (see .card-open::after). -->
