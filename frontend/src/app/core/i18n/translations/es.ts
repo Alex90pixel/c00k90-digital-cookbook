@@ -306,6 +306,14 @@ export const es: Translations = {
     failed: '⚠️ No se pudo compartir la lista',
   },
   cookMode: {
+    voice: 'Voz',
+    voiceListening: 'Escuchando…',
+    voiceHint:
+      'Di "siguiente", "atrás", "repite", "ingredientes" o "temporizador"; tus manos quedan libres.',
+    voiceOn: 'Toca para dejar de escuchar.',
+    voiceHelp: 'Di: siguiente · atrás · repite · ingredientes · temporizador',
+    voiceBlocked:
+      '🎙️ El micrófono está bloqueado. Permítelo en los ajustes del sitio de tu navegador e inténtalo de nuevo.',
     startTimer: 'Temporizador {time}',
     timers: 'Temporizadores',
     timeUp: '¡Tiempo!',

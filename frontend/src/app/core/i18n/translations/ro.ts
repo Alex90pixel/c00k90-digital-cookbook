@@ -312,6 +312,14 @@ export const ro: Translations = {
     failed: '⚠️ Nu am putut trimite lista',
   },
   cookMode: {
+    voice: 'Voce',
+    voiceListening: 'Ascult…',
+    voiceHint:
+      'Spune „următorul”, „înapoi”, „repetă”, „ingrediente” sau „cronometru”; mâinile rămân libere.',
+    voiceOn: 'Apasă ca să nu mai ascult.',
+    voiceHelp: 'Spune: următorul · înapoi · repetă · ingrediente · cronometru',
+    voiceBlocked:
+      '🎙️ Microfonul e blocat. Permite-l din setările site-ului în browser și încearcă din nou.',
     startTimer: 'Cronometru {time}',
     timers: 'Cronometre',
     timeUp: 'Gata timpul!',

@@ -308,6 +308,14 @@ export const fr: Translations = {
     failed: '⚠️ Impossible de partager la liste',
   },
   cookMode: {
+    voice: 'Voix',
+    voiceListening: "J'écoute…",
+    voiceHint:
+      'Dites « suivant », « retour », « répète », « ingrédients » ou « minuteur » ; vos mains restent libres.',
+    voiceOn: "Touchez pour arrêter l'écoute.",
+    voiceHelp: 'Dites : suivant · retour · répète · ingrédients · minuteur',
+    voiceBlocked:
+      '🎙️ Le micro est bloqué. Autorisez-le dans les paramètres du site de votre navigateur et réessayez.',
     startTimer: 'Minuteur {time}',
     timers: 'Minuteurs',
     timeUp: "C'est l'heure !",

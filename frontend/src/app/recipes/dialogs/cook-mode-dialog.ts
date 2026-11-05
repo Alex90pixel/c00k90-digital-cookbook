@@ -4,6 +4,32 @@ import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { CookModeData } from '../models/cook-mode.model';
 import { durationLabel, formatClock, stepDurations } from '../domain/step-timers';
 import { Ingredient } from '../models/recipe.model';
+import { I18nService } from '../../core/i18n/i18n.service';
+import { SPEECH_LANGUAGES, voiceCommand } from '../domain/voice-commands';
+
+/** The parts of the Web Speech API we use (only Chrome, Edge and Safari have it, prefixed). */
+interface SpeechResultLike {
+  isFinal: boolean;
+  0: { transcript: string };
+}
+interface RecognitionLike {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  onresult: ((event: { resultIndex: number; results: ArrayLike<SpeechResultLike> }) => void) | null;
+  onend: (() => void) | null;
+  onerror: ((event: { error: string }) => void) | null;
+  start(): void;
+  stop(): void;
+}
+type RecognitionClass = new () => RecognitionLike;
+function recognitionClass(): RecognitionClass | undefined {
+  const w = window as unknown as {
+    SpeechRecognition?: RecognitionClass;
+    webkitSpeechRecognition?: RecognitionClass;
+  };
+  return w.SpeechRecognition ?? w.webkitSpeechRecognition;
+}
 
 /** A running kitchen timer. */
 interface CookTimer {
@@ -61,6 +87,19 @@ interface WakeLockNavigator {
     <div class="cook-mode" role="dialog" aria-labelledby="cook-title">
       <header>
         <h2 id="cook-title">👩‍🍳 {{ data.recipeName }}</h2>
+        <span class="spacer"></span>
+        @if (canListen) {
+          <button
+            type="button"
+            class="voice-btn"
+            [class.on]="listening()"
+            [attr.aria-pressed]="listening()"
+            [title]="(listening() ? 'cookMode.voiceOn' : 'cookMode.voiceHint') | t"
+            (click)="toggleVoice()"
+          >
+            🎙️ {{ (listening() ? 'cookMode.voiceListening' : 'cookMode.voice') | t }}
+          </button>
+        }
         <button
           type="button"
           class="detail-close"
@@ -116,6 +155,13 @@ interface WakeLockNavigator {
             </li>
           }
         </ul>
+      }
+
+      @if (listening()) {
+        <p class="voice-help">{{ 'cookMode.voiceHelp' | t }}</p>
+      }
+      @if (voiceError()) {
+        <p class="voice-help error">{{ 'cookMode.voiceBlocked' | t }}</p>
       }
 
       <div class="cook-bar">
@@ -198,6 +244,36 @@ interface WakeLockNavigator {
     .spacer {
       flex: 1;
     }
+    .voice-btn {
+      padding: 6px 14px;
+      border: 1.5px solid var(--border, #ddd);
+      border-radius: 50px;
+      background: transparent;
+      color: var(--text-dark);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .voice-btn.on {
+      border-color: var(--magenta);
+      background: var(--magenta);
+      color: #fff;
+      animation: listen 1.6s ease-in-out infinite;
+    }
+    @keyframes listen {
+      50% {
+        box-shadow: 0 0 0 6px color-mix(in srgb, var(--magenta) 25%, transparent);
+      }
+    }
+    .voice-help {
+      margin: 0;
+      color: var(--text-muted, #777);
+      font-size: 13px;
+    }
+    .voice-help.error {
+      color: var(--magenta-deep);
+    }
     .timer-starts {
       display: flex;
       flex-wrap: wrap;
@@ -256,7 +332,8 @@ interface WakeLockNavigator {
       }
     }
     @media (prefers-reduced-motion: reduce) {
-      .timers li.ringing {
+      .timers li.ringing,
+      .voice-btn.on {
         animation: none;
       }
     }
@@ -284,6 +361,13 @@ export class CookModeDialog {
 
   private wakeLock: WakeLockSentinelLike | null = null;
 
+  // Voice: "next", "back", "repeat", "ingredients", "timer", for hands that are busy.
+  private readonly i18n = inject(I18nService);
+  protected readonly canListen = !!recognitionClass();
+  protected readonly listening = signal(false);
+  protected readonly voiceError = signal(false);
+  private recognition: RecognitionLike | null = null;
+
   constructor() {
     void this.keepScreenOn();
     // The browser drops the lock when the tab is hidden; take it again when the cook comes back.
@@ -303,6 +387,8 @@ export class CookModeDialog {
     }, 1000);
     inject(DestroyRef).onDestroy(() => {
       clearInterval(tick);
+      this.stopVoice();
+      if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel();
       document.removeEventListener('visibilitychange', onVisible);
       void this.wakeLock?.release().catch(() => undefined);
     });
@@ -333,6 +419,100 @@ export class CookModeDialog {
   protected go(step: number): void {
     this.showIngredients.set(false);
     this.index.update((i) => Math.min(this.total - 1, Math.max(0, i + step)));
+  }
+
+  protected toggleVoice(): void {
+    if (this.listening()) this.stopVoice();
+    else this.startVoice();
+  }
+
+  private startVoice(): void {
+    const Recognition = recognitionClass();
+    if (!Recognition) return;
+    const recognition = new Recognition();
+    recognition.lang = SPEECH_LANGUAGES[this.i18n.language()] ?? 'en-US';
+    recognition.continuous = true;
+    recognition.interimResults = false;
+    recognition.onresult = (event) => {
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const result = event.results[i];
+        if (result.isFinal) this.runCommand(result[0].transcript);
+      }
+    };
+    recognition.onerror = (event) => {
+      // "no-speech" just means a quiet kitchen; a refused microphone stops listening.
+      if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+        this.voiceError.set(true);
+        this.stopVoice();
+      }
+    };
+    // The browser stops after a while of silence: listen again while the button is on.
+    recognition.onend = () => {
+      if (this.listening() && this.recognition === recognition) {
+        try {
+          recognition.start();
+        } catch {
+          this.stopVoice();
+        }
+      }
+    };
+    this.recognition = recognition;
+    this.voiceError.set(false);
+    this.listening.set(true);
+    try {
+      recognition.start();
+    } catch {
+      this.stopVoice();
+    }
+  }
+
+  private stopVoice(): void {
+    this.listening.set(false);
+    const recognition = this.recognition;
+    this.recognition = null;
+    try {
+      recognition?.stop();
+    } catch {
+      // Already stopped.
+    }
+  }
+
+  private runCommand(heard: string): void {
+    switch (voiceCommand(heard)) {
+      case 'next':
+        if (this.isLast()) this.ref.close('cooked');
+        else this.go(1);
+        break;
+      case 'back':
+        this.go(-1);
+        break;
+      case 'read':
+        this.readAloud();
+        break;
+      case 'ingredients':
+        this.showIngredients.set(true);
+        break;
+      case 'steps':
+        this.showIngredients.set(false);
+        break;
+      case 'timer': {
+        const [first] = this.stepTimes();
+        if (first) this.startTimer(first);
+        break;
+      }
+    }
+  }
+
+  /** Reads the current step out loud, in the app's language. */
+  private readAloud(): void {
+    if (typeof speechSynthesis === 'undefined') return;
+    speechSynthesis.cancel();
+    const text = this.showIngredients()
+      ? this.data.ingredients.map(this.line).join(', ')
+      : (this.data.steps[this.index()] ?? '');
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = SPEECH_LANGUAGES[this.i18n.language()] ?? 'en-US';
+    speechSynthesis.speak(utterance);
   }
 
   protected onKey(event: KeyboardEvent): void {

@@ -304,6 +304,13 @@ export const en = {
     failed: '⚠️ Could not share the list',
   },
   cookMode: {
+    voice: 'Voice',
+    voiceListening: 'Listening…',
+    voiceHint: 'Say "next", "back", "repeat", "ingredients" or "timer"; your hands stay free.',
+    voiceOn: 'Tap to stop listening.',
+    voiceHelp: 'Say: next · back · repeat · ingredients · timer',
+    voiceBlocked:
+      "🎙️ The microphone is blocked. Allow it in your browser's site settings and try again.",
     startTimer: 'Timer {time}',
     timers: 'Timers',
     timeUp: "Time's up!",

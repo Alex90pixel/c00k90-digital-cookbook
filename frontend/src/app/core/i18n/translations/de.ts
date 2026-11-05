@@ -307,6 +307,14 @@ export const de: Translations = {
     failed: '⚠️ Liste konnte nicht geteilt werden',
   },
   cookMode: {
+    voice: 'Stimme',
+    voiceListening: 'Ich höre zu…',
+    voiceHint:
+      'Sag „weiter“, „zurück“, „wiederholen“, „Zutaten“ oder „Timer“; deine Hände bleiben frei.',
+    voiceOn: 'Tippen, um das Zuhören zu beenden.',
+    voiceHelp: 'Sag: weiter · zurück · wiederholen · Zutaten · Timer',
+    voiceBlocked:
+      '🎙️ Das Mikrofon ist blockiert. Erlaube es in den Website-Einstellungen deines Browsers und versuche es erneut.',
     startTimer: 'Timer {time}',
     timers: 'Timer',
     timeUp: 'Zeit ist um!',
