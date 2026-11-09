@@ -525,15 +525,28 @@ export class CookModeDialog {
     // Safari (iPhone) often never marks a phrase as final, so commands are also taken from the
     // results in progress, once per phrase.
     recognition.interimResults = true;
+    // A phrase in progress waits a moment, so "stop" doesn't fire before "stop timer" is heard.
     const handled = new Set<number>();
+    const waiting = new Map<number, ReturnType<typeof setTimeout>>();
+    const run = (index: number, heard: string) => {
+      clearTimeout(waiting.get(index));
+      waiting.delete(index);
+      if (handled.has(index)) return;
+      handled.add(index);
+      this.runCommand(heard);
+    };
     recognition.onresult = (event) => {
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const result = event.results[i];
         if (handled.has(i)) continue;
         const heard = result[0].transcript;
-        if (result.isFinal || voiceCommand(heard)) {
-          handled.add(i);
-          this.runCommand(heard);
+        if (result.isFinal) run(i, heard);
+        else if (voiceCommand(heard)) {
+          clearTimeout(waiting.get(i));
+          waiting.set(
+            i,
+            setTimeout(() => run(i, heard), 700),
+          );
         }
       }
     };
@@ -553,6 +566,8 @@ export class CookModeDialog {
     recognition.onend = () => {
       if (!this.listening() || this.recognition !== recognition) return;
       handled.clear();
+      waiting.forEach(clearTimeout);
+      waiting.clear();
       setTimeout(() => {
         if (!this.listening() || this.recognition !== recognition) return;
         try {
@@ -617,10 +632,16 @@ export class CookModeDialog {
     }
   }
 
-  /** "Stop": no more reading out loud, and a ringing timer goes quiet. */
+  /**
+   * "Stop": stops the reading out loud; when nothing is being read, it stops a timer instead
+   * (a ringing one, or else the one started last).
+   */
   private silence(): void {
-    if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel();
-    this.timers.update((list) => list.filter((t) => this.remaining(t) > 0));
+    if (typeof speechSynthesis !== 'undefined' && speechSynthesis.speaking) {
+      speechSynthesis.cancel();
+      return;
+    }
+    this.stopLatestTimer();
   }
 
   /** "Stop timer": the ringing ones, or else the one started last. */

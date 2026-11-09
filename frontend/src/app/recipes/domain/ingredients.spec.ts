@@ -167,3 +167,25 @@ describe('parseIngredientLines on one line', () => {
     ]);
   });
 });
+
+describe('parseIngredientLines with more units', () => {
+  it('reads units in many languages, before or after the name', () => {
+    expect(
+      parseIngredientLines(
+        'ouă 3 bucăți\n200 de grame făină\nusturoi 2 căței\nlapte 1 pahar\n1 plic praf de copt\nsare 1 vârf',
+      ),
+    ).toEqual([
+      { qty: '3', unit: 'pcs', name: 'ouă' },
+      { qty: '200', unit: 'g', name: 'făină' },
+      { qty: '2', unit: 'cloves', name: 'usturoi' },
+      { qty: '1', unit: 'glass', name: 'lapte' },
+      { qty: '1', unit: 'packet', name: 'praf de copt' },
+      { qty: '1', unit: 'pinch', name: 'sare' },
+    ]);
+    expect(parseIngredientLines('2 cucharadas aceite\nail 2 gousses\n2 EL Öl')).toEqual([
+      { qty: '2', unit: 'tbsp', name: 'aceite' },
+      { qty: '2', unit: 'cloves', name: 'ail' },
+      { qty: '2', unit: 'tbsp', name: 'Öl' },
+    ]);
+  });
+});

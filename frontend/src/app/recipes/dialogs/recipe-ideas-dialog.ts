@@ -33,52 +33,53 @@ const OPTIONS: readonly { id: IdeaOption; label: TranslationKey }[] = [
       <p>{{ 'ideas.hint' | t }}</p>
 
       <form class="ask" (submit)="$event.preventDefault(); suggest()">
-        <input
-          class="field"
-          type="text"
-          name="i-have"
-          maxlength="300"
-          [attr.aria-label]="'ideas.label' | t"
-          [placeholder]="'ideas.placeholder' | t"
-          [value]="have()"
-          (input)="have.set($any($event.target).value)"
-        />
-        <input
-          #fridgePhoto
-          type="file"
-          accept="image/*"
-          capture="environment"
-          hidden
-          (change)="readFridge(fridgePhoto)"
-        />
-        <button
-          type="button"
-          class="btn-confirm-cancel photo-btn"
-          [disabled]="loading() || readingPhoto()"
-          [attr.aria-label]="'ideas.photo' | t"
-          [title]="'ideas.photoHint' | t"
-          (click)="pickFridge(fridgePhoto)"
-        >
-          📸
-        </button>
-        <button type="submit" class="btn-save" [disabled]="!have().trim() || loading()">
+        <div class="ask-row">
+          <input
+            class="field"
+            type="text"
+            name="i-have"
+            maxlength="300"
+            [attr.aria-label]="'ideas.label' | t"
+            [placeholder]="'ideas.placeholder' | t"
+            [value]="have()"
+            (input)="have.set($any($event.target).value)"
+          />
+          <input
+            #fridgePhoto
+            type="file"
+            accept="image/*"
+            capture="environment"
+            hidden
+            (change)="readFridge(fridgePhoto)"
+          />
+          <button
+            type="button"
+            class="btn-confirm-cancel photo-btn"
+            [disabled]="loading() || readingPhoto()"
+            [attr.aria-label]="'ideas.photo' | t"
+            [title]="'ideas.photoHint' | t"
+            (click)="pickFridge(fridgePhoto)"
+          >
+            📸
+          </button>
+        </div>
+        <div class="options" role="group" [attr.aria-label]="'ideas.optionsLabel' | t">
+          @for (option of optionList; track option.id) {
+            <button
+              type="button"
+              class="option"
+              [class.on]="options().includes(option.id)"
+              [attr.aria-pressed]="options().includes(option.id)"
+              (click)="toggleOption(option.id)"
+            >
+              {{ option.label | t }}
+            </button>
+          }
+        </div>
+        <button type="submit" class="btn-save get-btn" [disabled]="!have().trim() || loading()">
           {{ (loading() ? 'ideas.thinking' : 'ideas.get') | t }}
         </button>
       </form>
-
-      <div class="options" role="group" [attr.aria-label]="'ideas.optionsLabel' | t">
-        @for (option of optionList; track option.id) {
-          <button
-            type="button"
-            class="option"
-            [class.on]="options().includes(option.id)"
-            [attr.aria-pressed]="options().includes(option.id)"
-            (click)="toggleOption(option.id)"
-          >
-            {{ option.label | t }}
-          </button>
-        }
-      </div>
 
       @if (readingPhoto()) {
         <p class="photo-status" role="status">{{ 'ideas.readingPhoto' | t }}</p>
@@ -165,10 +166,18 @@ const OPTIONS: readonly { id: IdeaOption; label: TranslationKey }[] = [
     </div>
   `,
   styles: `
+    /* Ingredients and 📸 on one line, then the options, then a wide "Get ideas": on a phone the
+       button no longer sits next to the options, where a tap could land on the wrong one. */
     .ask {
+      margin-bottom: 14px;
+    }
+    .ask-row {
       display: flex;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
+    }
+    .get-btn {
+      width: 100%;
     }
     .ask .field {
       flex: 1;
@@ -178,7 +187,7 @@ const OPTIONS: readonly { id: IdeaOption; label: TranslationKey }[] = [
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      margin: -4px 0 14px;
+      margin: 0 0 14px;
     }
     .option {
       padding: 5px 12px;

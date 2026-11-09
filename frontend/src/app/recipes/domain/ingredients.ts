@@ -22,6 +22,10 @@ const KNOWN_UNITS = new Set([
   'bunch',
   'stick',
   'sticks',
+  'pcs',
+  'packet',
+  'packets',
+  'glass',
 ]);
 
 /** Unit names written out in full, mapped to the short units above: "tablespoons" → "tbsp". */
@@ -56,6 +60,73 @@ const UNIT_ALIASES: Readonly<Record<string, string>> = {
   litre: 'l',
   litres: 'l',
   liters: 'l',
+  mililitri: 'ml',
+  millilitres: 'ml',
+  milliliters: 'ml',
+  kilograme: 'kg',
+  kile: 'kg',
+  cesti: 'cup',
+  ceasca: 'cup',
+  pahar: 'glass',
+  pahare: 'glass',
+  buc: 'pcs',
+  bucata: 'pcs',
+  bucati: 'pcs',
+  piece: 'pcs',
+  pieces: 'pcs',
+  catel: 'clove',
+  catei: 'cloves',
+  felie: 'slice',
+  felii: 'slices',
+  plic: 'packet',
+  plicuri: 'packet',
+  praf: 'pinch',
+  varf: 'pinch',
+  conserva: 'can',
+  conserve: 'can',
+  cutie: 'can',
+  legatura: 'bunch',
+  manunchi: 'bunch',
+  // Spanish, French, Italian, German
+  cucharada: 'tbsp',
+  cucharadas: 'tbsp',
+  cucharadita: 'tsp',
+  cucharaditas: 'tsp',
+  taza: 'cup',
+  tazas: 'cup',
+  pizca: 'pinch',
+  diente: 'clove',
+  dientes: 'cloves',
+  cuillere: 'tbsp',
+  cuilleres: 'tbsp',
+  tasse: 'cup',
+  tasses: 'cup',
+  pincee: 'pinch',
+  gousse: 'clove',
+  gousses: 'cloves',
+  cucchiaio: 'tbsp',
+  cucchiai: 'tbsp',
+  cucchiaino: 'tsp',
+  cucchiaini: 'tsp',
+  tazza: 'cup',
+  tazze: 'cup',
+  pizzico: 'pinch',
+  spicchio: 'clove',
+  spicchi: 'cloves',
+  essloffel: 'tbsp',
+  el: 'tbsp',
+  teeloffel: 'tsp',
+  tl: 'tsp',
+  prise: 'pinch',
+  zehe: 'clove',
+  zehen: 'cloves',
+  stuck: 'pcs',
+  scheibe: 'slice',
+  scheiben: 'slices',
+  dose: 'can',
+  bund: 'bunch',
+  paket: 'packet',
+  pack: 'packet',
 };
 
 /** The short unit for a unit word ("Tablespoons" → "tbsp", "g" → "g"), or `null` if it isn't one. */
@@ -140,9 +211,9 @@ export function scaleIngredients(ingredients: readonly Ingredient[], factor: num
 /** A quantity as people type it: 200, 0.5, 0,5, 1/2, 1½, ½. */
 const QTY = String.raw`\d+(?:[.,]\d+)?(?:\s*\/\s*\d+)?[⅛¼⅓⅜½⅝⅔¾⅞]?|[⅛¼⅓⅜½⅝⅔¾⅞]`;
 /** Quantity first: "200g flour", "2 eggs", "1/2 tsp salt". */
-const LEADING = new RegExp(String.raw`^(${QTY})\s*(\p{L}*)\.?\s*(.*)$`, 'u');
+const LEADING = new RegExp(String.raw`^(${QTY})\s*(?:de\s+)?(\p{L}*)\.?\s*(.*)$`, 'u');
 /** Quantity last: "flour 200 g", "eggs: 2", "milk - 300ml", "făină 200 gr". */
-const TRAILING = new RegExp(String.raw`^(.+?)\s*[:–—-]?\s+(${QTY})\s*(\p{L}*)\.?$`, 'u');
+const TRAILING = new RegExp(String.raw`^(.+?)\s*[:–—-]?\s+(${QTY})\s*(?:de\s+)?(\p{L}*)\.?$`, 'u');
 
 /**
  * Parses pasted ingredients, one per line (or a single line separated by commas), with the
