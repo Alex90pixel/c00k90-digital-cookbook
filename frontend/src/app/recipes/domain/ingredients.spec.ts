@@ -97,3 +97,31 @@ describe('parseStepLines', () => {
     ]);
   });
 });
+
+describe('parseIngredientLines in any order', () => {
+  it('reads the quantity and unit after the name', () => {
+    expect(
+      parseIngredientLines('flour 200 g\neggs: 2\nmilk - 300ml\nfăină 200 gr\n- sugar 1/2 cup'),
+    ).toEqual([
+      { qty: '200', unit: 'g', name: 'flour' },
+      { qty: '2', unit: '', name: 'eggs' },
+      { qty: '300', unit: 'ml', name: 'milk' },
+      { qty: '200', unit: 'g', name: 'făină' },
+      { qty: '1/2', unit: 'cup', name: 'sugar' },
+    ]);
+  });
+
+  it('understands units in Romanian and comma decimals', () => {
+    expect(parseIngredientLines('2 linguri ulei\n0,5 kg cartofi\n1 linguriță sare')).toEqual([
+      { qty: '2', unit: 'tbsp', name: 'ulei' },
+      { qty: '0,5', unit: 'kg', name: 'cartofi' },
+      { qty: '1', unit: 'tsp', name: 'sare' },
+    ]);
+  });
+
+  it('keeps names with numbers or unknown words after the number as they are', () => {
+    expect(parseIngredientLines('eggs 2 large')).toEqual([
+      { qty: '', unit: '', name: 'eggs 2 large' },
+    ]);
+  });
+});

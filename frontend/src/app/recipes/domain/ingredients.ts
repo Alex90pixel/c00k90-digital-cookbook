@@ -38,11 +38,33 @@ const UNIT_ALIASES: Readonly<Record<string, string>> = {
   ounces: 'oz',
   pound: 'lb',
   pounds: 'lb',
+  gr: 'g',
+  grame: 'g',
+  gramm: 'g',
+  gramos: 'g',
+  grammes: 'g',
+  grammi: 'g',
+  lingura: 'tbsp',
+  linguri: 'tbsp',
+  lingurita: 'tsp',
+  lingurite: 'tsp',
+  cana: 'cup',
+  cani: 'cup',
+  litru: 'l',
+  litri: 'l',
+  liter: 'l',
+  litre: 'l',
+  litres: 'l',
+  liters: 'l',
 };
 
 /** The short unit for a unit word ("Tablespoons" → "tbsp", "g" → "g"), or `null` if it isn't one. */
 export function knownUnit(word: string): string | null {
-  const lower = word.toLowerCase();
+  // "Linguriță" → "lingurita", so units typed with or without accents are found.
+  const lower = word
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
   if (KNOWN_UNITS.has(lower)) return lower;
   return UNIT_ALIASES[lower] ?? null;
 }
@@ -115,22 +137,34 @@ export function scaleIngredients(ingredients: readonly Ingredient[], factor: num
   });
 }
 
-/** Parses pasted ingredients, one per line: "200g flour", "2 eggs", "1/2 tsp salt", "Salt". */
+/** A quantity as people type it: 200, 0.5, 0,5, 1/2, 1½, ½. */
+const QTY = String.raw`\d+(?:[.,]\d+)?(?:\s*\/\s*\d+)?[⅛¼⅓⅜½⅝⅔¾⅞]?|[⅛¼⅓⅜½⅝⅔¾⅞]`;
+/** Quantity first: "200g flour", "2 eggs", "1/2 tsp salt". */
+const LEADING = new RegExp(String.raw`^(${QTY})\s*(\p{L}*)\.?\s*(.*)$`, 'u');
+/** Quantity last: "flour 200 g", "eggs: 2", "milk - 300ml", "făină 200 gr". */
+const TRAILING = new RegExp(String.raw`^(.+?)\s*[:–—-]?\s+(${QTY})\s*(\p{L}*)\.?$`, 'u');
+
+/**
+ * Parses pasted ingredients, one per line, with the quantity first or last: "200g flour",
+ * "2 eggs", "flour 200 g", "eggs: 2", "Salt". Bullets ("-", "•") are removed.
+ */
 export function parseIngredientLines(text: string): Ingredient[] {
-  return splitLines(text).map((line) => {
-    const match = line.match(/^([\d.\/]+)\s*([a-zA-Z]*)\s*(.*)$/);
-    if (!match) return { qty: '', unit: '', name: line };
-    const qty = match[1];
-    let unit = match[2];
-    let name = match[3];
-    const short = unit ? knownUnit(unit) : '';
-    if (unit && !short) {
-      name = `${unit} ${name}`.trim();
-      unit = '';
-    } else if (short) {
-      unit = short;
+  return splitLines(text).map((raw) => {
+    const line = raw.replace(/^[-•*·]\s*/, '');
+    const leading = line.match(LEADING);
+    if (leading) {
+      const [, qty, word, rest] = leading;
+      const unit = word ? knownUnit(word) : '';
+      if (unit !== null) return { qty, unit, name: (rest || unit).trim() };
+      return { qty, unit: '', name: `${word} ${rest}`.trim() };
     }
-    return { qty, unit, name: (name || unit).trim() };
+    const trailing = line.match(TRAILING);
+    if (trailing) {
+      const [, name, qty, word] = trailing;
+      const unit = word ? knownUnit(word) : '';
+      if (unit !== null) return { qty, unit, name: name.replace(/[,:–—-]+$/, '').trim() };
+    }
+    return { qty: '', unit: '', name: line };
   });
 }
 
