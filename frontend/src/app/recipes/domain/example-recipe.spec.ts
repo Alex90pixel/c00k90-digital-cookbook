@@ -1,5 +1,5 @@
 import { stepDurations } from './step-timers';
-import { exampleRecipe } from './example-recipe';
+import { exampleRecipe, toBlueberries } from './example-recipe';
 
 describe('exampleRecipe', () => {
   it('is complete in every language', () => {
@@ -20,5 +20,16 @@ describe('exampleRecipe', () => {
     expect(cake.diets.vegetarian).toBe(true);
     expect(cake.allergens.gluten && cake.allergens.eggs && cake.allergens.milk).toBe(true);
     expect(cake.allergens.nuts).toBe(false);
+  });
+});
+
+describe('toBlueberries', () => {
+  it('changes raspberries to blueberries in every language', () => {
+    expect(toBlueberries('Top with raspberries and serve.')).toBe(
+      'Top with blueberries and serve.',
+    );
+    expect(toBlueberries('apoi pune zmeura deasupra')).toBe('apoi pune afinele deasupra');
+    expect(toBlueberries('zmeură, pentru prospețime')).toBe('afine, pentru prospețime');
+    expect(toBlueberries('mit Himbeeren belegen')).toBe('mit Heidelbeeren belegen');
   });
 });

@@ -40,7 +40,7 @@ export class LoginPage {
 
   protected readonly features = FEATURES;
   protected readonly signingIn = signal(false);
-  /** The preview dish photo (public/landing-dish.png); an emoji if it is missing. */
+  /** The preview dish photo (public/landing-dish.jpg); an emoji if it is missing. */
   protected readonly photoOk = signal(true);
   protected readonly error = signal('');
 

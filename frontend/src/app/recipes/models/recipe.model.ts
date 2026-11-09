@@ -72,6 +72,8 @@ export interface RecipeData {
   extras?: string[];
   /** The example recipe a new cookbook starts with (shows an "Example" label). */
   example?: boolean;
+  /** Which version of the example recipe it is (2 = the photo with blueberries). */
+  exampleVersion?: number;
   /** One cook's tip. */
   tip?: string;
   /** The author's YouTube video of the recipe, as `https://www.youtube.com/watch?v=…`. */

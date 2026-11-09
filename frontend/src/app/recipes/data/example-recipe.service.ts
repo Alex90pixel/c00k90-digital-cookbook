@@ -3,7 +3,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { AuthService } from '../../core/auth/auth.service';
 import { FIRESTORE } from '../../core/firebase/firestore.token';
 import { I18nService } from '../../core/i18n/i18n.service';
-import { EXAMPLE_PHOTO_URL, exampleRecipe } from '../domain/example-recipe';
+import { EXAMPLE_PHOTO_URL, EXAMPLE_VERSION, exampleRecipe } from '../domain/example-recipe';
 import { RecipeStore } from './recipe.store';
 
 /**
@@ -29,8 +29,23 @@ export class ExampleRecipeService {
     });
   }
 
+  /** Example recipes added before the latest version get the new photo and blueberries. */
+  private async upgradeOld(): Promise<void> {
+    const old = this.store
+      .myRecipes()
+      .filter((r) => r.example && (r.exampleVersion ?? 1) < EXAMPLE_VERSION);
+    if (!old.length) return;
+    try {
+      const photo = await loadPhoto();
+      for (const recipe of old) await this.store.upgradeExample(recipe, photo);
+    } catch (error) {
+      console.error('Could not update the example recipe', error);
+    }
+  }
+
   private async addOnce(userId: string): Promise<void> {
     const profile = doc(this.db, 'profiles', userId);
+    await this.upgradeOld();
     try {
       if ((await getDoc(profile)).data()?.['exampleAdded']) return;
       if (!this.store.myRecipes().length) {

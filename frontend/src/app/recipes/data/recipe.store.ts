@@ -12,6 +12,7 @@ import {
   matchesIngredients,
   withinTime,
 } from '../domain/filters';
+import { EXAMPLE_VERSION, toBlueberries } from '../domain/example-recipe';
 import { formToRecipeData } from '../domain/recipe-form';
 import { recipeStoragePaths } from '../domain/recipe-images';
 import { matchesSearch } from '../domain/search';
@@ -278,9 +279,34 @@ export class RecipeStore {
   async addExample(value: RecipeFormValue, photo: Blob | null): Promise<void> {
     const userId = this.auth.requireUser().uid;
     const images = photo ? [await this.photos.upload(userId, photo)] : [];
-    const data: RecipeData = { ...formToRecipeData(value, userId, images, null), example: true };
+    const data: RecipeData = {
+      ...formToRecipeData(value, userId, images, null),
+      example: true,
+      exampleVersion: EXAMPLE_VERSION,
+    };
     const id = await this.repository.create(data);
     this.mine.update((list) => [{ ...data, id }, ...list]);
+  }
+
+  /**
+   * Brings an example recipe added earlier up to date: the new photo, and blueberries instead of
+   * raspberries (only those words change, so the cook's own edits stay). Throws if it fails.
+   */
+  async upgradeExample(recipe: Recipe, photo: Blob | null): Promise<void> {
+    const userId = this.auth.requireUser().uid;
+    const changes: Partial<RecipeData> = {
+      exampleVersion: EXAMPLE_VERSION,
+      ingredients: (recipe.ingredients ?? []).map((i) => ({ ...i, name: toBlueberries(i.name) })),
+      steps: (recipe.steps ?? []).map(toBlueberries),
+      extras: (recipe.extras ?? []).map(toBlueberries),
+    };
+    if (photo) {
+      const image = await this.photos.upload(userId, photo);
+      Object.assign(changes, { images: [image], imageUrl: image.url, imagePath: image.path });
+    }
+    await this.repository.update(recipe.id, changes);
+    this.patchMine(recipe.id, changes);
+    if (photo) this.photos.deleteInBackground(recipeStoragePaths(recipe));
   }
 
   async delete(recipe: Recipe): Promise<boolean> {
