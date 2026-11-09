@@ -135,6 +135,27 @@ export class RecipeFormDialog {
 
   // ----- Lists -----
 
+  /**
+   * The text boxes above the ingredients and steps add to the list by themselves: Enter adds what
+   * was typed, a pasted list is added right away, and so is anything left when leaving the box.
+   * Shift+Enter still starts a new line.
+   */
+  protected onEnter(event: Event, list: 'ingredients' | 'steps'): void {
+    if ((event as KeyboardEvent).shiftKey || (event as KeyboardEvent).isComposing) return;
+    event.preventDefault();
+    this.addPasted(list);
+  }
+
+  protected afterPaste(list: 'ingredients' | 'steps'): void {
+    // The pasted text reaches the box (and the signal) just after the paste event.
+    setTimeout(() => this.addPasted(list));
+  }
+
+  private addPasted(list: 'ingredients' | 'steps'): void {
+    if (list === 'ingredients') this.addPastedIngredients();
+    else this.addPastedSteps();
+  }
+
   protected addPastedIngredients(): void {
     const ingredients = parseIngredientLines(this.ingredientsPaste());
     if (!ingredients.length) return;

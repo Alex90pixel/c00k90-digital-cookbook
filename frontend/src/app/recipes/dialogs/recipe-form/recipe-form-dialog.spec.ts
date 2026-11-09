@@ -76,9 +76,9 @@ describe('RecipeFormDialog saving', () => {
     type('#recipe-name', 'Pancakes');
     choose('#recipe-category', 'Breakfast');
     type('#ingredients-paste', '200g flour\n2 eggs');
-    await click('Add pasted ingredients');
+    await click('＋ Add to the list');
     type('#steps-paste', '1. Mix\n2. Fry');
-    await click('Add pasted steps');
+    await click('＋ Add to the steps');
     await click('Save Recipe');
 
     expect(save).toHaveBeenCalledTimes(1);
@@ -94,9 +94,9 @@ describe('RecipeFormDialog saving', () => {
     type('#recipe-name', 'Soup');
     choose('#recipe-category', 'Soups');
     type('#ingredients-paste', '1 l water');
-    await click('Add pasted ingredients');
+    await click('＋ Add to the list');
     type('#steps-paste', 'Boil');
-    await click('Add pasted steps');
+    await click('＋ Add to the steps');
 
     const nameInput = element.querySelector<HTMLInputElement>(
       '.dynamic-list .dynamic-item input:nth-of-type(3)',
@@ -149,6 +149,19 @@ describe('RecipeFormDialog saving', () => {
     });
     // Plain objects only: Firestore must not receive the form's internal tracking markers.
     expect(Object.getOwnPropertySymbols(data.ingredients![0])).toEqual([]);
+  });
+
+  it('adds a typed ingredient with Enter', async () => {
+    const { element, fixture, type, choose, click, savedValue } = await setup();
+    type('#recipe-name', 'Tea');
+    choose('#recipe-category', 'Drinks');
+    type('#ingredients-paste', 'water 300 ml');
+    const box = element.querySelector<HTMLTextAreaElement>('#ingredients-paste')!;
+    box.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    fixture.detectChanges();
+    expect(box.value).toBe('');
+    await click('Save Recipe');
+    expect(savedValue().ingredients).toEqual([{ qty: '300', unit: 'ml', name: 'water' }]);
   });
 
   it('also saves text left in the paste boxes, without pressing "Add pasted…"', async () => {

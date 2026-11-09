@@ -135,8 +135,16 @@
         [placeholder]="'form.ingredientsPlaceholder' | t"
         [value]="ingredientsPaste()"
         (input)="ingredientsPaste.set($any($event.target).value)"
+        (keydown.enter)="onEnter($event, 'ingredients')"
+        (paste)="afterPaste('ingredients')"
+        (blur)="addPastedIngredients()"
       ></textarea>
-      <button type="button" class="btn-add-row" (click)="addPastedIngredients()">
+      <button
+        type="button"
+        class="btn-add-row"
+        [disabled]="!ingredientsPaste().trim()"
+        (click)="addPastedIngredients()"
+      >
         {{ 'form.addIngredients' | t }}
       </button>
       @if (recipeForm.ingredients.length) {
@@ -185,8 +193,16 @@
         [placeholder]="'form.stepsPlaceholder' | t"
         [value]="stepsPaste()"
         (input)="stepsPaste.set($any($event.target).value)"
+        (keydown.enter)="onEnter($event, 'steps')"
+        (paste)="afterPaste('steps')"
+        (blur)="addPastedSteps()"
       ></textarea>
-      <button type="button" class="btn-add-row" (click)="addPastedSteps()">
+      <button
+        type="button"
+        class="btn-add-row"
+        [disabled]="!stepsPaste().trim()"
+        (click)="addPastedSteps()"
+      >
         {{ 'form.addSteps' | t }}
       </button>
       @if (recipeForm.steps.length) {
