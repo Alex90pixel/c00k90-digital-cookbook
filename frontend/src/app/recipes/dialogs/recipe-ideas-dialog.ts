@@ -85,7 +85,12 @@ const OPTIONS: readonly { id: IdeaOption; label: TranslationKey }[] = [
       }
 
       @if (error()) {
-        <p class="error" role="alert">{{ error()! | t }}</p>
+        <p class="error" role="alert">
+          {{ error()! | t }}
+          @if (errorCode()) {
+            <small class="error-code">({{ errorCode() }})</small>
+          }
+        </p>
       }
 
       <div class="ideas" aria-live="polite">
@@ -205,6 +210,14 @@ const OPTIONS: readonly { id: IdeaOption; label: TranslationKey }[] = [
       color: var(--teal);
       font-size: 13px;
       font-weight: 600;
+    }
+    .error-code {
+      display: block;
+      margin-top: 4px;
+      opacity: 0.7;
+      font-size: 11px;
+      font-weight: 400;
+      word-break: break-word;
     }
     .error {
       color: var(--magenta-deep);
@@ -328,6 +341,8 @@ export class RecipeIdeasDialog {
   protected readonly have = signal('');
   protected readonly ideas = signal<RecipeIdea[]>([]);
   protected readonly loading = signal(false);
+  /** A short technical reason under the error, so a screenshot tells us what went wrong. */
+  protected readonly errorCode = signal('');
   protected readonly error = signal<
     'ideas.failed' | 'ideas.none' | 'ideas.photoNothing' | 'ideas.photoFailed' | null
   >(null);
@@ -361,6 +376,7 @@ export class RecipeIdeasDialog {
     if (!file?.type.startsWith('image/')) return;
     this.readingPhoto.set(true);
     this.error.set(null);
+    this.errorCode.set('');
     try {
       const found = await this.ideasService.ingredientsInPhoto(file, this.i18n.language());
       if (!found.length) {
@@ -377,6 +393,7 @@ export class RecipeIdeasDialog {
     } catch (error) {
       console.error('Reading the fridge photo failed', error);
       this.error.set('ideas.photoFailed');
+      this.errorCode.set(errorCode(error));
     } finally {
       this.readingPhoto.set(false);
     }
@@ -394,6 +411,7 @@ export class RecipeIdeasDialog {
     if (!more) this.shownNames = [];
     this.loading.set(true);
     this.error.set(null);
+    this.errorCode.set('');
     this.saved.set(new Set());
     try {
       const ideas = await this.ideasService.suggest(
@@ -408,6 +426,7 @@ export class RecipeIdeasDialog {
     } catch (error) {
       console.error('Recipe ideas failed', error);
       this.error.set('ideas.failed');
+      this.errorCode.set(errorCode(error));
     } finally {
       this.loading.set(false);
     }
@@ -441,4 +460,11 @@ export class RecipeIdeasDialog {
     }
     this.saving.set(null);
   }
+}
+
+/** "appCheck/fetch-status-error" or the start of the message: enough to find the cause. */
+function errorCode(error: unknown): string {
+  const { code, message } = (error ?? {}) as { code?: unknown; message?: unknown };
+  const text = typeof code === 'string' && code ? code : String(message ?? error ?? '');
+  return text.slice(0, 120);
 }
