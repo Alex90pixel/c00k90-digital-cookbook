@@ -56,3 +56,13 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+
+// iPhone zooms the page in when a field with text smaller than 16px gets the focus, and stays
+// zoomed. On touch screens every field uses at least 16px, so typing never zooms.
+@media (pointer: coarse) {
+  input,
+  select,
+  textarea {
+    font-size: max(16px, 1em) !important;
+  }
+}
