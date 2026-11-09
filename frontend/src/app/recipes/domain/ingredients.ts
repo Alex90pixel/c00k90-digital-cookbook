@@ -145,11 +145,15 @@ const LEADING = new RegExp(String.raw`^(${QTY})\s*(\p{L}*)\.?\s*(.*)$`, 'u');
 const TRAILING = new RegExp(String.raw`^(.+?)\s*[:–—-]?\s+(${QTY})\s*(\p{L}*)\.?$`, 'u');
 
 /**
- * Parses pasted ingredients, one per line, with the quantity first or last: "200g flour",
- * "2 eggs", "flour 200 g", "eggs: 2", "Salt". Bullets ("-", "•") are removed.
+ * Parses pasted ingredients, one per line (or a single line separated by commas), with the
+ * quantity first or last: "200g flour", "2 eggs", "flour 200 g", "eggs: 2", "Salt". Bullets
+ * ("-", "•") are removed.
  */
 export function parseIngredientLines(text: string): Ingredient[] {
-  return splitLines(text).map((raw) => {
+  const lines = splitLines(text);
+  // "chicken, rice, peppers" on one line is a list too (but not "0,5 kg": no space after it).
+  const items = lines.length === 1 ? lines[0].split(/\s*[,;]\s+/) : lines;
+  return items.filter(Boolean).map((raw) => {
     const line = raw.replace(/^[-•*·]\s*/, '');
     const leading = line.match(LEADING);
     if (leading) {
@@ -168,11 +172,34 @@ export function parseIngredientLines(text: string): Ingredient[] {
   });
 }
 
-/** Parses pasted steps, one per line, removing numbering ("1.", "2)") and bullets ("-", "•"). */
+/**
+ * Parses pasted steps: one per line, without numbering ("1.", "2)") or bullets ("-", "•").
+ * Text pasted as a single line is split too, when it clearly holds several steps:
+ * "1. Mix 2. Fry", three or more sentences, or a short list like "wash rice, chop chicken, boil rice".
+ */
 export function parseStepLines(text: string): string[] {
-  return splitLines(text)
-    .map((line) => line.replace(/^\d+[.)]\s*/, '').replace(/^[-•*]\s*/, ''))
+  const lines = splitLines(text);
+  const pieces = lines.length === 1 ? splitOneLine(lines[0]) : lines;
+  return pieces
+    .map((line) =>
+      line
+        .replace(/^\d+[.)]\s*/, '')
+        .replace(/^[-•*·]\s*/, '')
+        .trim(),
+    )
     .filter(Boolean);
+}
+
+function splitOneLine(line: string): string[] {
+  // "1. Mix the flour 2. Add the eggs 3) Fry"
+  const numbered = line.split(/\s+(?=\d+[.)]\s)/);
+  if (numbered.length > 1) return numbered;
+  const sentences = line.split(/(?<=[.!?;])\s+(?=\p{L})/u);
+  if (sentences.length >= 3) return sentences;
+  // A list of short actions, without full stops.
+  const parts = line.split(/\s*[,;]\s+/);
+  if (parts.length >= 3 && parts.every((part) => part.split(/\s+/).length <= 5)) return parts;
+  return [line];
 }
 
 function splitLines(text: string): string[] {

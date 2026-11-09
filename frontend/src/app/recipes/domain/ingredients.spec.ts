@@ -125,3 +125,45 @@ describe('parseIngredientLines in any order', () => {
     ]);
   });
 });
+
+describe('parseStepLines on one line', () => {
+  it('splits a short list of actions', () => {
+    expect(parseStepLines('wash rice, chop chicken, boil rice')).toEqual([
+      'wash rice',
+      'chop chicken',
+      'boil rice',
+    ]);
+  });
+
+  it('splits numbering and several sentences', () => {
+    expect(parseStepLines('1. Mix the flour 2. Add the eggs 3) Fry')).toEqual([
+      'Mix the flour',
+      'Add the eggs',
+      'Fry',
+    ]);
+    expect(parseStepLines('Mix it. Let it rest 10 minutes. Bake.')).toEqual([
+      'Mix it.',
+      'Let it rest 10 minutes.',
+      'Bake.',
+    ]);
+  });
+
+  it('keeps one step with a comma or two sentences as it is', () => {
+    expect(parseStepLines('Add the flour, then stir well')).toEqual([
+      'Add the flour, then stir well',
+    ]);
+    expect(parseStepLines('Bake 30 minutes. Let it cool.')).toEqual([
+      'Bake 30 minutes. Let it cool.',
+    ]);
+  });
+});
+
+describe('parseIngredientLines on one line', () => {
+  it('splits a list separated by commas, but not decimal commas', () => {
+    expect(parseIngredientLines('chicken, 0,5 kg rice, peppers 2')).toEqual([
+      { qty: '', unit: '', name: 'chicken' },
+      { qty: '0,5', unit: 'kg', name: 'rice' },
+      { qty: '2', unit: '', name: 'peppers' },
+    ]);
+  });
+});
