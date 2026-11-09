@@ -214,8 +214,11 @@ export function exampleRecipe(language: Language, source: string): RecipeFormVal
 /** The photo of the example recipe (the same as on the landing page). */
 export const EXAMPLE_PHOTO_URL = 'landing-dish.jpg';
 
-/** 2: the real photo and blueberries (1 was the watercolor with raspberries). */
-export const EXAMPLE_VERSION = 2;
+/**
+ * 3: the real photo and blueberries, on the cards too (1 was the watercolor with raspberries;
+ * 2 had the new photo but still the old small copy on the cards).
+ */
+export const EXAMPLE_VERSION = 3;
 
 /** Raspberries → blueberries, in every language, for example recipes added before version 2. */
 const BERRIES: readonly [RegExp, string][] = [

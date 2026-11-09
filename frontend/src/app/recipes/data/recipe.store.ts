@@ -294,6 +294,17 @@ export class RecipeStore {
    */
   async upgradeExample(recipe: Recipe, photo: Blob | null): Promise<void> {
     const userId = this.auth.requireUser().uid;
+    // Version 2 already has the new photo, only its small copy for the cards was missing.
+    if (recipe.exampleVersion === 2) {
+      const cover = recipe.images?.[0];
+      const changes: Partial<RecipeData> = {
+        exampleVersion: EXAMPLE_VERSION,
+        thumbUrl: cover?.thumbUrl ?? '',
+      };
+      await this.repository.update(recipe.id, changes);
+      this.patchMine(recipe.id, changes);
+      return;
+    }
     const changes: Partial<RecipeData> = {
       exampleVersion: EXAMPLE_VERSION,
       ingredients: (recipe.ingredients ?? []).map((i) => ({ ...i, name: toBlueberries(i.name) })),
@@ -302,7 +313,13 @@ export class RecipeStore {
     };
     if (photo) {
       const image = await this.photos.upload(userId, photo);
-      Object.assign(changes, { images: [image], imageUrl: image.url, imagePath: image.path });
+      Object.assign(changes, {
+        images: [image],
+        imageUrl: image.url,
+        imagePath: image.path,
+        // The cards (and the recipe of the day) show this small copy.
+        thumbUrl: image.thumbUrl ?? '',
+      });
     }
     await this.repository.update(recipe.id, changes);
     this.patchMine(recipe.id, changes);
