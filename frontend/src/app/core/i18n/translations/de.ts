@@ -447,6 +447,8 @@ export const de: Translations = {
     sendFooter: 'Aus meinem C00K90-Kochbuch 💛 cookbook.antdevlabs.com',
     extras: '✨ Passt gut zu',
     showMetric: '📏 Metrisch anzeigen',
+    showUs: '📏 In US-Einheiten zeigen (Cups, oz, °F)',
+    usHint: 'Gramm und Milliliter in Unzen, Cups und Löffeln; °C in °F',
     originalUnits: '↩ Originaleinheiten',
     metricHint: 'Cups, Unzen und Pfund in Gramm und Milliliter; °F in °C',
     printPhotoTitle: 'Foto aus einer Zeitschrift oder einem Buch',

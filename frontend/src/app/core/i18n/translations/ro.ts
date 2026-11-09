@@ -456,6 +456,8 @@ export const ro: Translations = {
     sendFooter: 'Din cartea mea de rețete C00K90 💛 cookbook.antdevlabs.com',
     extras: '✨ Merge bine cu',
     showMetric: '📏 Arată în sistem metric',
+    showUs: '📏 Arată în unități americane (căni, uncii, °F)',
+    usHint: 'Grame și mililitri în uncii, căni și linguri; °C în °F',
     originalUnits: '↩ Unitățile originale',
     metricHint: 'Căni, uncii și livre în grame și mililitri; °F în °C',
     printPhotoTitle: 'Poză dintr-o revistă sau carte',

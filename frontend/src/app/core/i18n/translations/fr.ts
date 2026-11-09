@@ -450,6 +450,8 @@ export const fr: Translations = {
     sendFooter: 'De mon livre de recettes C00K90 💛 cookbook.antdevlabs.com',
     extras: '✨ Se marie bien avec',
     showMetric: '📏 Afficher en métrique',
+    showUs: '📏 Afficher en unités US (tasses, oz, °F)',
+    usHint: 'Grammes et millilitres en onces, tasses et cuillères ; °C en °F',
     originalUnits: "↩ Unités d'origine",
     metricHint: 'Tasses, onces et livres en grammes et millilitres ; °F en °C',
     printPhotoTitle: "Photo d'un magazine ou d'un livre",

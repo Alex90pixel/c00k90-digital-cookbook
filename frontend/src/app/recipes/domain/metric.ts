@@ -83,3 +83,56 @@ export function usesUsUnits(ingredients: readonly Ingredient[], steps: readonly 
     steps.some((s) => stepToMetric(s) !== s)
   );
 }
+
+// ----- The other way: metric to US units, for cooks used to cups and ounces. -----
+
+const CELSIUS = /(\d{2,3})\s*(?:°\s*|grade\s+|degrees\s+)C(?:elsius)?\b/gi;
+
+/** Rounds to a quarter: 0.26 → ¼, 1.49 → 1½. */
+function quarter(value: number): string {
+  return formatQuantity(Math.max(0.25, Math.round(value * 4) / 4));
+}
+
+/** Grams or millilitres as a US cook measures them. */
+function usAmount(value: number, kind: 'g' | 'ml'): { qty: string; unit: string } {
+  if (kind === 'g') {
+    return value < 450
+      ? { qty: quarter(value / 28.35), unit: 'oz' }
+      : { qty: quarter(value / 453.6), unit: 'lb' };
+  }
+  if (value < 15) return { qty: quarter(value / 5), unit: 'tsp' };
+  if (value < 60) return { qty: quarter(value / 15), unit: 'tbsp' };
+  return { qty: quarter(value / 240), unit: 'cups' };
+}
+
+const FROM_METRIC: Readonly<Record<string, { kind: 'g' | 'ml'; factor: number }>> = {
+  g: { kind: 'g', factor: 1 },
+  kg: { kind: 'g', factor: 1000 },
+  ml: { kind: 'ml', factor: 1 },
+  l: { kind: 'ml', factor: 1000 },
+};
+
+/** The ingredient in ounces, pounds, cups or spoons when it uses grams or millilitres. */
+export function toUs(ingredient: Ingredient): Ingredient {
+  const unit = knownUnit(ingredient.unit ?? '') ?? '';
+  const metric = FROM_METRIC[unit];
+  const qty = parseQuantity(ingredient.qty);
+  if (!metric || qty === null) return ingredient;
+  return { ...ingredient, ...usAmount(qty * metric.factor, metric.kind) };
+}
+
+/** "Bake at 180°C" → "Bake at 350°F" (rounded to 25 °F, the way ovens are marked). */
+export function stepToUs(step: string): string {
+  return step.replace(CELSIUS, (_, celsius: string) => {
+    const fahrenheit = Math.round((Number(celsius) * 9) / 5 / 25 + 32 / 25) * 25;
+    return `${fahrenheit}°F`;
+  });
+}
+
+/** True when the recipe uses grams, millilitres or °C, so a "US units" switch is worth showing. */
+export function usesMetricUnits(
+  ingredients: readonly Ingredient[],
+  steps: readonly string[],
+): boolean {
+  return ingredients.some((i) => toUs(i) !== i) || steps.some((s) => stepToUs(s) !== s);
+}

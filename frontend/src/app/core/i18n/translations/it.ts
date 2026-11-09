@@ -446,6 +446,8 @@ export const it: Translations = {
     sendFooter: 'Dal mio ricettario C00K90 💛 cookbook.antdevlabs.com',
     extras: '✨ Si abbina bene con',
     showMetric: '📏 Mostra in sistema metrico',
+    showUs: '📏 Mostra in unità USA (tazze, oz, °F)',
+    usHint: 'Grammi e millilitri in once, tazze e cucchiai; °C in °F',
     originalUnits: '↩ Unità originali',
     metricHint: 'Tazze, once e libbre in grammi e millilitri; °F in °C',
     printPhotoTitle: 'Foto da una rivista o da un libro',

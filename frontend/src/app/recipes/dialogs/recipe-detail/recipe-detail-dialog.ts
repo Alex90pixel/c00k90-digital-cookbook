@@ -14,7 +14,14 @@ import { PairingService } from '../../data/pairing.service';
 import { RecipeStore } from '../../data/recipe.store';
 import { totalMinutes } from '../../domain/diets';
 import { scaleIngredients } from '../../domain/ingredients';
-import { stepToMetric, toMetric, usesUsUnits } from '../../domain/metric';
+import {
+  stepToMetric,
+  stepToUs,
+  toMetric,
+  toUs,
+  usesMetricUnits,
+  usesUsUnits,
+} from '../../domain/metric';
 import { recipeImages, safeImageUrl } from '../../domain/recipe-images';
 import { youtubeVideoId } from '../../domain/video';
 import { VideoPlayer } from '../../components/video-player';
@@ -93,20 +100,30 @@ export class RecipeDetailDialog {
   // Servings: the ingredient list scales with the stepper.
   private readonly baseServings = computed(() => Math.trunc(this.recipe()?.servings ?? 0) || 1);
   protected readonly servings = linkedSignal(() => this.baseServings());
-  /** "Show in metric": US units in grams / millilitres, oven temperatures in °C. */
+  /**
+   * 📏 converts the units: a recipe in cups, ounces and °F to grams, millilitres and °C, and a
+   * recipe in grams and millilitres to US measures. `metric` is true while converted.
+   */
   protected readonly metric = signal(false);
-  protected readonly hasUsUnits = computed(() =>
-    usesUsUnits(this.recipe()?.ingredients ?? [], this.recipe()?.steps ?? []),
-  );
+  protected readonly convertTo = computed<'metric' | 'us' | null>(() => {
+    const ingredients = this.recipe()?.ingredients ?? [];
+    const steps = this.recipe()?.steps ?? [];
+    if (usesUsUnits(ingredients, steps)) return 'metric';
+    return usesMetricUnits(ingredients, steps) ? 'us' : null;
+  });
   protected readonly steps = computed(() => {
     const steps = this.recipe()?.steps ?? [];
-    return this.metric() ? steps.map(stepToMetric) : steps;
+    if (!this.metric()) return steps;
+    return steps.map(this.convertTo() === 'us' ? stepToUs : stepToMetric);
   });
-  protected readonly ingredients = computed(() =>
-    scaleIngredients(this.recipe()?.ingredients ?? [], this.servings() / this.baseServings()).map(
-      (ingredient) => (this.metric() ? toMetric(ingredient) : ingredient),
-    ),
-  );
+  protected readonly ingredients = computed(() => {
+    const scaled = scaleIngredients(
+      this.recipe()?.ingredients ?? [],
+      this.servings() / this.baseServings(),
+    );
+    if (!this.metric()) return scaled;
+    return scaled.map(this.convertTo() === 'us' ? toUs : toMetric);
+  });
 
   protected readonly nutrition = computed(() => {
     const recipe = this.recipe();

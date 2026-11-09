@@ -208,17 +208,29 @@
       <section>
         <h3 class="section-heading">
           {{ 'detail.ingredients' | t }}
-          @if (hasUsUnits()) {
+          @if (convertTo(); as to) {
             <button
               type="button"
               class="cook-icon"
               [class.on]="metric()"
               [attr.aria-pressed]="metric()"
-              [attr.aria-label]="(metric() ? 'detail.originalUnits' : 'detail.showMetric') | t"
+              [attr.aria-label]="
+                (metric()
+                  ? 'detail.originalUnits'
+                  : to === 'us'
+                    ? 'detail.showUs'
+                    : 'detail.showMetric'
+                ) | t
+              "
               [title]="
-                ((metric() ? 'detail.originalUnits' : 'detail.showMetric') | t) +
+                ((metric()
+                  ? 'detail.originalUnits'
+                  : to === 'us'
+                    ? 'detail.showUs'
+                    : 'detail.showMetric'
+                ) | t) +
                 ': ' +
-                ('detail.metricHint' | t)
+                ((to === 'us' ? 'detail.usHint' : 'detail.metricHint') | t)
               "
               (click)="metric.set(!metric())"
             >

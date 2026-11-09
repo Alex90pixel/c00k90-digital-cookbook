@@ -443,6 +443,8 @@ export const en = {
     sendFooter: 'From my C00K90 cookbook 💛 cookbook.antdevlabs.com',
     extras: '✨ Goes well with',
     showMetric: '📏 Show in metric',
+    showUs: '📏 Show in US units (cups, oz, °F)',
+    usHint: 'Grams and millilitres in ounces, cups and spoons; °C in °F',
     originalUnits: '↩ Original units',
     metricHint: 'Cups, ounces and pounds in grams and millilitres; °F in °C',
     printPhotoTitle: 'Photo from a magazine or book',

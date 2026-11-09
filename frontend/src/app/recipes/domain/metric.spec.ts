@@ -1,4 +1,4 @@
-import { stepToMetric, toMetric, usesUsUnits } from './metric';
+import { stepToMetric, stepToUs, toMetric, toUs, usesMetricUnits, usesUsUnits } from './metric';
 
 describe('metric conversion', () => {
   it('converts US units to grams and millilitres, rounded for cooking', () => {
@@ -59,5 +59,38 @@ describe('metric conversion', () => {
     expect(usesUsUnits([{ qty: '1', unit: 'cup', name: 'rice' }], [])).toBe(true);
     expect(usesUsUnits([], ['Bake at 400°F.'])).toBe(true);
     expect(usesUsUnits([{ qty: '200', unit: 'g', name: 'rice' }], ['Boil.'])).toBe(false);
+  });
+});
+
+describe('toUs', () => {
+  it('converts grams and millilitres to US measures', () => {
+    expect(toUs({ qty: '200', unit: 'g', name: 'chocolate' })).toEqual({
+      qty: '7',
+      unit: 'oz',
+      name: 'chocolate',
+    });
+    expect(toUs({ qty: '1', unit: 'kg', name: 'potatoes' }).unit).toBe('lb');
+    expect(toUs({ qty: '300', unit: 'ml', name: 'milk' })).toEqual({
+      qty: '1¼',
+      unit: 'cups',
+      name: 'milk',
+    });
+    expect(toUs({ qty: '30', unit: 'ml', name: 'oil' })).toEqual({
+      qty: '2',
+      unit: 'tbsp',
+      name: 'oil',
+    });
+    expect(toUs({ qty: '4', unit: '', name: 'eggs' })).toEqual({
+      qty: '4',
+      unit: '',
+      name: 'eggs',
+    });
+  });
+
+  it('converts oven temperatures and knows when it is worth it', () => {
+    expect(stepToUs('Heat the oven to 180°C.')).toBe('Heat the oven to 350°F.');
+    expect(stepToUs('Coace la 200 grade C')).toBe('Coace la 400°F');
+    expect(usesMetricUnits([{ qty: '200', unit: 'g', name: 'flour' }], [])).toBe(true);
+    expect(usesMetricUnits([{ qty: '2', unit: '', name: 'eggs' }], ['Mix.'])).toBe(false);
   });
 });
