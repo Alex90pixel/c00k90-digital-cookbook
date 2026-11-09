@@ -517,7 +517,7 @@ export const de: Translations = {
     allergens: 'Allergene',
     allergensHint:
       'Füge die Zutaten hinzu und lass die KI die Allergene finden. Prüfe das Ergebnis: Menschen mit Allergien verlassen sich darauf, sollten aber auch die Zutaten lesen.',
-    allergensDetect: '✨ Aus den Zutaten erkennen',
+    allergensDetect: '✨ Allergene und Ernährung erkennen',
     allergensDetecting: 'Zutaten werden gelesen…',
     allergensFound: 'Angehakt: {list}. Bitte prüfen, die KI kann sich irren.',
     allergensNoneFound: 'Keine Allergene gefunden. Prüfe die Zutaten bitte auch selbst.',

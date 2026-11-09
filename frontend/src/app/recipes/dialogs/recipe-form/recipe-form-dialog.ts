@@ -163,7 +163,13 @@ export class RecipeFormDialog {
     this.recipeForm().markAsDirty();
     this.ingredientsPaste.set('');
     this.fillEstimates();
+    // A new recipe gets its allergens and diets suggested once, as soon as it has a few ingredients.
+    if (!this.isEditing && !this.autoDetected && this.model().ingredients.length >= 3) {
+      this.autoDetected = true;
+      void this.detectAllergens();
+    }
   }
+  private autoDetected = false;
 
   /** Ticks the allergens the AI finds in the ingredients; it never unticks the author's choices. */
   protected async detectAllergens(): Promise<void> {
@@ -178,18 +184,21 @@ export class RecipeFormDialog {
     this.detectingAllergens.set(true);
     this.allergenStatus.set({ key: 'form.allergensDetecting' });
     try {
-      const found = await this.allergenDetect.detect(lines);
+      const { allergens: found, diets } = await this.allergenDetect.detectWithDiets(lines);
+      // Only ticks: the author's own choices are never unticked.
       this.model.update((v) => ({
         ...v,
         allergens: { ...v.allergens, ...Object.fromEntries(found.map((id) => [id, true])) },
+        diets: { ...v.diets, ...Object.fromEntries(diets.map((id) => [id, true])) },
       }));
       this.recipeForm().markAsDirty();
+      const labels = [
+        ...found.map((id) => this.i18n.label('allergens', id)),
+        ...diets.map((id) => this.i18n.label('diets', id)),
+      ];
       this.allergenStatus.set(
-        found.length
-          ? {
-              key: 'form.allergensFound',
-              params: { list: found.map((id) => this.i18n.label('allergens', id)).join(', ') },
-            }
+        labels.length
+          ? { key: 'form.allergensFound', params: { list: labels.join(', ') } }
           : { key: 'form.allergensNoneFound' },
       );
     } catch (error) {

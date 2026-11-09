@@ -511,7 +511,7 @@ export const en = {
     allergens: 'Allergens',
     allergensHint:
       'Add the ingredients, then let AI find the allergens. Check the result: people with allergies rely on it, but should still read the ingredients.',
-    allergensDetect: '✨ Detect from ingredients',
+    allergensDetect: '✨ Detect allergens and diets',
     allergensDetecting: 'Reading the ingredients…',
     allergensFound: 'Ticked: {list}. Please check them, AI can make mistakes.',
     allergensNoneFound: 'No allergens found. Please check the ingredients yourself too.',

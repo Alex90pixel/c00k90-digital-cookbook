@@ -524,7 +524,7 @@ export const ro: Translations = {
     allergens: 'Alergeni',
     allergensHint:
       'Adaugă ingredientele, apoi lasă AI-ul să găsească alergenii. Verifică rezultatul: persoanele cu alergii se bazează pe el, dar trebuie să citească și ingredientele.',
-    allergensDetect: '✨ Detectează din ingrediente',
+    allergensDetect: '✨ Detectează alergeni și diete',
     allergensDetecting: 'Citesc ingredientele…',
     allergensFound: 'Am bifat: {list}. Te rog verifică, AI-ul poate greși.',
     allergensNoneFound: 'N-am găsit alergeni. Verifică și tu ingredientele.',

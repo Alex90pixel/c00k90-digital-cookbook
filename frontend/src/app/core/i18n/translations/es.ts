@@ -515,7 +515,7 @@ export const es: Translations = {
     allergens: 'Alérgenos',
     allergensHint:
       'Añade los ingredientes y deja que la IA encuentre los alérgenos. Revisa el resultado: las personas con alergias confían en él, pero deben leer también los ingredientes.',
-    allergensDetect: '✨ Detectar en los ingredientes',
+    allergensDetect: '✨ Detectar alérgenos y dietas',
     allergensDetecting: 'Leyendo los ingredientes…',
     allergensFound: 'Marcados: {list}. Revísalos, la IA puede equivocarse.',
     allergensNoneFound: 'No se encontraron alérgenos. Revisa tú también los ingredientes.',
