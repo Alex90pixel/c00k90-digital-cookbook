@@ -297,6 +297,9 @@ export const en = {
     failed: '⚠️ Could not share the list',
   },
   cookMode: {
+    voiceIphone:
+      '🎙️ On iPhone, voice needs Siri & Dictation: Settings → Siri, and Settings → General → Keyboard → Enable Dictation. Then try again.',
+    voiceStopped: '🎙️ Listening stopped. Tap 🎙️ Voice to listen again.',
     celebrate: '🎉 Well done, chef!',
     voice: 'Voice',
     voiceListening: 'Listening…',

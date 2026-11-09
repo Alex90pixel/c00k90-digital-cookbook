@@ -305,6 +305,9 @@ export const ro: Translations = {
     failed: '⚠️ Nu am putut trimite lista',
   },
   cookMode: {
+    voiceIphone:
+      '🎙️ Pe iPhone, vocea are nevoie de Siri și Dictare: Setări → Siri, și Setări → General → Tastatură → Activează dictarea. Apoi încearcă din nou.',
+    voiceStopped: '🎙️ Ascultarea s-a oprit. Apasă 🎙️ Voce ca să ascult din nou.',
     celebrate: '🎉 Bravo, chef!',
     voice: 'Voce',
     voiceListening: 'Ascult…',

@@ -23,6 +23,9 @@ interface RecognitionLike {
   stop(): void;
 }
 type RecognitionClass = new () => RecognitionLike;
+function isApple(): boolean {
+  return /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
+}
 function recognitionClass(): RecognitionClass | undefined {
   const w = window as unknown as {
     SpeechRecognition?: RecognitionClass;
@@ -161,7 +164,7 @@ interface WakeLockNavigator {
         <p class="voice-help">{{ 'cookMode.voiceHelp' | t }}</p>
       }
       @if (voiceError()) {
-        <p class="voice-help error">{{ 'cookMode.voiceBlocked' | t }}</p>
+        <p class="voice-help error">{{ voiceError()! | t }}</p>
       }
 
       @if (celebrating()) {
@@ -431,7 +434,9 @@ export class CookModeDialog {
   private readonly i18n = inject(I18nService);
   protected readonly canListen = !!recognitionClass();
   protected readonly listening = signal(false);
-  protected readonly voiceError = signal(false);
+  protected readonly voiceError = signal<
+    'cookMode.voiceBlocked' | 'cookMode.voiceIphone' | 'cookMode.voiceStopped' | null
+  >(null);
   private recognition: RecognitionLike | null = null;
 
   constructor() {
@@ -517,32 +522,50 @@ export class CookModeDialog {
     const recognition = new Recognition();
     recognition.lang = SPEECH_LANGUAGES[this.i18n.language()] ?? 'en-US';
     recognition.continuous = true;
-    recognition.interimResults = false;
+    // Safari (iPhone) often never marks a phrase as final, so commands are also taken from the
+    // results in progress, once per phrase.
+    recognition.interimResults = true;
+    const handled = new Set<number>();
     recognition.onresult = (event) => {
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const result = event.results[i];
-        if (result.isFinal) this.runCommand(result[0].transcript);
+        if (handled.has(i)) continue;
+        const heard = result[0].transcript;
+        if (result.isFinal || voiceCommand(heard)) {
+          handled.add(i);
+          this.runCommand(heard);
+        }
       }
     };
     recognition.onerror = (event) => {
       // "no-speech" just means a quiet kitchen; a refused microphone stops listening.
       if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-        this.voiceError.set(true);
+        // On iPhone, speech recognition needs Siri & Dictation to be on.
+        this.voiceError.set(
+          event.error === 'service-not-allowed' && isApple()
+            ? 'cookMode.voiceIphone'
+            : 'cookMode.voiceBlocked',
+        );
         this.stopVoice();
       }
     };
     // The browser stops after a while of silence: listen again while the button is on.
     recognition.onend = () => {
-      if (this.listening() && this.recognition === recognition) {
+      if (!this.listening() || this.recognition !== recognition) return;
+      handled.clear();
+      setTimeout(() => {
+        if (!this.listening() || this.recognition !== recognition) return;
         try {
           recognition.start();
         } catch {
+          // iPhone only lets listening start from a tap.
+          this.voiceError.set('cookMode.voiceStopped');
           this.stopVoice();
         }
-      }
+      }, 250);
     };
     this.recognition = recognition;
-    this.voiceError.set(false);
+    this.voiceError.set(null);
     this.listening.set(true);
     try {
       recognition.start();

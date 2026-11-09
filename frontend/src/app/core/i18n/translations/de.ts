@@ -300,6 +300,9 @@ export const de: Translations = {
     failed: '⚠️ Liste konnte nicht geteilt werden',
   },
   cookMode: {
+    voiceIphone:
+      '🎙️ Auf dem iPhone braucht die Stimme Siri und Diktieren: Einstellungen → Siri und Einstellungen → Allgemein → Tastatur → Diktierfunktion aktivieren. Dann erneut versuchen.',
+    voiceStopped: '🎙️ Das Zuhören wurde beendet. Tippe auf 🎙️ Stimme, um wieder zuzuhören.',
     celebrate: '🎉 Gut gemacht, Chef!',
     voice: 'Stimme',
     voiceListening: 'Ich höre zu…',

@@ -299,6 +299,9 @@ export const es: Translations = {
     failed: '⚠️ No se pudo compartir la lista',
   },
   cookMode: {
+    voiceIphone:
+      '🎙️ En iPhone, la voz necesita Siri y Dictado: Ajustes → Siri, y Ajustes → General → Teclado → Activar Dictado. Luego inténtalo de nuevo.',
+    voiceStopped: '🎙️ Se dejó de escuchar. Toca 🎙️ Voz para volver a escuchar.',
     celebrate: '🎉 ¡Bien hecho, chef!',
     voice: 'Voz',
     voiceListening: 'Escuchando…',
