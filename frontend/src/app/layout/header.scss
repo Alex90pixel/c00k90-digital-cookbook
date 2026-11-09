@@ -76,6 +76,13 @@
   margin-left: auto;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: -12px; // with the header's 20px gap, the same 8px as between the nav buttons
+}
+
 .nav-btn {
   padding: 8px 16px;
   border: 1.5px solid var(--border);
@@ -161,7 +168,6 @@
     margin-left: 0;
     overflow-x: auto;
     scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
 
     &::-webkit-scrollbar {
       display: none;
@@ -172,8 +178,13 @@
     padding: 6px 12px;
     font-size: 12px;
   }
+  // Its buttons float (menu at the top right, "+" at the bottom right), so it takes no room.
+  .header-actions {
+    display: contents;
+  }
   .account-menu {
     position: absolute;
+    z-index: 2;
     top: 8px;
     right: 0;
   }

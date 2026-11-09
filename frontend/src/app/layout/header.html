@@ -31,6 +31,11 @@
           }
         </a>
       }
+    </nav>
+
+    <!-- Outside the nav: on phones the nav scrolls sideways, and iPhone hides anything floating
+         that sits inside a scrolling box. -->
+    <div class="header-actions">
       <button
         type="button"
         class="btn-new"
@@ -40,6 +45,6 @@
         <span class="plus-icon" aria-hidden="true">🍳</span> {{ 'header.newRecipe' | t }}
       </button>
       <app-account-menu class="account-menu" />
-    </nav>
+    </div>
   </div>
 </header>
