@@ -186,23 +186,34 @@ const OPTIONS: readonly { id: IdeaOption; label: TranslationKey }[] = [
     .options {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 8px;
       margin: 0 0 14px;
     }
+    /* Big enough for a finger, answers the tap at once, and clearly filled when chosen. */
     .option {
-      padding: 5px 12px;
+      min-height: 40px;
+      padding: 8px 14px;
       border: 1.5px solid var(--border);
       border-radius: 50px;
       background: transparent;
       color: var(--text-mid);
-      font-size: 13px;
+      font-size: 14px;
       cursor: pointer;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition:
+        background 0.15s,
+        color 0.15s;
 
       &.on {
         border-color: var(--teal);
-        background: var(--teal-pale);
-        color: var(--teal-deep);
-        font-weight: 600;
+        background: var(--teal);
+        color: #fff;
+        font-weight: 700;
+      }
+      &.on::after {
+        content: ' ✓';
       }
     }
     .more {
