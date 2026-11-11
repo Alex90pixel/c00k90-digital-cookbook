@@ -1,20 +1,15 @@
-Hi{{name}}! The kitchen is yours.
+Hi{{name}},
 
-Your account is ready. Here's how C00K90 works:
+Thanks for joining C00K90! Your account is ready.
 
-1. Add: snap a notebook or magazine page and the recipe fills itself in.
-2. Organize: group recipes your way and find what you can cook with what you have.
-3. Plan: recipes by day, plus a shopping list for the whole week.
-4. Cook: one step on screen, and your phone stays awake.
-5. Keep: all your recipes in a printable PDF cookbook, in your style.
-6. Get inspired: discover new recipes and save them to Favorites.
-7. Get known: add your Instagram, TikTok or YouTube so others can follow you.
+The easiest way to start: take a photo of a page from an old recipe notebook (or a magazine), and C00K90 turns it into a recipe you can edit, plan and cook from.
 
-Your first step: got an old recipe notebook at home? Snap your favorite pages and keep them all on your phone.
+Open C00K90: https://cookbook.antdevlabs.com
 
-Open the app: https://cookbook.antdevlabs.com
+Curious what else it can do? Here's a short tour: https://cookbook.antdevlabs.com/emails/welcome-en.html
 
-Enjoy your meal!
+If you have a question or an idea, just reply to this email. We read every message.
+
 The C00K90 team
 
 Citește în română: https://cookbook.antdevlabs.com/emails/welcome-ro.html
