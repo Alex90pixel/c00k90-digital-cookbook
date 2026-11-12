@@ -13,7 +13,7 @@ import { NutritionService } from '../../data/nutrition.service';
 import { PairingService } from '../../data/pairing.service';
 import { RecipeStore } from '../../data/recipe.store';
 import { totalMinutes } from '../../domain/diets';
-import { scaleIngredients } from '../../domain/ingredients';
+import { scaleIngredients, withQuantity } from '../../domain/ingredients';
 import {
   stepToMetric,
   stepToUs,
@@ -118,7 +118,7 @@ export class RecipeDetailDialog {
   });
   protected readonly ingredients = computed(() => {
     const scaled = scaleIngredients(
-      this.recipe()?.ingredients ?? [],
+      (this.recipe()?.ingredients ?? []).map(withQuantity),
       this.servings() / this.baseServings(),
     );
     if (!this.metric()) return scaled;

@@ -241,9 +241,11 @@
         <ul class="ingredients-grid">
           @for (ingredient of ingredients(); track $index) {
             <li class="ingredient-item">
-              <span class="ingredient-badge"
-                >{{ ingredient.qty }}{{ ingredient.unit ? ' ' + ingredient.unit : '' }}</span
-              >
+              @if (ingredient.qty || ingredient.unit) {
+                <span class="ingredient-badge"
+                  >{{ ingredient.qty }}{{ ingredient.unit ? ' ' + ingredient.unit : '' }}</span
+                >
+              }
               <span>{{ ingredient.name }}</span>
             </li>
           }

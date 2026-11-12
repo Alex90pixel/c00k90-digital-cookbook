@@ -343,8 +343,8 @@ export const ro: Translations = {
     styles: {
       classic: 'Fișă de rețetă',
       notebook: 'Caietul bunicii',
-      minimal: 'Golden coast',
-      moody: 'Moody',
+      minimal: 'Coasta aurie',
+      moody: 'Întunecat',
     },
     dedication: 'Dedicație sau prefață (opțional)',
     dedicationPlaceholder: 'ex. Pentru mama, care m-a învățat să gătesc.',

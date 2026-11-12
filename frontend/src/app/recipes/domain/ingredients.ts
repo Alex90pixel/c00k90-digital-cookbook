@@ -279,3 +279,17 @@ function splitLines(text: string): string[] {
     .map((line) => line.trim())
     .filter(Boolean);
 }
+
+/**
+ * An ingredient saved with everything in the name ("2 tablespoons milk", from older imports)
+ * gets its quantity and unit back, so the amount shows in the badge and scales with servings.
+ */
+export function withQuantity(ingredient: Ingredient): Ingredient {
+  if (ingredient.qty?.trim() || !ingredient.name?.trim()) return ingredient;
+  const [parsed] = parseIngredientLines(ingredient.name);
+  if (!parsed?.qty) return ingredient;
+  // "2 tablespoons tbsp milk": drop a second unit word that repeats the first.
+  const [first, ...rest] = parsed.name.split(/\s+/);
+  const name = rest.length && knownUnit(first) === parsed.unit ? rest.join(' ') : parsed.name;
+  return { ...ingredient, qty: parsed.qty, unit: parsed.unit, name };
+}

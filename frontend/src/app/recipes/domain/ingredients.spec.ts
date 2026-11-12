@@ -1,4 +1,5 @@
 import {
+  withQuantity,
   formatQuantity,
   parseIngredientLines,
   parseQuantity,
@@ -187,5 +188,27 @@ describe('parseIngredientLines with more units', () => {
       { qty: '2', unit: 'cloves', name: 'ail' },
       { qty: '2', unit: 'tbsp', name: 'Öl' },
     ]);
+  });
+});
+
+describe('withQuantity', () => {
+  it('takes the amount out of the name of older ingredients', () => {
+    expect(withQuantity({ qty: '', unit: '', name: '2 tablespoons tbsp milk' })).toEqual({
+      qty: '2',
+      unit: 'tbsp',
+      name: 'milk',
+    });
+    expect(withQuantity({ qty: '', unit: '', name: '30 grams fresh spinach' })).toEqual({
+      qty: '30',
+      unit: 'g',
+      name: 'fresh spinach',
+    });
+  });
+
+  it('leaves ingredients that already have a quantity, or have none, alone', () => {
+    const eggs = { qty: '3', unit: '', name: 'eggs' };
+    expect(withQuantity(eggs)).toBe(eggs);
+    const salt = { qty: '', unit: '', name: 'salt' };
+    expect(withQuantity(salt)).toBe(salt);
   });
 });

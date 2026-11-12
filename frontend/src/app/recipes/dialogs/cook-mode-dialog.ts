@@ -221,6 +221,11 @@ interface WakeLockNavigator {
       justify-content: space-between;
       gap: 12px;
     }
+    /* In the header row, next to 🎙️, not floating over it. */
+    header .detail-close {
+      position: static;
+      flex: none;
+    }
     h2 {
       margin: 0;
       color: var(--magenta-deep);
