@@ -1,5 +1,6 @@
+import { AiUsageService } from '../../core/ai/ai-usage.service';
 import { lazyImport } from '../../core/app-update/stale-chunk';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { FirebaseApp } from 'firebase/app';
 import { connectAiApp } from './notebook-transcribe.service';
 
@@ -23,6 +24,7 @@ export interface RecipeToEnrich {
  */
 @Injectable({ providedIn: 'root' })
 export class RecipeEnrichService {
+  private readonly usage = inject(AiUsageService);
   private aiApp?: Promise<FirebaseApp>;
 
   async enrich(recipe: RecipeToEnrich): Promise<RecipeEnrichment> {
@@ -77,6 +79,7 @@ For each recipe above (by its index), write in THE SAME LANGUAGE as that recipe'
 - tip: one practical cook's tip for this recipe.
 Do not change or repeat the recipe itself.`;
 
+    this.usage.take();
     const result = await model.generateContent(prompt);
     const parsed = JSON.parse(result.response.text()) as {
       recipes?: { index?: number; description?: string; extras?: string[]; tip?: string }[];

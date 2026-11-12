@@ -10,6 +10,10 @@ export const es: Translations = {
     login: 'Iniciar sesión · C00K90',
   },
   common: {
+    aiLimitMinute:
+      'Nuestro chef IA necesita un pequeño descanso 🍵 Inténtalo de nuevo en un minuto.',
+    aiLimitDay:
+      'Por hoy se acabaron las ideas de la IA 🌙 Hasta mañana, tus recetas te esperan en tu recetario.',
     cancel: 'Cancelar',
     close: 'Cerrar',
     saving: 'Guardando…',

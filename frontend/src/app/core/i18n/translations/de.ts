@@ -10,6 +10,10 @@ export const de: Translations = {
     login: 'Anmelden · C00K90',
   },
   common: {
+    aiLimitMinute:
+      'Unser KI-Koch braucht eine kleine Pause 🍵 Versuche es in einer Minute noch einmal.',
+    aiLimitDay:
+      'Für heute sind die KI-Ideen aufgebraucht 🌙 Bis morgen warten deine Rezepte in deinem Kochbuch.',
     cancel: 'Abbrechen',
     close: 'Schließen',
     saving: 'Wird gespeichert…',

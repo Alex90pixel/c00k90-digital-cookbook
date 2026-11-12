@@ -1,5 +1,6 @@
+import { AiUsageService } from '../../core/ai/ai-usage.service';
 import { lazyImport } from '../../core/app-update/stale-chunk';
-import { Injectable, isDevMode } from '@angular/core';
+import { Injectable, isDevMode, inject } from '@angular/core';
 import { FirebaseApp, getApp, getApps, initializeApp } from 'firebase/app';
 import { environment } from '../../../environments/environment';
 import { ImageRegion } from '../../core/images/models/image-region.model';
@@ -28,6 +29,7 @@ const AI_APP_NAME = 'ai';
  */
 @Injectable({ providedIn: 'root' })
 export class NotebookTranscribeService {
+  private readonly usage = inject(AiUsageService);
   private aiApp?: Promise<FirebaseApp>;
 
   async transcribe(photo: Blob): Promise<TranscribedRecipe> {
@@ -59,6 +61,7 @@ export class NotebookTranscribeService {
       },
     });
 
+    this.usage.take();
     const result = await model.generateContent([
       PROMPT,
       {

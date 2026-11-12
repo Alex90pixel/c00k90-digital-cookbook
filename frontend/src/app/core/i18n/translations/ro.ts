@@ -13,6 +13,10 @@ export const ro: Translations = {
     login: 'Autentificare · C00K90',
   },
   common: {
+    aiLimitMinute:
+      'Bucătarul nostru AI are nevoie de o mică pauză 🍵 Încearcă din nou peste un minut.',
+    aiLimitDay:
+      'Pentru azi, ideile AI s-au terminat 🌙 Până mâine, rețetele tale te așteaptă în caiet.',
     cancel: 'Anulează',
     close: 'Închide',
     saving: 'Se salvează…',

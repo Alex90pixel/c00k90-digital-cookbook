@@ -1,5 +1,6 @@
+import { AiUsageService } from '../../core/ai/ai-usage.service';
 import { lazyImport } from '../../core/app-update/stale-chunk';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { FirebaseApp } from 'firebase/app';
 import { CATEGORIES } from '../models/recipe.constants';
 import { Category } from '../models/recipe.model';
@@ -34,6 +35,7 @@ const LANGUAGE_NAMES: Record<string, string> = {
  */
 @Injectable({ providedIn: 'root' })
 export class RecipeIdeasService {
+  private readonly usage = inject(AiUsageService);
   private aiApp?: Promise<FirebaseApp>;
 
   /**
@@ -100,6 +102,7 @@ tip (one practical cook's tip). If the input is not food ingredients, return an 
         : ''
     }`;
 
+    this.usage.take();
     const result = await model.generateContent(prompt);
     const parsed = JSON.parse(result.response.text()) as { ideas?: Partial<RecipeIdea>[] };
     return (parsed.ideas ?? []).flatMap((idea) => {
@@ -146,6 +149,7 @@ tip (one practical cook's tip). If the input is not food ingredients, return an 
       },
     });
     const small = await resizeImage(photo, 1280, 0.8);
+    this.usage.take();
     const result = await model.generateContent([
       `List the food ingredients you can clearly see in this photo (a fridge, a pantry or a table),
 in ${LANGUAGE_NAMES[language] ?? 'English'}, short and in lower case (e.g. "eggs", "spinach", "cheddar").

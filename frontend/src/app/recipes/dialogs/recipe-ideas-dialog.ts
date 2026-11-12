@@ -1,3 +1,4 @@
+import { AiLimitError } from '../../core/ai/ai-usage.service';
 import { DialogRef } from '@angular/cdk/dialog';
 import { Component, inject, signal } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
@@ -411,6 +412,8 @@ export class RecipeIdeasDialog {
       this.have.set([...new Set([...typed, ...found])].join(', '));
       await this.suggest();
     } catch (error) {
+      // Over the AI limit: a friendly message is already on screen.
+      if (error instanceof AiLimitError) return;
       console.error('Reading the fridge photo failed', error);
       this.error.set('ideas.photoFailed');
       this.errorCode.set(errorCode(error));
@@ -444,6 +447,8 @@ export class RecipeIdeasDialog {
       this.ideas.set(ideas);
       if (!ideas.length) this.error.set('ideas.none');
     } catch (error) {
+      // Over the AI limit: a friendly message is already on screen.
+      if (error instanceof AiLimitError) return;
       console.error('Recipe ideas failed', error);
       this.error.set('ideas.failed');
       this.errorCode.set(errorCode(error));

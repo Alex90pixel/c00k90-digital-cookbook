@@ -11,6 +11,9 @@ export const en = {
     login: 'Sign in · C00K90',
   },
   common: {
+    aiLimitMinute: 'Our AI chef needs a little break 🍵 Try again in a minute.',
+    aiLimitDay:
+      "That's all the AI ideas for today 🌙 Until tomorrow, your recipes are waiting in your cookbook.",
     cancel: 'Cancel',
     close: 'Close',
     saving: 'Saving…',

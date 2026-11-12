@@ -1,5 +1,6 @@
+import { AiUsageService } from '../../core/ai/ai-usage.service';
 import { lazyImport } from '../../core/app-update/stale-chunk';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { FirebaseApp } from 'firebase/app';
 import { ALLERGEN_IDS } from '../models/recipe.constants';
 import { AllergenId, ManualDietId } from '../models/recipe.model';
@@ -16,6 +17,7 @@ import { connectAiApp } from './notebook-transcribe.service';
  */
 @Injectable({ providedIn: 'root' })
 export class AllergenDetectService {
+  private readonly usage = inject(AiUsageService);
   private aiApp?: Promise<FirebaseApp>;
 
   async detect(ingredients: string[]): Promise<AllergenId[]> {
@@ -68,6 +70,7 @@ hazelnuts, cashews, pecans, pistachios...); "milk" includes butter, cream, chees
 Also count allergens usually hidden in common products (e.g. mustard and eggs in mayonnaise, gluten and soy in
 soy sauce, sulphites in wine, celery in stock cubes). When in doubt, include it: people with allergies rely on it.`;
 
+    this.usage.take();
     const result = await model.generateContent(prompt);
     const parsed = JSON.parse(result.response.text()) as {
       recipes?: { index?: number; allergens?: string[] }[];
@@ -115,6 +118,7 @@ cubes). When in doubt, include it: people with allergies rely on it.
 vegetarian = no meat, poultry, fish or seafood (also no gelatin, lard, fish sauce or meat stock);
 vegan = vegetarian and also no eggs, milk products or honey; gluten-free = no gluten at all;
 dairy-free = no milk products. When in doubt, leave the diet out.`;
+    this.usage.take();
     const result = await model.generateContent(prompt);
     const parsed = JSON.parse(result.response.text()) as { allergens?: string[]; diets?: string[] };
     const allergens = ALLERGEN_IDS.filter((id) => parsed.allergens?.includes(id));
