@@ -509,7 +509,7 @@ export const en = {
       "Take a photo of a written recipe and we'll fill in the ingredients and steps for you.",
     orWriteIt: 'or write it yourself',
     linkOrSource: '🔗 Link or source',
-    photoShort: '🍽️ Dish photo',
+    photoShort: 'Dish photo',
     enoughNote:
       "✨ That's all you need! The rest is optional: times, servings, diets, allergens, a description and a cook's tip are filled in for you.",
     moreDetails: '➕ More details (optional)',

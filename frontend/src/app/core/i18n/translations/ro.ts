@@ -522,7 +522,7 @@ export const ro: Translations = {
     quickHint: 'Fă o poză unei rețete scrise și completăm noi ingredientele și pașii.',
     orWriteIt: 'sau scrie-o tu',
     linkOrSource: '🔗 Link sau sursă',
-    photoShort: '🍽️ Poza mâncării',
+    photoShort: 'Poza mâncării',
     enoughNote:
       '✨ Atât e suficient! Restul e opțional: timpii, porțiile, dietele, alergenii, descrierea și sfatul de bucătar le completăm automat.',
     moreDetails: '➕ Mai multe detalii (opțional)',

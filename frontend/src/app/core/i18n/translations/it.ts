@@ -511,7 +511,7 @@ export const it: Translations = {
     quickHint: 'Fotografa una ricetta scritta e compiliamo noi ingredienti e passaggi.',
     orWriteIt: 'oppure scrivila tu',
     linkOrSource: '🔗 Link o fonte',
-    photoShort: '🍽️ Foto del piatto',
+    photoShort: 'Foto del piatto',
     enoughNote:
       '✨ Basta così! Il resto è facoltativo: tempi, porzioni, diete, allergeni, una descrizione e un consiglio li completiamo noi.',
     moreDetails: '➕ Altri dettagli (facoltativi)',

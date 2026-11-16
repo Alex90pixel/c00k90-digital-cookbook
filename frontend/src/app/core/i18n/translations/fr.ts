@@ -517,7 +517,7 @@ export const fr: Translations = {
       'Prenez en photo une recette écrite et nous remplissons les ingrédients et les étapes pour vous.',
     orWriteIt: 'ou écrivez-la vous-même',
     linkOrSource: '🔗 Lien ou source',
-    photoShort: '🍽️ Photo du plat',
+    photoShort: 'Photo du plat',
     enoughNote:
       "✨ C'est tout ce qu'il faut ! Le reste est facultatif : temps, portions, régimes, allergènes, description et astuce sont remplis pour vous.",
     moreDetails: '➕ Plus de détails (facultatif)',
