@@ -513,7 +513,7 @@ export const de: Translations = {
   form: {
     quickTitle: '⚡ Für mich ausfüllen (optional)',
     quickHint:
-      'Wir schreiben das Rezept für dich aus dem Foto eines geschriebenen Rezepts oder aus einem Link.',
+      'Fotografiere ein geschriebenes Rezept und wir füllen Zutaten und Schritte für dich aus.',
     orWriteIt: 'oder schreib es selbst',
     linkOrSource: '🔗 Link oder Quelle',
     photoShort: '🍽️ Foto vom Gericht',

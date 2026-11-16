@@ -508,7 +508,7 @@ export const it: Translations = {
   },
   form: {
     quickTitle: '⚡ Compilala per me (facoltativo)',
-    quickHint: 'Scriviamo noi la ricetta dalla foto di una ricetta scritta o da un link.',
+    quickHint: 'Fotografa una ricetta scritta e compiliamo noi ingredienti e passaggi.',
     orWriteIt: 'oppure scrivila tu',
     linkOrSource: '🔗 Link o fonte',
     photoShort: '🍽️ Foto del piatto',

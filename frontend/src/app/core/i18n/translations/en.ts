@@ -505,7 +505,8 @@ export const en = {
   },
   form: {
     quickTitle: '⚡ Fill it in for me (optional)',
-    quickHint: 'We write the recipe for you from a photo of a written recipe or from a link.',
+    quickHint:
+      "Take a photo of a written recipe and we'll fill in the ingredients and steps for you.",
     orWriteIt: 'or write it yourself',
     linkOrSource: '🔗 Link or source',
     photoShort: '🍽️ Dish photo',

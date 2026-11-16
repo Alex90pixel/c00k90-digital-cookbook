@@ -15,38 +15,6 @@
   </div>
 
   <div class="form-body">
-    <!-- Two clearly separate things: the text of a recipe can be filled in for you (a notebook page or a
-         link), and the photo of the dish (the small square next to the name) is what shows in the list. -->
-    @if (!isEditing) {
-      <section class="quick-fill" aria-labelledby="quick-fill-title">
-        <h3 id="quick-fill-title">{{ 'form.quickTitle' | t }}</h3>
-        <p class="hint quick-hint">{{ 'form.quickHint' | t }}</p>
-        <button
-          type="button"
-          class="btn-add-row quick-btn"
-          [disabled]="transcribing()"
-          (click)="pickNotebookPhoto(notebookInput)"
-        >
-          📒 {{ (transcribing() ? 'form.transcribing' : 'form.fromNotebook') | t }}
-        </button>
-        <input
-          name="notebook-photo"
-          #notebookInput
-          type="file"
-          accept="image/*"
-          hidden
-          (change)="transcribeNotebook(notebookInput)"
-        />
-        @if (transcribeStatus(); as status) {
-          <p class="hint" role="status">{{ status | t }}</p>
-        }
-        <ng-container [ngTemplateOutlet]="linkField" />
-      </section>
-      <p class="or-divider">
-        <span>{{ 'form.orWriteIt' | t }}</span>
-      </p>
-    }
-
     <!-- Photo first, small, next to the name: it's what makes the recipe look good in the list. -->
     <div class="form-head">
       <div class="photo-slot">
@@ -125,6 +93,37 @@
       </div>
     }
     <p class="hint photos-note">{{ 'form.photosNote' | t }}</p>
+
+    <!-- Kept apart from the dish photo (the square next to the name): a photo of a written recipe is
+         only read to fill in the ingredients and steps. A link can be imported in the optional part. -->
+    @if (!isEditing) {
+      <section class="quick-fill" aria-labelledby="quick-fill-title">
+        <h3 id="quick-fill-title">{{ 'form.quickTitle' | t }}</h3>
+        <p class="hint quick-hint">{{ 'form.quickHint' | t }}</p>
+        <button
+          type="button"
+          class="btn-add-row quick-btn"
+          [disabled]="transcribing()"
+          (click)="pickNotebookPhoto(notebookInput)"
+        >
+          📒 {{ (transcribing() ? 'form.transcribing' : 'form.fromNotebook') | t }}
+        </button>
+        <input
+          name="notebook-photo"
+          #notebookInput
+          type="file"
+          accept="image/*"
+          hidden
+          (change)="transcribeNotebook(notebookInput)"
+        />
+        @if (transcribeStatus(); as status) {
+          <p class="hint" role="status">{{ status | t }}</p>
+        }
+      </section>
+      <p class="or-divider">
+        <span>{{ 'form.orWriteIt' | t }}</span>
+      </p>
+    }
 
     <div class="form-group">
       <label for="ingredients-paste">{{ 'form.ingredients' | t }}</label>
@@ -247,9 +246,7 @@
     @if (showMore()) {
       <div class="optional-part">
         <div class="form-group">
-          @if (isEditing) {
-            <ng-container [ngTemplateOutlet]="linkField" />
-          }
+          <ng-container [ngTemplateOutlet]="linkField" />
           <button type="button" class="btn-add-row own-recipe" (click)="markAsOwnRecipe()">
             {{ 'form.ownRecipe' | t }}
           </button>

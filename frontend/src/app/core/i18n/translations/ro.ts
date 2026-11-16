@@ -519,7 +519,7 @@ export const ro: Translations = {
   },
   form: {
     quickTitle: '⚡ Completează-mi rețeta (opțional)',
-    quickHint: 'Scriem noi rețeta din poza unei rețete scrise sau dintr-un link.',
+    quickHint: 'Fă o poză unei rețete scrise și completăm noi ingredientele și pașii.',
     orWriteIt: 'sau scrie-o tu',
     linkOrSource: '🔗 Link sau sursă',
     photoShort: '🍽️ Poza mâncării',

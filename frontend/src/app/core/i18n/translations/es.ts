@@ -511,7 +511,7 @@ export const es: Translations = {
   form: {
     quickTitle: '⚡ Rellénala por mí (opcional)',
     quickHint:
-      'Escribimos la receta por ti a partir de la foto de una receta escrita o de un enlace.',
+      'Haz una foto de una receta escrita y rellenamos por ti los ingredientes y los pasos.',
     orWriteIt: 'o escríbela tú',
     linkOrSource: '🔗 Enlace o fuente',
     photoShort: '🍽️ Foto del plato',
