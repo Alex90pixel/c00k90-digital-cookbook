@@ -1,6 +1,15 @@
 import { OVERLAY_DEFAULT_CONFIG } from '@angular/cdk/overlay';
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import { ApplicationConfig, ErrorHandler, provideBrowserGlobalErrorListeners } from '@angular/core';
+import {
+  ApplicationConfig,
+  ErrorHandler,
+  inject,
+  isDevMode,
+  provideAppInitializer,
+  provideBrowserGlobalErrorListeners,
+} from '@angular/core';
+import { provideServiceWorker } from '@angular/service-worker';
+import { AppUpdateService } from './core/app-update/app-update.service';
 import { StaleChunkErrorHandler } from './core/app-update/stale-chunk';
 import { TitleStrategy, provideRouter, withComponentInputBinding } from '@angular/router';
 import { environment } from '../environments/environment';
@@ -13,6 +22,13 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     // After a deploy, an open tab reloads once instead of failing to open a page or dialog.
     { provide: ErrorHandler, useClass: StaleChunkErrorHandler },
+    // Installable app (PWA): the service worker keeps the app on the phone and works offline for
+    // the parts already loaded. Off on the dev server, so changes always show at once there.
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
+    provideAppInitializer(() => inject(AppUpdateService).start()),
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(withFetch()),
     provideFirebase(environment.firebase),
