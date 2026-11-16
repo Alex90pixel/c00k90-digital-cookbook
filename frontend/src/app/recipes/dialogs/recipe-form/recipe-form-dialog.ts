@@ -86,6 +86,12 @@ export class RecipeFormDialog {
     );
   });
 
+  /**
+   * Part 2 of the form (times, diets, allergens, description…) is optional and starts hidden for a
+   * new recipe. When editing, it starts open if something there is already filled in.
+   */
+  protected readonly showMore = signal(this.existing ? hasOptionalDetails(this.model()) : false);
+
   // Paste boxes: they fill the lists below them (also on save, if "Add pasted…" wasn't pressed).
   protected readonly ingredientsPaste = signal('');
   protected readonly stepsPaste = signal('');
@@ -442,6 +448,8 @@ export class RecipeFormDialog {
     this.addPastedIngredients();
     this.addPastedSteps();
     if (this.recipeForm().invalid()) {
+      // A wrong value can be in the optional part too (e.g. a negative time): show it.
+      this.showMore.set(true);
       this.recipeForm().markAsTouched();
       const firstError = this.recipeForm().errorSummary()[0];
       this.toast.show(firstError?.message ?? this.i18n.t('form.checkForm'));
@@ -449,6 +457,18 @@ export class RecipeFormDialog {
       return;
     }
     this.saving.set(true);
+    // "We'll fill in the rest": a new recipe left without description, tip and pairings gets them
+    // from the AI before it is saved (if that fails, it is simply saved without them).
+    const value = this.model();
+    if (
+      !this.isEditing &&
+      value.ingredients.length &&
+      !value.description.trim() &&
+      !value.extras.trim() &&
+      !value.tip.trim()
+    ) {
+      await this.enrich();
+    }
     const saved = await this.store.save(this.model(), this.photos(), this.existing);
     this.saving.set(false);
     if (saved) this.ref.close();
@@ -473,4 +493,20 @@ export class RecipeFormDialog {
     }
     this.ref.close();
   }
+}
+
+/** True when a recipe has something in the optional part of the form. */
+export function hasOptionalDetails(value: RecipeFormValue): boolean {
+  return (
+    Object.values(value.diets).some(Boolean) ||
+    Object.values(value.allergens).some(Boolean) ||
+    !!value.prepTime ||
+    !!value.cookTime ||
+    !!value.description.trim() ||
+    !!value.extras.trim() ||
+    !!value.tip.trim() ||
+    !!value.pairing.trim() ||
+    !!value.notes.trim() ||
+    !!value.videoUrl.trim()
+  );
 }

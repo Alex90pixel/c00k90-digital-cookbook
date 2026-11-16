@@ -11,7 +11,12 @@ export function localDay(date = new Date()): string {
  * fixed shuffled order (different for each user), so none comes back before all the others have
  * had their day. Recipes with a photo are preferred, as the highlight looks best with one.
  */
+/** A recipe of the day only makes sense in a cookbook with at least this many recipes. */
+export const MIN_RECIPES = 3;
+
 export function recipeOfTheDay(recipes: readonly Recipe[], day: string, seed = ''): Recipe | null {
+  // With one or two recipes they are all on screen anyway: a "recipe of the day" would only repeat one.
+  if (recipes.length < MIN_RECIPES) return null;
   const withPhoto = recipes.filter((r) => r.thumbUrl || r.imageUrl || r.images?.length);
   const pool = (withPhoto.length ? withPhoto : recipes)
     .map((r) => ({ r, key: hash(`${seed}:${r.id}`) }))

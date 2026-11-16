@@ -38,53 +38,6 @@ fieldset {
 }
 
 // ----- Photos -----
-.image-upload-area {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  width: 100%;
-  padding: 20px;
-  overflow: hidden;
-  border: 2px dashed var(--teal-light);
-  border-radius: 14px;
-  background: var(--card-soft);
-  color: var(--text-light);
-  font-size: 13px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    border-color: var(--teal);
-    background: var(--teal-pale);
-  }
-}
-
-.upload-icon {
-  font-size: 30px;
-}
-
-.upload-note {
-  font-size: 11px;
-}
-
-.source-badge {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  align-self: stretch;
-  padding: 12px;
-  border-radius: 12px;
-  color: #fff;
-  font-size: 13px;
-}
-
-.source-badge-icon {
-  font-size: 32px;
-}
 
 .form-images {
   display: flex;
@@ -306,4 +259,103 @@ fieldset {
   font-weight: 600;
   text-transform: none;
   letter-spacing: 0;
+}
+
+// ----- Name, category and a small photo, side by side -----
+.form-head {
+  display: grid;
+  grid-template-columns: 104px 1fr;
+  gap: 14px;
+  align-items: start;
+}
+.head-fields .form-group:last-child {
+  margin-bottom: 0;
+}
+.photo-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 104px;
+  height: 104px;
+  margin-top: 22px;
+  padding: 0;
+  overflow: hidden;
+  border: 2px dashed var(--teal-light);
+  border-radius: 16px;
+  background: var(--card-soft);
+  color: var(--text-light);
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+
+  &:hover:not(:disabled) {
+    border-color: var(--teal);
+    background: var(--teal-pale);
+  }
+  &.has-photo {
+    border-style: solid;
+  }
+  &:disabled {
+    cursor: default;
+  }
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+.tile-icon {
+  font-size: 30px;
+}
+.tile-text {
+  font-size: 11px;
+  font-weight: 600;
+}
+.photos-note {
+  margin: 6px 0 18px;
+}
+
+// ----- Part 2: optional details -----
+.optional-intro {
+  margin: 6px 0 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--card-soft);
+  text-align: center;
+}
+.enough {
+  margin: 0 0 10px;
+  color: var(--text-mid);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.more-toggle {
+  padding: 9px 18px;
+  border: 1.5px solid var(--teal);
+  border-radius: 50px;
+  background: transparent;
+  color: var(--teal-deep);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--teal-pale);
+  }
+}
+
+@media (max-width: 420px) {
+  .form-head {
+    grid-template-columns: 84px 1fr;
+    gap: 10px;
+  }
+  .photo-tile {
+    width: 84px;
+    height: 84px;
+  }
 }

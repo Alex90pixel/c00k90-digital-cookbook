@@ -511,6 +511,11 @@ export const de: Translations = {
     hideFailed: '⚠️ Ausblenden nicht möglich: {error}',
   },
   form: {
+    photoShort: 'Foto',
+    enoughNote:
+      '✨ Mehr braucht es nicht! Der Rest ist optional: Zeiten, Portionen, Ernährung, Allergene, eine Beschreibung und ein Tipp werden für dich ergänzt.',
+    moreDetails: '➕ Mehr Details (optional)',
+    lessDetails: '➖ Optionale Details ausblenden',
     newTitle: 'Neues Rezept ✨',
     editTitle: 'Rezept bearbeiten ✏️',
     name: 'Rezeptname *',

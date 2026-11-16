@@ -509,6 +509,11 @@ export const es: Translations = {
     hideFailed: '⚠️ No se pudo ocultar: {error}',
   },
   form: {
+    photoShort: 'Foto',
+    enoughNote:
+      '✨ ¡Con esto basta! Lo demás es opcional: tiempos, raciones, dietas, alérgenos, una descripción y un consejo se completan solos.',
+    moreDetails: '➕ Más detalles (opcional)',
+    lessDetails: '➖ Ocultar los detalles opcionales',
     newTitle: 'Nueva receta ✨',
     editTitle: 'Editar receta ✏️',
     name: 'Nombre de la receta *',

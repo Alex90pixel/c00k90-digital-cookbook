@@ -38,94 +38,109 @@
     }
 
     <div class="form-group">
-      <label for="recipe-name">{{ 'form.name' | t }}</label>
-      <input
-        id="recipe-name"
-        type="text"
-        [placeholder]="'form.namePlaceholder' | t"
-        [formField]="recipeForm.name"
-        [class.invalid]="recipeForm.name().touched() && recipeForm.name().invalid()"
-      />
-    </div>
-
-    <div class="form-group">
-      <label for="recipe-category">{{ 'form.category' | t }}</label>
-      <select
-        id="recipe-category"
-        [formField]="recipeForm.category"
-        [class.invalid]="recipeForm.category().touched() && recipeForm.category().invalid()"
-      >
-        <option value="">{{ 'form.selectCategory' | t }}</option>
-        @for (c of categories; track c.id) {
-          <option [value]="c.id">{{ i18n.label('categories', c.id) }}</option>
-        }
-      </select>
-    </div>
-
-    <fieldset class="form-group">
-      <legend>{{ 'form.diet' | t }}</legend>
-      <div class="diet-checks">
-        @for (dietId of manualDietIds; track dietId) {
-          <label>
-            <input type="checkbox" [formField]="recipeForm.diets[dietId]" />
-            {{ i18n.label('diets', dietId) }}
-          </label>
-        }
-      </div>
-      <p class="hint">{{ 'form.dietHint' | t }}</p>
-    </fieldset>
-
-    <div class="form-group">
-      <span class="label" id="photos-label">{{ 'form.photos' | t }}</span>
-      @if (photos().length < maxPhotos) {
+      <label for="recipe-source">{{ 'form.source' | t }}</label>
+      <div class="source-row">
+        <input
+          id="recipe-source"
+          type="text"
+          [placeholder]="'form.sourcePlaceholder' | t"
+          [formField]="recipeForm.source"
+        />
         <button
           type="button"
-          class="image-upload-area"
-          aria-describedby="photos-label"
-          (click)="pickPhotos(fileInput)"
+          class="btn-add-row"
+          [disabled]="!canImport() || importing()"
+          (click)="importFromLink()"
         >
-          @if (importedFrom(); as platform) {
-            <span class="source-badge" [style.background]="platform.color">
-              <span class="source-badge-icon">{{ platform.emoji }}</span>
-              {{ platform.labelKey | t }}
-            </span>
-          } @else {
-            <span class="upload-icon" aria-hidden="true">📷</span>
-            <span class="upload-text">{{ 'form.addPhotos' | t: { max: maxPhotos } }}</span>
-          }
-          <span class="upload-note">{{ 'form.photosNote' | t }}</span>
+          {{ 'form.import' | t }}
         </button>
-      }
-      <input
-        name="recipe-photos"
-        #fileInput
-        type="file"
-        accept="image/*"
-        multiple
-        hidden
-        (change)="addPhotos(fileInput)"
-      />
-      @if (photos().length) {
-        <div class="form-images">
-          @for (photo of photos(); track photo.previewUrl; let i = $index) {
-            <div class="form-image-thumb">
-              <img [src]="photo.previewUrl" alt="" />
-              @if (i === 0) {
-                <span class="cover-badge">{{ 'form.cover' | t }}</span>
-              }
-              <button
-                type="button"
-                class="thumb-remove"
-                [attr.aria-label]="'form.removePhoto' | t: { number: i + 1 }"
-                (click)="removePhoto(i)"
-              >
-                ✕
-              </button>
-            </div>
-          }
-        </div>
+      </div>
+      <button type="button" class="btn-add-row own-recipe" (click)="markAsOwnRecipe()">
+        {{ 'form.ownRecipe' | t }}
+      </button>
+      @if (importStatus(); as status) {
+        <p class="import-status" role="status">{{ status.key | t: status.params }}</p>
       }
     </div>
+
+    <!-- Photo first, small, next to the name: it's what makes the recipe look good in the list. -->
+    <div class="form-head">
+      <div class="photo-slot">
+        <button
+          type="button"
+          class="photo-tile"
+          [class.has-photo]="photos().length"
+          [disabled]="photos().length >= maxPhotos"
+          [attr.aria-label]="'form.addPhotos' | t: { max: maxPhotos }"
+          (click)="pickPhotos(fileInput)"
+        >
+          @if (photos()[0]; as cover) {
+            <img [src]="cover.previewUrl" alt="" />
+          } @else if (importedFrom(); as platform) {
+            <span class="tile-icon" aria-hidden="true">{{ platform.emoji }}</span>
+          } @else {
+            <span class="tile-icon" aria-hidden="true">📷</span>
+            <span class="tile-text">{{ 'form.photoShort' | t }}</span>
+          }
+        </button>
+        <input
+          name="recipe-photos"
+          #fileInput
+          type="file"
+          accept="image/*"
+          multiple
+          hidden
+          (change)="addPhotos(fileInput)"
+        />
+      </div>
+      <div class="head-fields">
+        <div class="form-group">
+          <label for="recipe-name">{{ 'form.name' | t }}</label>
+          <input
+            id="recipe-name"
+            type="text"
+            [placeholder]="'form.namePlaceholder' | t"
+            [formField]="recipeForm.name"
+            [class.invalid]="recipeForm.name().touched() && recipeForm.name().invalid()"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="recipe-category">{{ 'form.category' | t }}</label>
+          <select
+            id="recipe-category"
+            [formField]="recipeForm.category"
+            [class.invalid]="recipeForm.category().touched() && recipeForm.category().invalid()"
+          >
+            <option value="">{{ 'form.selectCategory' | t }}</option>
+            @for (c of categories; track c.id) {
+              <option [value]="c.id">{{ i18n.label('categories', c.id) }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    </div>
+    @if (photos().length) {
+      <div class="form-images">
+        @for (photo of photos(); track photo.previewUrl; let i = $index) {
+          <div class="form-image-thumb">
+            <img [src]="photo.previewUrl" alt="" />
+            @if (i === 0) {
+              <span class="cover-badge">{{ 'form.cover' | t }}</span>
+            }
+            <button
+              type="button"
+              class="thumb-remove"
+              [attr.aria-label]="'form.removePhoto' | t: { number: i + 1 }"
+              (click)="removePhoto(i)"
+            >
+              ✕
+            </button>
+          </div>
+        }
+      </div>
+    }
+    <p class="hint photos-note">{{ 'form.photosNote' | t }}</p>
 
     <div class="form-group">
       <label for="ingredients-paste">{{ 'form.ingredients' | t }}</label>
@@ -230,201 +245,219 @@
       }
     </div>
 
-    <fieldset class="form-group">
-      <legend>{{ 'form.difficulty' | t }}</legend>
-      <div class="difficulty-buttons">
-        @for (d of difficulties; track d.id) {
-          <button
-            type="button"
-            class="diff-btn"
-            [class.active]="model().difficulty === d.id"
-            [attr.aria-pressed]="model().difficulty === d.id"
-            (click)="setDifficulty(d.id)"
-          >
-            {{ d.icon }} {{ i18n.label('difficulty', d.id) }}
-          </button>
-        }
-      </div>
-    </fieldset>
-
-    @if (estimate(); as e) {
-      <p class="estimate-hint">
-        @if (e.servings) {
-          {{
-            'form.estimateServings'
-              | t: { low: e.minMinutes, high: e.maxMinutes, count: e.servings }
-          }}
-        } @else {
-          {{ 'form.estimate' | t: { low: e.minMinutes, high: e.maxMinutes } }}
-        }
-      </p>
-    }
-    <div class="form-row-3">
-      <div class="form-group">
-        <label for="recipe-prep">{{ 'form.prep' | t }}</label>
-        <input id="recipe-prep" type="number" placeholder="30" [formField]="recipeForm.prepTime" />
-      </div>
-      <div class="form-group">
-        <label for="recipe-cook">{{ 'form.cook' | t }}</label>
-        <input id="recipe-cook" type="number" placeholder="45" [formField]="recipeForm.cookTime" />
-      </div>
-      <div class="form-group">
-        <label for="recipe-servings">{{ 'form.servings' | t }}</label>
-        <input
-          id="recipe-servings"
-          type="number"
-          placeholder="8"
-          [formField]="recipeForm.servings"
-        />
-      </div>
+    <!-- Part 2: everything optional, hidden until asked for, so a new recipe looks short. -->
+    <div class="optional-intro">
+      @if (!showMore()) {
+        <p class="enough">{{ 'form.enoughNote' | t }}</p>
+      }
+      <button
+        type="button"
+        class="more-toggle"
+        [attr.aria-expanded]="showMore()"
+        (click)="showMore.set(!showMore())"
+      >
+        {{ (showMore() ? 'form.lessDetails' : 'form.moreDetails') | t }}
+      </button>
     </div>
 
-    <fieldset class="form-group" data-guide="allergens">
-      <legend>{{ 'form.allergens' | t }}</legend>
-      @if (tickedAllergens().length) {
-        <div class="allergen-chips">
-          @for (id of tickedAllergens(); track id) {
-            <span class="allergen-chip">
-              {{ i18n.label('allergens', id) }}
+    @if (showMore()) {
+      <div class="optional-part">
+        <fieldset class="form-group">
+          <legend>{{ 'form.diet' | t }}</legend>
+          <div class="diet-checks">
+            @for (dietId of manualDietIds; track dietId) {
+              <label>
+                <input type="checkbox" [formField]="recipeForm.diets[dietId]" />
+                {{ i18n.label('diets', dietId) }}
+              </label>
+            }
+          </div>
+          <p class="hint">{{ 'form.dietHint' | t }}</p>
+        </fieldset>
+
+        <fieldset class="form-group">
+          <legend>{{ 'form.difficulty' | t }}</legend>
+          <div class="difficulty-buttons">
+            @for (d of difficulties; track d.id) {
               <button
                 type="button"
-                [attr.aria-label]="'form.allergenRemove' | t: { name: i18n.label('allergens', id) }"
-                (click)="removeAllergen(id)"
+                class="diff-btn"
+                [class.active]="model().difficulty === d.id"
+                [attr.aria-pressed]="model().difficulty === d.id"
+                (click)="setDifficulty(d.id)"
               >
-                ✕
+                {{ d.icon }} {{ i18n.label('difficulty', d.id) }}
               </button>
-            </span>
+            }
+          </div>
+        </fieldset>
+
+        @if (estimate(); as e) {
+          <p class="estimate-hint">
+            @if (e.servings) {
+              {{
+                'form.estimateServings'
+                  | t: { low: e.minMinutes, high: e.maxMinutes, count: e.servings }
+              }}
+            } @else {
+              {{ 'form.estimate' | t: { low: e.minMinutes, high: e.maxMinutes } }}
+            }
+          </p>
+        }
+        <div class="form-row-3">
+          <div class="form-group">
+            <label for="recipe-prep">{{ 'form.prep' | t }}</label>
+            <input
+              id="recipe-prep"
+              type="number"
+              placeholder="30"
+              [formField]="recipeForm.prepTime"
+            />
+          </div>
+          <div class="form-group">
+            <label for="recipe-cook">{{ 'form.cook' | t }}</label>
+            <input
+              id="recipe-cook"
+              type="number"
+              placeholder="45"
+              [formField]="recipeForm.cookTime"
+            />
+          </div>
+          <div class="form-group">
+            <label for="recipe-servings">{{ 'form.servings' | t }}</label>
+            <input
+              id="recipe-servings"
+              type="number"
+              placeholder="8"
+              [formField]="recipeForm.servings"
+            />
+          </div>
+        </div>
+
+        <fieldset class="form-group" data-guide="allergens">
+          <legend>{{ 'form.allergens' | t }}</legend>
+          @if (tickedAllergens().length) {
+            <div class="allergen-chips">
+              @for (id of tickedAllergens(); track id) {
+                <span class="allergen-chip">
+                  {{ i18n.label('allergens', id) }}
+                  <button
+                    type="button"
+                    [attr.aria-label]="
+                      'form.allergenRemove' | t: { name: i18n.label('allergens', id) }
+                    "
+                    (click)="removeAllergen(id)"
+                  >
+                    ✕
+                  </button>
+                </span>
+              }
+            </div>
+          }
+          <div class="allergen-actions">
+            <button
+              type="button"
+              class="btn-add-row"
+              [disabled]="detectingAllergens()"
+              (click)="detectAllergens()"
+            >
+              {{ 'form.allergensDetect' | t }}
+            </button>
+            <button
+              type="button"
+              class="link-btn"
+              [attr.aria-expanded]="showAllAllergens()"
+              (click)="showAllAllergens.set(!showAllAllergens())"
+            >
+              {{ (showAllAllergens() ? 'form.allergensHideAll' : 'form.allergensEdit') | t }}
+            </button>
+          </div>
+          @if (allergenStatus(); as status) {
+            <p class="import-status" role="status">{{ status.key | t: status.params }}</p>
+          }
+          @if (showAllAllergens()) {
+            <div class="diet-checks all-allergens">
+              @for (allergenId of allergenIds; track allergenId) {
+                <label>
+                  <input type="checkbox" [formField]="recipeForm.allergens[allergenId]" />
+                  {{ i18n.label('allergens', allergenId) }}
+                </label>
+              }
+            </div>
+          }
+          <p class="hint">{{ 'form.allergensHint' | t }}</p>
+        </fieldset>
+
+        <div class="form-group">
+          <label for="recipe-video">{{ 'form.video' | t }}</label>
+          <input
+            id="recipe-video"
+            type="url"
+            inputmode="url"
+            autocomplete="off"
+            [placeholder]="'form.videoPlaceholder' | t"
+            [formField]="recipeForm.videoUrl"
+            [class.invalid]="recipeForm.videoUrl().touched() && recipeForm.videoUrl().invalid()"
+          />
+          @if (recipeForm.videoUrl().touched() && recipeForm.videoUrl().errors()[0]; as error) {
+            <p class="field-error">{{ error.message }}</p>
+          } @else {
+            <p class="hint">{{ 'form.videoHint' | t }}</p>
           }
         </div>
-      }
-      <div class="allergen-actions">
-        <button
-          type="button"
-          class="btn-add-row"
-          [disabled]="detectingAllergens()"
-          (click)="detectAllergens()"
-        >
-          {{ 'form.allergensDetect' | t }}
-        </button>
-        <button
-          type="button"
-          class="link-btn"
-          [attr.aria-expanded]="showAllAllergens()"
-          (click)="showAllAllergens.set(!showAllAllergens())"
-        >
-          {{ (showAllAllergens() ? 'form.allergensHideAll' : 'form.allergensEdit') | t }}
-        </button>
-      </div>
-      @if (allergenStatus(); as status) {
-        <p class="import-status" role="status">{{ status.key | t: status.params }}</p>
-      }
-      @if (showAllAllergens()) {
-        <div class="diet-checks all-allergens">
-          @for (allergenId of allergenIds; track allergenId) {
-            <label>
-              <input type="checkbox" [formField]="recipeForm.allergens[allergenId]" />
-              {{ i18n.label('allergens', allergenId) }}
-            </label>
+
+        <fieldset class="form-group" data-guide="extras">
+          <legend>{{ 'form.extraTitle' | t }}</legend>
+          <label for="recipe-description" class="sub-label">{{ 'form.description' | t }}</label>
+          <textarea
+            id="recipe-description"
+            rows="2"
+            [placeholder]="'form.descriptionPlaceholder' | t"
+            [formField]="recipeForm.description"
+          ></textarea>
+          <label for="recipe-extras" class="sub-label">{{ 'form.extras' | t }}</label>
+          <textarea
+            id="recipe-extras"
+            rows="3"
+            [placeholder]="'form.extrasPlaceholder' | t"
+            [formField]="recipeForm.extras"
+          ></textarea>
+          <label for="recipe-tip" class="sub-label">{{ 'form.tip' | t }}</label>
+          <input
+            id="recipe-tip"
+            type="text"
+            [placeholder]="'form.tipPlaceholder' | t"
+            [formField]="recipeForm.tip"
+          />
+          <button type="button" class="btn-add-row" [disabled]="enriching()" (click)="enrich()">
+            {{ 'form.enrich' | t }}
+          </button>
+          @if (enrichStatus(); as status) {
+            <p class="import-status" role="status">{{ status | t }}</p>
           }
+        </fieldset>
+
+        <div class="form-group">
+          <label for="recipe-pairing">{{ 'form.pairing' | t }}</label>
+          <input
+            id="recipe-pairing"
+            type="text"
+            [placeholder]="'form.pairingPlaceholder' | t"
+            [formField]="recipeForm.pairing"
+          />
         </div>
-      }
-      <p class="hint">{{ 'form.allergensHint' | t }}</p>
-    </fieldset>
 
-    <div class="form-group">
-      <label for="recipe-source">{{ 'form.source' | t }}</label>
-      <div class="source-row">
-        <input
-          id="recipe-source"
-          type="text"
-          [placeholder]="'form.sourcePlaceholder' | t"
-          [formField]="recipeForm.source"
-        />
-        <button
-          type="button"
-          class="btn-add-row"
-          [disabled]="!canImport() || importing()"
-          (click)="importFromLink()"
-        >
-          {{ 'form.import' | t }}
-        </button>
+        <div class="form-group">
+          <label for="recipe-notes">{{ 'form.notes' | t }}</label>
+          <textarea
+            id="recipe-notes"
+            rows="4"
+            [placeholder]="'form.notesPlaceholder' | t"
+            [formField]="recipeForm.notes"
+          ></textarea>
+        </div>
       </div>
-      <button type="button" class="btn-add-row own-recipe" (click)="markAsOwnRecipe()">
-        {{ 'form.ownRecipe' | t }}
-      </button>
-      @if (importStatus(); as status) {
-        <p class="import-status" role="status">{{ status.key | t: status.params }}</p>
-      }
-    </div>
-
-    <div class="form-group">
-      <label for="recipe-video">{{ 'form.video' | t }}</label>
-      <input
-        id="recipe-video"
-        type="url"
-        inputmode="url"
-        autocomplete="off"
-        [placeholder]="'form.videoPlaceholder' | t"
-        [formField]="recipeForm.videoUrl"
-        [class.invalid]="recipeForm.videoUrl().touched() && recipeForm.videoUrl().invalid()"
-      />
-      @if (recipeForm.videoUrl().touched() && recipeForm.videoUrl().errors()[0]; as error) {
-        <p class="field-error">{{ error.message }}</p>
-      } @else {
-        <p class="hint">{{ 'form.videoHint' | t }}</p>
-      }
-    </div>
-
-    <fieldset class="form-group" data-guide="extras">
-      <legend>{{ 'form.extraTitle' | t }}</legend>
-      <label for="recipe-description" class="sub-label">{{ 'form.description' | t }}</label>
-      <textarea
-        id="recipe-description"
-        rows="2"
-        [placeholder]="'form.descriptionPlaceholder' | t"
-        [formField]="recipeForm.description"
-      ></textarea>
-      <label for="recipe-extras" class="sub-label">{{ 'form.extras' | t }}</label>
-      <textarea
-        id="recipe-extras"
-        rows="3"
-        [placeholder]="'form.extrasPlaceholder' | t"
-        [formField]="recipeForm.extras"
-      ></textarea>
-      <label for="recipe-tip" class="sub-label">{{ 'form.tip' | t }}</label>
-      <input
-        id="recipe-tip"
-        type="text"
-        [placeholder]="'form.tipPlaceholder' | t"
-        [formField]="recipeForm.tip"
-      />
-      <button type="button" class="btn-add-row" [disabled]="enriching()" (click)="enrich()">
-        {{ 'form.enrich' | t }}
-      </button>
-      @if (enrichStatus(); as status) {
-        <p class="import-status" role="status">{{ status | t }}</p>
-      }
-    </fieldset>
-
-    <div class="form-group">
-      <label for="recipe-pairing">{{ 'form.pairing' | t }}</label>
-      <input
-        id="recipe-pairing"
-        type="text"
-        [placeholder]="'form.pairingPlaceholder' | t"
-        [formField]="recipeForm.pairing"
-      />
-    </div>
-
-    <div class="form-group">
-      <label for="recipe-notes">{{ 'form.notes' | t }}</label>
-      <textarea
-        id="recipe-notes"
-        rows="4"
-        [placeholder]="'form.notesPlaceholder' | t"
-        [formField]="recipeForm.notes"
-      ></textarea>
-    </div>
+    }
   </div>
 
   <div class="form-footer">

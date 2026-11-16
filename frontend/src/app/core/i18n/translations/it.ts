@@ -507,6 +507,11 @@ export const it: Translations = {
     hideFailed: '⚠️ Impossibile nascondere: {error}',
   },
   form: {
+    photoShort: 'Foto',
+    enoughNote:
+      '✨ Basta così! Il resto è facoltativo: tempi, porzioni, diete, allergeni, una descrizione e un consiglio li completiamo noi.',
+    moreDetails: '➕ Altri dettagli (facoltativi)',
+    lessDetails: '➖ Nascondi i dettagli facoltativi',
     newTitle: 'Nuova ricetta ✨',
     editTitle: 'Modifica ricetta ✏️',
     name: 'Nome della ricetta *',

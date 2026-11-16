@@ -512,6 +512,11 @@ export const fr: Translations = {
     hideFailed: '⚠️ Impossible de masquer : {error}',
   },
   form: {
+    photoShort: 'Photo',
+    enoughNote:
+      "✨ C'est tout ce qu'il faut ! Le reste est facultatif : temps, portions, régimes, allergènes, description et astuce sont remplis pour vous.",
+    moreDetails: '➕ Plus de détails (facultatif)',
+    lessDetails: '➖ Masquer les détails facultatifs',
     newTitle: 'Nouvelle recette ✨',
     editTitle: 'Modifier la recette ✏️',
     name: 'Nom de la recette *',

@@ -504,6 +504,11 @@ export const en = {
     hideFailed: '⚠️ Could not hide: {error}',
   },
   form: {
+    photoShort: 'Photo',
+    enoughNote:
+      "✨ That's all you need! The rest is optional: times, servings, diets, allergens, a description and a cook's tip are filled in for you.",
+    moreDetails: '➕ More details (optional)',
+    lessDetails: '➖ Hide the optional details',
     newTitle: 'New Recipe ✨',
     editTitle: 'Edit Recipe ✏️',
     name: 'Recipe Name *',

@@ -8,6 +8,8 @@ import { NutritionService } from '../../data/nutrition.service';
 import { RecipeImportService } from '../../data/recipe-import.service';
 import { RecipePhotoService } from '../../data/recipe-photo.service';
 import { RecipeStore } from '../../data/recipe.store';
+import { AllergenDetectService } from '../../data/allergen-detect.service';
+import { RecipeEnrichService } from '../../data/recipe-enrich.service';
 import { formToRecipeData } from '../../domain/recipe-form';
 import { RecipeFormValue } from '../../models/recipe-form.model';
 import { RecipeFormDialog } from './recipe-form-dialog';
@@ -28,6 +30,15 @@ async function setup() {
       { provide: RecipeImportService, useValue: {} },
       { provide: NotebookTranscribeService, useValue: {} },
       { provide: NutritionService, useValue: { estimate: () => null } },
+      // The AI is offline in tests: the form saves without what it would have added.
+      {
+        provide: RecipeEnrichService,
+        useValue: { enrich: vi.fn().mockRejectedValue(new Error('offline')) },
+      },
+      {
+        provide: AllergenDetectService,
+        useValue: { detectWithDiets: vi.fn().mockRejectedValue(new Error('offline')) },
+      },
       { provide: AppDialog, useValue: { confirm: vi.fn().mockResolvedValue(true) } },
       { provide: PhotoConsent, useValue: { ask: vi.fn().mockResolvedValue(true) } },
     ],
@@ -69,6 +80,17 @@ async function setup() {
 
   return { fixture, element, type, choose, click, save, savedValue };
 }
+
+describe('RecipeFormDialog in two parts', () => {
+  it('shows only the essentials of a new recipe until "More details" is pressed', async () => {
+    const { element, click } = await setup();
+    expect(element.querySelector('#recipe-name')).not.toBeNull();
+    expect(element.querySelector('#ingredients-paste')).not.toBeNull();
+    expect(element.querySelector('#recipe-prep')).toBeNull();
+    await click('➕ More details (optional)');
+    expect(element.querySelector('#recipe-prep')).not.toBeNull();
+  });
+});
 
 describe('RecipeFormDialog saving', () => {
   it('saves ingredients and steps added from the paste boxes', async () => {
@@ -113,6 +135,8 @@ describe('RecipeFormDialog saving', () => {
     const { element, fixture, type, choose, click, save } = await setup();
     type('#recipe-name', 'Lava cake');
     choose('#recipe-category', 'Desserts');
+    // Diets, times, video… are in the optional part, opened with "More details".
+    await click('➕ More details (optional)');
     const vegetarian = element.querySelectorAll<HTMLInputElement>('.diet-checks input')[0];
     vegetarian.click();
     fixture.detectChanges();

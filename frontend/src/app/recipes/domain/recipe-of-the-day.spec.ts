@@ -30,6 +30,11 @@ describe('recipeOfTheDay', () => {
     expect(recipeOfTheDay([], '2026-11-04')).toBeNull();
   });
 
+  it('waits for at least 3 recipes, so a new cookbook does not show its example twice', () => {
+    expect(recipeOfTheDay([recipe('a', true), recipe('b', true)], '2026-11-04')).toBeNull();
+    expect(recipeOfTheDay([recipe('a'), recipe('b'), recipe('c')], '2026-11-04')).not.toBeNull();
+  });
+
   it('formats the local day', () => {
     expect(localDay(new Date(2026, 0, 5))).toBe('2026-01-05');
   });

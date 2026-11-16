@@ -518,6 +518,11 @@ export const ro: Translations = {
     hideFailed: '⚠️ Nu am putut ascunde: {error}',
   },
   form: {
+    photoShort: 'Poză',
+    enoughNote:
+      '✨ Atât e suficient! Restul e opțional: timpii, porțiile, dietele, alergenii, descrierea și sfatul de bucătar le completăm automat.',
+    moreDetails: '➕ Mai multe detalii (opțional)',
+    lessDetails: '➖ Ascunde detaliile opționale',
     newTitle: 'Rețetă nouă ✨',
     editTitle: 'Editează rețeta ✏️',
     name: 'Numele rețetei *',
