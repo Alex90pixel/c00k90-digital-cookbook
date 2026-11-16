@@ -359,3 +359,44 @@ fieldset {
     height: 84px;
   }
 }
+
+// ----- "Fill it in for me": notebook photo or link, set apart from the recipe itself -----
+.quick-fill {
+  margin-bottom: 8px;
+  padding: 14px 16px 16px;
+  border: 1.5px dashed var(--teal-light);
+  border-radius: 16px;
+  background: var(--card-soft);
+
+  h3 {
+    margin: 0;
+    color: var(--teal-deep);
+    font-size: 14px;
+  }
+  .quick-hint {
+    margin: 4px 0 12px;
+  }
+  .quick-btn {
+    width: 100%;
+    margin-bottom: 12px;
+  }
+}
+.or-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0 16px;
+  color: var(--text-light);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+}

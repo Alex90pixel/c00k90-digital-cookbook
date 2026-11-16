@@ -512,7 +512,12 @@ export const fr: Translations = {
     hideFailed: '⚠️ Impossible de masquer : {error}',
   },
   form: {
-    photoShort: 'Photo',
+    quickTitle: '⚡ Remplis-la pour moi (facultatif)',
+    quickHint:
+      "Nous écrivons la recette pour vous à partir de la photo d'une recette écrite ou d'un lien.",
+    orWriteIt: 'ou écrivez-la vous-même',
+    linkOrSource: '🔗 Lien ou source',
+    photoShort: '🍽️ Photo du plat',
     enoughNote:
       "✨ C'est tout ce qu'il faut ! Le reste est facultatif : temps, portions, régimes, allergènes, description et astuce sont remplis pour vous.",
     moreDetails: '➕ Plus de détails (facultatif)',
@@ -610,7 +615,7 @@ export const fr: Translations = {
     discardMessage: "Vos modifications de cette recette n'ont pas été enregistrées.",
     discardKeep: 'Continuer à modifier',
     discardConfirm: 'Abandonner',
-    fromNotebook: 'Depuis une photo de cahier',
+    fromNotebook: "Photo d'une recette écrite (carnet, livre)",
     fromNotebookHint:
       "Prenez en photo une recette manuscrite et nous remplirons le formulaire. Vérifiez avant d'enregistrer.",
     transcribing: 'Lecture de la recette…',

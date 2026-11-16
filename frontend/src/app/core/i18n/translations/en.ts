@@ -504,7 +504,11 @@ export const en = {
     hideFailed: '⚠️ Could not hide: {error}',
   },
   form: {
-    photoShort: 'Photo',
+    quickTitle: '⚡ Fill it in for me (optional)',
+    quickHint: 'We write the recipe for you from a photo of a written recipe or from a link.',
+    orWriteIt: 'or write it yourself',
+    linkOrSource: '🔗 Link or source',
+    photoShort: '🍽️ Dish photo',
     enoughNote:
       "✨ That's all you need! The rest is optional: times, servings, diets, allergens, a description and a cook's tip are filled in for you.",
     moreDetails: '➕ More details (optional)',
@@ -601,7 +605,7 @@ export const en = {
     discardMessage: "Your changes to this recipe haven't been saved.",
     discardKeep: 'Keep editing',
     discardConfirm: 'Discard',
-    fromNotebook: 'From a notebook photo',
+    fromNotebook: 'Photo of a written recipe (notebook, book)',
     fromNotebookHint:
       "Take a photo of a handwritten recipe and we'll fill in the form. Check it before saving.",
     transcribing: 'Reading the recipe…',

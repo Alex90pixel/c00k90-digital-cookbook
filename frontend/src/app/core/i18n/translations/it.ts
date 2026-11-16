@@ -507,7 +507,11 @@ export const it: Translations = {
     hideFailed: '⚠️ Impossibile nascondere: {error}',
   },
   form: {
-    photoShort: 'Foto',
+    quickTitle: '⚡ Compilala per me (facoltativo)',
+    quickHint: 'Scriviamo noi la ricetta dalla foto di una ricetta scritta o da un link.',
+    orWriteIt: 'oppure scrivila tu',
+    linkOrSource: '🔗 Link o fonte',
+    photoShort: '🍽️ Foto del piatto',
     enoughNote:
       '✨ Basta così! Il resto è facoltativo: tempi, porzioni, diete, allergeni, una descrizione e un consiglio li completiamo noi.',
     moreDetails: '➕ Altri dettagli (facoltativi)',
@@ -604,7 +608,7 @@ export const it: Translations = {
     discardMessage: 'Le modifiche a questa ricetta non sono state salvate.',
     discardKeep: 'Continua a modificare',
     discardConfirm: 'Annulla le modifiche',
-    fromNotebook: 'Da una foto del quaderno',
+    fromNotebook: 'Foto di una ricetta scritta (quaderno, libro)',
     fromNotebookHint:
       'Fotografa una ricetta scritta a mano e compileremo il modulo. Controllalo prima di salvare.',
     transcribing: 'Leggo la ricetta…',

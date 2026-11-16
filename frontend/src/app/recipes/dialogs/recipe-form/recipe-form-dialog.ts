@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -44,7 +45,7 @@ interface ImportStatus {
 
 @Component({
   selector: 'app-recipe-form-dialog',
-  imports: [FormField, TranslatePipe],
+  imports: [FormField, NgTemplateOutlet, TranslatePipe],
   templateUrl: './recipe-form-dialog.html',
   styleUrl: './recipe-form-dialog.scss',
 })

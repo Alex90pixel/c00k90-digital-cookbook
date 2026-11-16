@@ -518,7 +518,11 @@ export const ro: Translations = {
     hideFailed: '⚠️ Nu am putut ascunde: {error}',
   },
   form: {
-    photoShort: 'Poză',
+    quickTitle: '⚡ Completează-mi rețeta (opțional)',
+    quickHint: 'Scriem noi rețeta din poza unei rețete scrise sau dintr-un link.',
+    orWriteIt: 'sau scrie-o tu',
+    linkOrSource: '🔗 Link sau sursă',
+    photoShort: '🍽️ Poza mâncării',
     enoughNote:
       '✨ Atât e suficient! Restul e opțional: timpii, porțiile, dietele, alergenii, descrierea și sfatul de bucătar le completăm automat.',
     moreDetails: '➕ Mai multe detalii (opțional)',
@@ -617,7 +621,7 @@ export const ro: Translations = {
     discardMessage: 'Modificările făcute acestei rețete nu au fost salvate.',
     discardKeep: 'Continuă editarea',
     discardConfirm: 'Renunță',
-    fromNotebook: 'Din poza unui caiet',
+    fromNotebook: 'Poză cu o rețetă scrisă (caiet, carte)',
     fromNotebookHint:
       'Fă o poză la o rețetă scrisă de mână și completăm noi formularul. Verifică-l înainte să salvezi.',
     transcribing: 'Citim rețeta…',

@@ -511,7 +511,12 @@ export const de: Translations = {
     hideFailed: '⚠️ Ausblenden nicht möglich: {error}',
   },
   form: {
-    photoShort: 'Foto',
+    quickTitle: '⚡ Für mich ausfüllen (optional)',
+    quickHint:
+      'Wir schreiben das Rezept für dich aus dem Foto eines geschriebenen Rezepts oder aus einem Link.',
+    orWriteIt: 'oder schreib es selbst',
+    linkOrSource: '🔗 Link oder Quelle',
+    photoShort: '🍽️ Foto vom Gericht',
     enoughNote:
       '✨ Mehr braucht es nicht! Der Rest ist optional: Zeiten, Portionen, Ernährung, Allergene, eine Beschreibung und ein Tipp werden für dich ergänzt.',
     moreDetails: '➕ Mehr Details (optional)',
@@ -610,7 +615,7 @@ export const de: Translations = {
     discardMessage: 'Deine Änderungen an diesem Rezept wurden nicht gespeichert.',
     discardKeep: 'Weiter bearbeiten',
     discardConfirm: 'Verwerfen',
-    fromNotebook: 'Aus einem Notizbuchfoto',
+    fromNotebook: 'Foto eines geschriebenen Rezepts (Heft, Buch)',
     fromNotebookHint:
       'Fotografiere ein handgeschriebenes Rezept und wir füllen das Formular aus. Prüfe es vor dem Speichern.',
     transcribing: 'Rezept wird gelesen…',

@@ -15,15 +15,19 @@
   </div>
 
   <div class="form-body">
+    <!-- Two clearly separate things: the text of a recipe can be filled in for you (a notebook page or a
+         link), and the photo of the dish (the small square next to the name) is what shows in the list. -->
     @if (!isEditing) {
-      <div class="form-group notebook-import">
+      <section class="quick-fill" aria-labelledby="quick-fill-title">
+        <h3 id="quick-fill-title">{{ 'form.quickTitle' | t }}</h3>
+        <p class="hint quick-hint">{{ 'form.quickHint' | t }}</p>
         <button
           type="button"
-          class="btn-add-row"
+          class="btn-add-row quick-btn"
           [disabled]="transcribing()"
           (click)="pickNotebookPhoto(notebookInput)"
         >
-          📷 {{ (transcribing() ? 'form.transcribing' : 'form.fromNotebook') | t }}
+          📒 {{ (transcribing() ? 'form.transcribing' : 'form.fromNotebook') | t }}
         </button>
         <input
           name="notebook-photo"
@@ -33,35 +37,15 @@
           hidden
           (change)="transcribeNotebook(notebookInput)"
         />
-        <p class="hint" role="status">{{ transcribeStatus() ?? 'form.fromNotebookHint' | t }}</p>
-      </div>
+        @if (transcribeStatus(); as status) {
+          <p class="hint" role="status">{{ status | t }}</p>
+        }
+        <ng-container [ngTemplateOutlet]="linkField" />
+      </section>
+      <p class="or-divider">
+        <span>{{ 'form.orWriteIt' | t }}</span>
+      </p>
     }
-
-    <div class="form-group">
-      <label for="recipe-source">{{ 'form.source' | t }}</label>
-      <div class="source-row">
-        <input
-          id="recipe-source"
-          type="text"
-          [placeholder]="'form.sourcePlaceholder' | t"
-          [formField]="recipeForm.source"
-        />
-        <button
-          type="button"
-          class="btn-add-row"
-          [disabled]="!canImport() || importing()"
-          (click)="importFromLink()"
-        >
-          {{ 'form.import' | t }}
-        </button>
-      </div>
-      <button type="button" class="btn-add-row own-recipe" (click)="markAsOwnRecipe()">
-        {{ 'form.ownRecipe' | t }}
-      </button>
-      @if (importStatus(); as status) {
-        <p class="import-status" role="status">{{ status.key | t: status.params }}</p>
-      }
-    </div>
 
     <!-- Photo first, small, next to the name: it's what makes the recipe look good in the list. -->
     <div class="form-head">
@@ -79,7 +63,7 @@
           } @else if (importedFrom(); as platform) {
             <span class="tile-icon" aria-hidden="true">{{ platform.emoji }}</span>
           } @else {
-            <span class="tile-icon" aria-hidden="true">📷</span>
+            <span class="tile-icon" aria-hidden="true">🍽️</span>
             <span class="tile-text">{{ 'form.photoShort' | t }}</span>
           }
         </button>
@@ -262,6 +246,14 @@
 
     @if (showMore()) {
       <div class="optional-part">
+        <div class="form-group">
+          @if (isEditing) {
+            <ng-container [ngTemplateOutlet]="linkField" />
+          }
+          <button type="button" class="btn-add-row own-recipe" (click)="markAsOwnRecipe()">
+            {{ 'form.ownRecipe' | t }}
+          </button>
+        </div>
         <fieldset class="form-group">
           <legend>{{ 'form.diet' | t }}</legend>
           <div class="diet-checks">
@@ -459,6 +451,29 @@
       </div>
     }
   </div>
+
+  <ng-template #linkField>
+    <label for="recipe-source" class="sub-label">{{ 'form.linkOrSource' | t }}</label>
+    <div class="source-row">
+      <input
+        id="recipe-source"
+        type="text"
+        [placeholder]="'form.sourcePlaceholder' | t"
+        [formField]="recipeForm.source"
+      />
+      <button
+        type="button"
+        class="btn-add-row"
+        [disabled]="!canImport() || importing()"
+        (click)="importFromLink()"
+      >
+        {{ 'form.import' | t }}
+      </button>
+    </div>
+    @if (importStatus(); as status) {
+      <p class="import-status" role="status">{{ status.key | t: status.params }}</p>
+    }
+  </ng-template>
 
   <div class="form-footer">
     <button type="button" class="btn-cancel" (click)="cancel()">{{ 'common.cancel' | t }}</button>
